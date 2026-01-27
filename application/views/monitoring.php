@@ -12,6 +12,9 @@
     z-index: 2;
 }
 
+label {
+    font-weight: normal !important;
+}
 
 </style>
 
@@ -21,7 +24,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Monitoring</h4>
+                    <h4 class="mb-sm-0 font-size-18">Client</h4>
                 </div>
             </div>
         </div>
@@ -36,13 +39,13 @@
         <div class="table-data mt-3 mb-5">
             <div class="order">
                 <table id="client_table" class="table table-hover" style="width:100%">
-                    <thead>
+                    <thead style="background-color: #f2f2f2;">
                         <tr>
                             <th style="width:30px">ID #</th>
                             <th>FULLNAME</th>
                             <th>ADDRESS</th>
                             <th>CONTACT NO.</th>
-                            <th style="width:200px">TRANSACTION COUNT</th>
+                            <th style="width:30px">COUNT</th>
                             <th>DATE ADDED</th>
                             <th style="width:150px; text-align:center">ACTION</th>
                         </tr>
@@ -59,7 +62,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title fw-bold">Details</h5>
+                        <h5 class="modal-title fw-bold">Client Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -199,7 +202,7 @@
         <!-- EDIT MODAL -->
 
         <div class="modal fade" id="viewLoaner" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog" style="max-width:800px;  margin-top: 50px;">
+            <div class="modal-dialog" style="max-width:1000px;  margin-top: 50px;">
                 <div class="modal-content">
 
                     <div class="modal-header bg-light border-bottom">
@@ -209,7 +212,7 @@
 
                     <div class="modal-body">
                         <div class="container">
-                            <div class="row g-3">
+                            <div class="row g-3" style="font-size: 14px;">
                                 <div class="col-md-5">
                                     <div>
                                         <label class="form-label">Name : 
@@ -232,6 +235,7 @@
                                         </label>
                                     </div>
                                     <input type="hidden" id="header_id">
+                                    <input type="hidden" id="header_loan_id">
                                 </div>
 
                                 <div class="col-md-3">
@@ -273,8 +277,16 @@
                                             Date Completed : <span id="header_date_completed" style="font-weight: bold;"></span>
                                         </label>
                                     </div>
-                                    <div>
-                                        <select id="header_date_arr" class="form-select form-select-sm" style="cursor:pointer"></select>
+                                    <div style="display: flex; align-items: center; gap: 5px;">
+                                        <select id="header_date_arr" class="form-select form-select-sm me-2" 
+                                                style="cursor:pointer; width: 200px; height: 30px">
+                                        </select>
+                                        <button class="btn btn-sm btn-success" id="editLoanDetails">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" id="cancelEdit" style="display:none;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -283,11 +295,11 @@
 
                     <div class="table-data">
                         <div class="order pt-0 px-3" style="max-height: 400px; overflow-y: auto;">
-                            <table id="payment_table" class="table table-hover table-bordered mb-0">
+                            <table id="payment_table" class="table table-hover table-bordered pt-0 pb-0 mt-0 mb-0">
                                 <thead class="bg-light sticky-top">
-                                    <!-- sticky-top -->
                                     <tr>
-                                        <th class="text-center" style="width:40%">DAY</th>
+                                        <th class="text-center" style="width:10%">NO.#</th>
+                                        <th class="text-center" style="width:30%">DAY</th>
                                         <th class="text-center" style="width:30%">PAYMENT</th>
                                         <th class="text-center" style="width:30%">ACTION</th>
                                     </tr>
@@ -298,7 +310,7 @@
                     </div>
                     
                     <div class="modal-footer d-flex justify-content-between align-items-center">
-                        <div class="fw-bold text-end text-black" style="width:410px">
+                        <div class="fw-bold text-end text-black" style="width:500px">
                             TOTAL PAYMENT: ₱ <span id="total_payment"></span>
                         </div>
 
@@ -425,12 +437,19 @@
             }
         },
         columns: [
-            { data: 'id' },
+            // { data: 'id', class:'text-center'},
+            { 
+                data: null,
+                class: 'text-center',
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
             { data: 'full_name' },
             { data: 'address' },
             { data: 'contact_no' },
-            { data: 'loan_count' },
-            { data: 'date_added' },
+            { data: 'loan_count', class:'text-center' },
+            { data: 'date_added', class:'text-center'},
             {
                 data: 'id',
                 orderable: false,
@@ -563,6 +582,7 @@
             dataType: "json",
             data: { id: id },
             success: function (response) {
+                console.log(response);
                 $('#header_date_arr').empty();
 
                 const firstStatus = response[0][0].status;
@@ -608,6 +628,8 @@
             let loanId = $(this).val();
             let firstStatus = $('#header_date_arr option:selected').data('first_status');
 
+            $('#header_loan_id').val(loanId);
+
             $.ajax({
                 url: "<?php echo base_url('Monitoring_cont/get_loan_details'); ?>",
                 type: "POST",
@@ -629,8 +651,10 @@
                     $('#header_interest').text(loan.interest);
                     $('#header_added_amt').text(loan.added_amt);
                     $('#header_total_amt').text(loan.total_amt);
-                    $('#header_date_completed').text(loan.complete_date);
-
+                    $('#header_date_completed').text(
+                        loan.complete_date ? format(loan.complete_date) : ''
+                    );
+                
                     let paymentMap = {};
 
                     response.forEach(item => {
@@ -638,8 +662,6 @@
                             paymentMap[item.payment_for] = item.amt;
                         }
                     });
-
-                    updateTotals(response, loanId);
 
                     const start = new Date(loan.start_date);
 
@@ -656,6 +678,88 @@
                         due   = complete_date;
                     }
 
+                    // if(firstStatus != status || firstStatus === "ongoing" && todayDateOnly < dueDateOnly){
+                    //     $('#addNewLoan').hide();
+                    // } else if(firstStatus && status === "completed"){
+                    //     $('#addNewLoan').show();
+                    // }
+
+                    // if (firstStatus === "ongoing" && todayDateOnly > dueDateOnly) {
+                    //     console.log('OVERDUE');
+                    //     $('#new_type').val("overdue");
+                    // } 
+                    // else {
+                    //     console.log('complete');
+                    //     $('#new_type').val("complete");
+                    // }
+
+                    start.setDate(start.getDate() + 1);
+
+                    let tableBody = '';
+                    let current = new Date(start);
+                    let totalPayment = 0;
+
+                    if (status === "overdue") {
+                        Object.keys(paymentMap).forEach((dateStr, rowIndex) => {
+                            // let paymentAmt = paymentMap[dateStr] || '';
+                            let paymentAmt = parseFloat(paymentMap[dateStr]) ||'';
+
+                            totalPayment += paymentAmt;
+
+                            tableBody += `
+                                <tr>
+                                    <td class="text-center">${rowIndex + 1}</td>        
+                                    <td class="text-center">${new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                                    <td class="text-center">
+                                        <input type="text"
+                                            class="form-control form-control-sm payment-input w-50 mx-auto text-success"
+                                            value="${paymentAmt}"
+                                            readonly />
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-success edit-btn" 
+                                            style="${!paymentAmt ? 'display:none;' : ''}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        let rowIndex = 0;
+
+                        while (current <= due) {
+                            let dateStr = current.toISOString().split('T')[0];
+                            let paymentAmt = parseFloat(paymentMap[dateStr]) ||'';
+
+                            totalPayment += paymentAmt;
+
+                            tableBody += `
+                                <tr>
+                                    <td class="text-center">${rowIndex + 1}</td>
+                                    <td class="text-center">${current.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                                    <td class="text-center">
+                                        <input type="text"
+                                            class="form-control form-control-sm payment-input w-50 mx-auto ${paymentAmt ? 'text-success' : ''}"
+                                            value="${paymentAmt}"
+                                            ${paymentAmt ? 'readonly' : ''} />
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-success edit-btn" 
+                                            style="${!paymentAmt ? 'display:none;' : ''}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+
+                            current.setDate(current.getDate() + 1);
+                            rowIndex++;
+                        }
+                    }
+
+                    updateTotals(response, loanId, totalPayment);
+
                     if(firstStatus != status || firstStatus === "ongoing" && todayDateOnly < dueDateOnly){
                         $('#addNewLoan').hide();
                     } else if(firstStatus && status === "completed"){
@@ -666,60 +770,9 @@
                         console.log('OVERDUE');
                         $('#new_type').val("overdue");
                     } 
-                    // else {
-                    //     console.log('complete');
-                    //     $('#new_type').val("complete");
-                    // }
-
-                    start.setDate(start.getDate() + 1);
-
-                    let tableBody = '';
-                    let current = new Date(start);
-
-                    if (status === "overdue") {
-                        Object.keys(paymentMap).forEach(dateStr => {
-                            let paymentAmt = paymentMap[dateStr];
-
-                            tableBody += `
-                                <tr>
-                                    <td class="text-center">${new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                                    <td class="text-center">
-                                        <input type="text"
-                                            class="form-control form-control-sm payment-input w-50 mx-auto text-success"
-                                            value="${paymentAmt}"
-                                            readonly />
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-primary edit-btn"> <i class="fas fa-edit"></i> Edit</button>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                    } else {
-                        while (current <= due) {
-                            let dateStr = current.toISOString().split('T')[0];
-                            let paymentAmt = paymentMap[dateStr] || '';
-
-                            tableBody += `
-                                <tr>
-                                    <td class="text-center">${current.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                                    <td class="text-center">
-                                        <input type="text"
-                                            class="form-control form-control-sm payment-input w-50 mx-auto ${paymentAmt ? 'text-success' : ''}"
-                                            value="${paymentAmt}"
-                                            ${paymentAmt ? 'readonly' : ''} />
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-primary edit-btn"> <i class="fas fa-edit"></i> Edit</button>
-                                    </td>
-                                </tr>
-                            `;
-
-                            current.setDate(current.getDate() + 1);
-                        }
-                    }
 
                     $('#payment_table tbody').html(tableBody);
+
                 }
 
             });
@@ -734,7 +787,7 @@
                 let id      = $('#header_date_arr').val();
 
                 let row  = input.closest('tr');
-                let textDate = row.find('td:first').text().trim();
+                let textDate = row.find('td:eq(1)').text().trim();
                 let parsed = new Date(textDate + ' UTC');
 
                 let yyyy = parsed.getFullYear();
@@ -821,19 +874,12 @@
             }
         });
 
-        function updateTotals(response, loanId) {
+        function updateTotals(response, loanId, totalPayment) {
+            console.log(totalPayment);
             
             const lastPaymentFor = response[response.length - 1].payment_for;
 
-            let totalPayment = 0;
-
-            response.forEach(item => {
-                if (item.payment_for) {
-                    totalPayment += parseFloat(item.amt);
-                }
-            });
-
-            $('#total_payment').text(totalPayment.toFixed(2));
+            $('#total_payment').text(Number(totalPayment).toFixed(2));
             
             const loanTotal = parseFloat(response[0].total_amt);
             const running_bal = loanTotal - totalPayment;
@@ -851,13 +897,13 @@
             let statusClass = "";
 
             if (status === 'completed') {
-                statusText = "Completed";
+                statusText = "COMPLETED";
                 statusClass = "text-success";
             } else if (status === 'ongoing') {
-                statusText = "Ongoing";
+                statusText = "ONGOING";
                 statusClass = "text-primary";
             } else if (status === 'overdue') {
-                statusText = "Overdue";
+                statusText = "OVERDUE";
                 statusClass = "text-danger";
             }
 
@@ -878,13 +924,27 @@
         }
 
         $(document).on('click', '.edit-btn', function() {
-            let row = $(this).closest('tr');
+            let btn = $(this);
+            let row = btn.closest('tr');
             let input = row.find('.payment-input');
 
-            input.prop('readonly', false);     
-            input.removeClass('text-success'); 
-            input.focus();                     
+            if (btn.text().trim() === 'Edit') {
+                input.prop('readonly', false);
+                input.removeClass('text-success');
+                input.focus();
+
+                btn.removeClass('btn-primary').addClass('btn-danger');
+                btn.html('<i class="fas fa-times"></i> Cancel');
+            } else {
+                input.prop('readonly', true);
+                if (input.val()) input.addClass('text-success');
+
+                btn.removeClass('btn-danger').addClass('btn-primary');
+                btn.html('<i class="fas fa-edit"></i> Edit'); 
+            }
         });
+
+
     }
 
     function autoCompleteLoan(loanId, running_bal, due_date, lastPaymentFor, action) {
@@ -927,7 +987,6 @@
         }
 
         function openOverdueModal(loanId, running_bal, due_date, action, completeDate) {
-
             $('#new_capital_amt').val(running_bal);
             $('#new_interest').val('15'); 
             $('#new_added_amt').val(''); 
@@ -1016,7 +1075,166 @@
         });
     }
 
+    function calculateTotalHeader() {
+        let capital = parseFloat($('#header_capital_amt input').val()) || 0;
+        let interestRaw = $('#header_interest input').val().replace('%', '');
+        let interest = parseFloat(interestRaw) || 0;
+        let added = parseFloat($('#header_added_amt input').val()) || 0;
+
+        let total = capital + (capital * (interest / 100)) + added;
+
+        const totalSpan = $('#header_total_amt');
+        const totalInput = totalSpan.find('input');
+        if (totalInput.length) {
+            totalInput.val(total.toFixed(2));
+        } else {
+            totalSpan.text(total.toFixed(2));
+        }
+    }
+
+    $('#editLoanDetails').off('click').on('click', function() {
+        const btn = $(this);
+
+        $('#cancelEdit').show();
+
+        if (!btn.data('original')) {
+            btn.data('original', {
+                header_capital_amt: $('#header_capital_amt').text(),
+                header_interest: $('#header_interest').text(),
+                header_added_amt: $('#header_added_amt').text(),
+                header_total_amt: $('#header_total_amt').text(),
+                header_loan_date: $('#header_loan_date').text(),
+                header_due_date: $('#header_due_date').text()
+            });
+        }
+
+        if (!btn.data('mode') || btn.data('mode') === 'edit') {
+            btn.data('mode', 'save');
+            btn.html('<i class="fas fa-save"></i> Save');
+
+            const numericFields = ['header_capital_amt', 'header_interest', 'header_added_amt'];
+            numericFields.forEach(id => {
+                const span = document.getElementById(id);
+                if (!span.querySelector('input')) {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = span.innerText;
+                    input.style.width = '100%';
+                    input.classList.add('form-control', 'form-control-sm');
+                    span.innerHTML = '';
+                    span.appendChild(input);
+
+                    $(input).on('input', calculateTotalHeader);
+                }
+            });
+
+            const loanDateSpan = document.getElementById('header_loan_date');
+            if (!loanDateSpan.querySelector('input')) {
+                const input = document.createElement('input');
+                input.type = 'date';
+                let currentText = loanDateSpan.innerText.trim();
+                if (currentText) {
+                    const date = new Date(currentText);
+                    if (!isNaN(date)) input.value = date.toISOString().split('T')[0];
+                }
+                input.style.width = '100%';
+                input.classList.add('form-control', 'form-control-sm');
+                loanDateSpan.innerHTML = '';
+                loanDateSpan.appendChild(input);
+
+                input.addEventListener('input', function() {
+                    const loanDate = new Date(this.value);
+                    if (!isNaN(loanDate)) {
+                        const dueDate = new Date(loanDate);
+                        dueDate.setDate(dueDate.getDate() + 57);
+                        document.getElementById('header_due_date').innerText = dueDate.toISOString().split('T')[0];
+
+                        calculateTotalHeader();
+                    }
+                });
+            }
+        } else {
+            btn.data('mode', 'edit');
+            btn.html('<i class="fas fa-edit"></i> Edit');
+
+            const editableFields = [
+                'header_capital_amt', 
+                'header_interest', 
+                'header_added_amt', 
+                'header_total_amt', 
+                'header_loan_date'
+            ];
+
+            let data = {};
+            editableFields.forEach(id => {
+                const span = document.getElementById(id);
+                const input = span.querySelector('input');
+                if (input) {
+                    data[id] = input.value;
+                    span.innerText = input.value; 
+                } else {
+                    data[id] = span.innerText;
+                }
+            });
+
+            data['header_due_date'] = document.getElementById('header_due_date').innerText;
+
+            data['loan_id'] = $('#header_loan_id').val();
+
+            id = $('#header_id').val();
+            full_name = $('#header_name').text();
+            address = $('#header_address').text();
+
+            $.ajax({
+                url: "<?php echo base_url('Monitoring_cont/update_loan_data'); ?>",
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 500,
+                        timerProgressBar: true,
+
+                    });
+                    
+                    $('#header_date_arr').val($('#header_date_arr option:first').val()).trigger('change');
+                    openViewModal(id, full_name, address);
+                    $('#cancelEdit').hide();
+                },
+                error: function(xhr, status, error) {
+                    alert('Error saving loan details: ' + error);
+                }
+            });
+        }
+
+        $('#cancelEdit').off('click').on('click', function () {
+            const btn = $('#editLoanDetails');
+            const original = btn.data('original');
+
+            if (!original) return;
+
+            $('#header_capital_amt').text(original.header_capital_amt);
+            $('#header_interest').text(original.header_interest);
+            $('#header_added_amt').text(original.header_added_amt);
+            $('#header_total_amt').text(original.header_total_amt);
+            $('#header_loan_date').text(original.header_loan_date);
+            $('#header_due_date').text(original.header_due_date);
+
+            btn.data('mode', 'edit');
+            btn.html('<i class="fas fa-edit"></i> Edit');
+
+            btn.removeData('original');
+            $('#cancelEdit').hide();
+        });
+
+    });
+
     
+
+
 
 
 

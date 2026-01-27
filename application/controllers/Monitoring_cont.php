@@ -24,7 +24,7 @@ class Monitoring_cont extends CI_Controller
             0 => 'a.id',
             1 => 'a.full_name',
             2 => 'a.address',
-            3 => 'a.start_date',
+            3 => 'a.date_added',
             4 => 'contact_no',
             5 => 'loan_count'
         ];
@@ -340,6 +340,35 @@ class Monitoring_cont extends CI_Controller
             ]);
         }
 
+    }
+
+    public function update_loan_data()
+    {
+        $id = $this->input->post('loan_id');
+
+        $loan_details = array(
+            'capital_amt' => $this->input->post('header_capital_amt'),
+            'interest' => $this->input->post('header_interest'),
+            'added_amt' => $this->input->post('header_added_amt'),
+            'total_amt' => $this->input->post('header_total_amt'),  
+            'start_date' => $this->input->post('header_loan_date'),
+            'due_date' => $this->input->post('header_due_date')
+        );
+
+        $this->db->where('id', $id);
+        $updated = $this->db->update('tbl_loan', $loan_details);
+
+        if (!$updated) {
+            echo json_encode([
+                'status'  => 'error',
+                'message' => 'Failed to update loan details.'
+            ]);
+        } else {
+            echo json_encode([
+                'status'  => 'success',
+                'message' => 'Loan updated successfully.'
+            ]);
+        }
     }
 
 }

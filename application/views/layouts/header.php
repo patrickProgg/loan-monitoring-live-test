@@ -87,9 +87,10 @@
         #content main .table-data .order {
             flex-grow: 1;
             flex-basis: 500px;
-            /* background-color: rgba(255, 255, 255, 0); */
+            background-color: rgba(255, 255, 255, 0);
             padding-left: 0;
             padding-right: 0;
+            padding : 0;
             background-color: transparent;
         }
 
@@ -99,7 +100,7 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        #content main .table-data .order table th {
+        /* #content main .table-data .order table th {
             padding-bottom: 12px;
             font-size: 13px;
             text-align: left;
@@ -107,7 +108,7 @@
             border-bottom: 1px solid var(--grey);
             background-color: rgba(255, 255, 255, 0.1);
             color: black;
-        }
+        } */
 
         #content main .table-data .order table td {
             padding: 9px 0;
@@ -249,22 +250,22 @@
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
-                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'monitoring') ? 'active-nav' : '' ?>"
-                    href="<?= base_url(); ?>monitoring">
+                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'client') ? 'active-nav' : '' ?>"
+                    href="<?= base_url(); ?>client">
                     <i class='bx bxs-user'></i>
-                    <span class="menu-label">Monitoring</span>
+                    <span class="menu-label">Client</span>
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
-                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'masterfile') ? 'active-nav' : '' ?>"
-                    href="<?= base_url(); ?>masterfile">
+                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'pull_out') ? 'active-nav' : '' ?>"
+                    href="<?= base_url(); ?>pull_out">
                     <i class='bx bxs-file'></i>
                     <span class="menu-label">Pull Out</span>
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
-                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'location') ? 'active-nav' : '' ?>"
-                    href="<?= base_url(); ?>location">
+                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'expenses') ? 'active-nav' : '' ?>"
+                    href="<?= base_url(); ?>expenses">
                     <i class="bx bxs-wallet"></i>
                     <span class="menu-label">Expenses</span>
                 </a>

@@ -52,17 +52,17 @@ class View_ui_cont extends CI_Controller
         $this->load->view('layouts/footer');
     }
 
-    public function masterfile()
+    public function pull_out()
     {
         $this->load->view('layouts/header');
-        $this->load->view('masterfile');
+        $this->load->view('pull_out');
         $this->load->view('layouts/footer');
     }
 
-    public function location()
+    public function expenses()
     {
         $this->load->view('layouts/header');
-        $this->load->view('location');
+        $this->load->view('expenses');
         $this->load->view('layouts/footer');
     }
 

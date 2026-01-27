@@ -54,9 +54,9 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['dashboard'] = 'View_ui_cont/dashboard';
-$route['monitoring'] = 'View_ui_cont/monitoring';
-$route['masterfile'] = 'View_ui_cont/masterfile';
-$route['location'] = 'View_ui_cont/location';
+$route['client'] = 'View_ui_cont/monitoring';
+$route['pull_out'] = 'View_ui_cont/pull_out';
+$route['expenses'] = 'View_ui_cont/expenses';
 $route['receiving'] = 'View_ui_cont/receiving';
 $route['releasing'] = 'View_ui_cont/releasing';
 $route['profile'] = 'View_ui_cont/profile';
