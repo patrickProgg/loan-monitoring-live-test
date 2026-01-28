@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MONITORING</title>
-    <!-- <link rel="shortcut icon" href="<?= base_url(); ?>assets/images/forklift.png" /> -->
+    <link rel="shortcut icon" href="<?= base_url(); ?>assets/images/loan.png" />
 
     <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="<?php echo base_url(); ?>assets/css/icons.min.css" rel="stylesheet" />
@@ -29,7 +29,7 @@
     <link id="app-style" href="<?php echo base_url(); ?>assets/css/app.min.css" rel="stylesheet" />
 
 
-    <style>
+    <!-- <style>
         @import url('<?php echo base_url(); ?>assets/css/style.css');
 
         a {
@@ -165,36 +165,6 @@
             border-bottom: 3px solid var(--bs-primary) !important;
         }
 
-        /* .active-nav {
-            position: relative;
-            height: 50px;
-            color: var(--bs-red) !important;
-            padding-top: 11px;
-        }
-
-        .active-nav::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 3px;
-            width: 100%;
-            background: linear-gradient(90deg, transparent, red, transparent);
-            background-size: 200% 100%;
-            animation: run-border 2s linear infinite;
-        }
-
-        @keyframes run-border {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
-        } */
-
-
         .navbar-nav .nav-link:hover {
             color: var(--bs-primary) !important;
         }
@@ -228,6 +198,275 @@
         .page-fluid {
             margin-top: 20px;
         }
+    </style> -->
+
+    <style>
+        @import url('<?php echo base_url(); ?>assets/css/style.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        :root {
+            --poppins: 'Poppins', sans-serif;
+
+            --light: #F9F9F9;
+            --blue: #3C91E6;
+            --light-blue: #CFE8FF;
+            --light-grey: rgb(220, 223, 226);
+            --grey: #eee;
+            --dark-grey: #AAAAAA;
+            --dark: #342E37;
+            --red: #DB504A;
+            --yellow: #FFCE26;
+            --light-yellow: #FFF2C6;
+            --orange: #FD7238;
+            --light-orange: #FFE0D3;
+        }
+
+        body.dark {
+            --light: #0C0C1E;
+            --grey: #060714;
+            --dark: #FBFBFB;
+        }
+
+        body {
+            background: var(--grey);
+            overflow-x: hidden;
+        }
+
+        .btn {
+            font-size: 12px;
+        }
+
+        #content main {
+            width: 100%;
+            /* padding: 8px 15px; */
+            font-family: var(--poppins);
+            /* max-height: calc(100vh - 56px); */
+            overflow-y: auto;
+        }
+
+        #content main .head-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            grid-gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .head-title .buttons {
+            display: flex;
+            flex-direction: column;
+            /* Stack buttons vertically */
+            gap: 10px;
+            /* Add spacing between buttons */
+        }
+
+        #content main .head-title .btn-upload {
+            height: 36px;
+            padding: 0 16px;
+            border-radius: 36px;
+            background: var(--red);
+            color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            grid-gap: 10px;
+            font-weight: 500;
+        }
+
+        #content main .head-title .btn-download {
+            height: 36px;
+            padding: 0 16px;
+            border-radius: 36px;
+            background: var(--blue);
+            color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            grid-gap: 10px;
+            font-weight: 500;
+        }
+
+        #content main .table-data {
+            display: flex;
+            flex-wrap: wrap;
+            grid-gap: 24px;
+            margin-top: 10px;
+            width: 100%;
+            color: var(--dark);
+            /* color: #ffffff; */
+            font-size: 14px;
+        }
+
+        #content main .table-data>div {
+            border-radius: 20px;
+            background: var(--light);
+            padding: 24px;
+            overflow-x: auto;
+            background-color: rgb(255, 255, 255);
+            /* White background with 50% opacity */
+        }
+
+        #content main .table-data .head {
+            display: flex;
+            align-items: center;
+            grid-gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        #content main .table-data .head h3 {
+            margin-right: auto;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        #content main .table-data .head .bx {
+            cursor: pointer;
+        }
+
+        #content main .table-data .order {
+            flex-grow: 1;
+            flex-basis: 500px;
+        }
+
+        #content main .table-data .order table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #content main .table-data .order table th {
+            font-size: 13px;
+            text-align: left;
+            padding-left: 0px;
+            /* background: silver; */
+            background: #f8f9fa;
+        }
+
+        #content main .table-data .order table td {
+            padding: 10px 0;
+            font-size: 14px;
+            background: transparent;
+
+        }
+
+        /* #content main .table-data .order table tbody tr:hover {
+            background: var(--light-blue);
+        } */
+
+        .form-control {
+            border: 1px solid #cfd1d8;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            font-size: .825rem;
+            background: #ffffff;
+            color: #2e323c;
+        }
+
+        .card {
+            background: #ffffff;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            border: 0;
+            margin-bottom: 1rem;
+        }
+
+        /* MAIN */
+        /* CONTENT */
+
+        #content main .table-data .head {
+            min-width: 420px;
+        }
+
+        #content main .table-data .order table {
+            min-width: 420px;
+        }
+
+
+        .page-content {
+            padding: 10px;
+            padding-left: 60px;
+            padding-right: 60px;
+        }
+
+        .main-content {
+            width: 100%;
+            padding: 10px;
+            margin-left: 0 !important;
+            padding-top: 60px;
+            overflow: hidden;
+        }
+
+        .navbar-nav .nav-link {
+            /* color: var(--bs-dark); */
+            color: black;
+            font-size: 14px;
+        }
+
+        .navbar .container-fluid {
+            padding-left: 0 !important;
+            height: 60px !important;
+        }
+
+        footer.footer {
+            width: 100%;
+            left: 0;
+        }
+
+        .active-nav {
+            height: 50px;
+            color: var(--bs-primary) !important;
+            padding-top: 11px;
+            border-bottom: 3px solid var(--bs-primary) !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--bs-primary) !important;
+        }
+
+        #content main {
+            overflow-x: hidden;
+        }
+
+        .page-title-box {
+            color: black;
+        }
+
+        @media (max-width: 765px) {
+            .menu-label {
+                display: none;
+            }
+
+            .nav-link .text {
+                display: none;
+            }
+        }
+
+        #datefilter {
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--bs-primary);
+        }
+
+        .dataTables_filter input {
+            width: 300px !important;
+            /* adjust as needed */
+            display: inline-block;
+        }
     </style>
 
 </head>
@@ -238,10 +477,10 @@
         style="height: 50px; background-color: #ffffffff; position: fixed; top: 0; width: 100%; z-index: 1050; padding:0">
         <a class="navbar-brand d-flex align-items-center" style="margin-left:60px;" href="<?= base_url(); ?>dashboard"
             style="height: 100%;">
-            <!-- <img src="<?= base_url(); ?>assets/images/box1.png" alt="Logo" style="height: 35px;"> -->
+            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 35px;">
         </a>
 
-        <ul class="navbar-nav flex-row align-items-center" style="margin: 0; padding: 0; column-gap: 12px;">
+        <ul class="navbar-nav flex-row align-items-center me-auto" style="margin: 0; padding: 0; column-gap: 12px;">
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
                 <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'dashboard') ? 'active-nav' : '' ?>"
                     href="<?= base_url(); ?>dashboard">
@@ -278,53 +517,6 @@
                 </a>
             </li>
         </ul>
-
-        <div class="d-flex align-items-center ms-auto" style="margin-right: 60px;">
-            <li class="nav-item dropdown bell-wrapper position-relative"
-                style="flex-shrink: 1; min-width: 0; list-style: none;">
-                <a class="nav-link d-flex align-items-center gap-1" href="#" role="button" id="bellDropdown"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?= base_url(); ?>assets/images/chat(1).png" alt="Logo" style="height: 20px;">
-
-                    <span id="messageCount"
-                        class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle"
-                        style="display:none; min-width:18px; height:18px; font-size:0.7rem; line-height:18px; text-align:center; padding:0;">
-                        0
-                    </span>
-
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bellDropdown" id="messageSenderDropdown"
-                    style="min-width: 250px; max-height: 300px; overflow-y: auto;">
-                    <li class="dropdown-item text-muted small">No new messages</li>
-                </ul>
-            </li>
-
-            <div class="dropdown ms-3">
-                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
-                    data-bs-toggle="dropdown">
-                    <img src="<?= !empty($img)
-                        ? 'http://172.16.161.34:8080/hrms//' . $img
-                        : base_url('assets/images/user.png'); ?>"
-                        onerror="this.onerror=null;this.src='<?= base_url('assets/images/user.png'); ?>';"
-                        class="rounded-circle" alt="User Image"
-                        style="object-fit: cover; margin-right: 8px; height:35px; width:35px;">
-
-                    <span class="text">
-                        <?= $this->session->userdata('fullname'); ?>
-                        <i class='bx bx-chevron-down' style="font-size: 16px;"></i>
-                    </span>
-                </a>
-
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="<?= base_url(); ?>profile">Profile</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item text-danger" style="cursor: pointer;" onclick="logout();">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
     </nav>
     <!-- Navbar End -->
 
@@ -359,7 +551,7 @@
             });
         }
 
-        
+
     </script>
 
     <div class="main-content">

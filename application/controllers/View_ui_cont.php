@@ -22,25 +22,28 @@ class View_ui_cont extends CI_Controller
 
     public function dashboard()
     {
-        // if (!$this->session->userdata('urc_user')) {
-        //     redirect('View_ui_cont');
-        // }
+        $data['total_client'] = $this->db->count_all('tbl_client');
+        $data['total_loan_amt'] = $this->db
+            ->select_sum('total_amt')
+            ->get('tbl_loan')
+            ->row()
+            ->total_amt;
 
-        // $data['show_greeting'] = $this->session->userdata('show_greeting');
-        // $data['greeting'] = $this->session->userdata('greeting');
-        // $data = $this->Dashboard_mod->count_txt_files();
+        $data['total_loan_payment'] = $this->db
+            ->select_sum('amt')
+            ->get('tbl_payment')
+            ->row()
+            ->amt;
 
-        // $this->session->unset_userdata('show_greeting');
-        // $this->session->unset_userdata('greeting');
+        $data['total_pull_out'] = $this->db
+            ->select_sum('total_pull_out')
+            ->get('tbl_pull_out')
+            ->row()
+            ->total_pull_out;
 
-        // $id = $this->session->userdata('emp_id');
-        // $user = $this->Dashboard_mod->get_user_img($id);
-        // $img['img'] = isset($user->photo) ? $user->photo : base_url('assets/images/user.png');
-
-        // $data = array_merge($data, $this->Dashboard_mod->get_totals());
 
         $this->load->view('layouts/header');
-        $this->load->view('dashboard');
+        $this->load->view('dashboard', $data);
         $this->load->view('layouts/footer');
     }
 

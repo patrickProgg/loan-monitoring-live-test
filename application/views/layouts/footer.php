@@ -35,6 +35,7 @@
 <script src="<?php echo base_url(); ?>assets/libs/node-waves/waves.min.js"></script>
 
 <script src="<?php echo base_url(); ?>assets/js/app.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/daterangepicker.min.js"></script>
 
 </body>
 

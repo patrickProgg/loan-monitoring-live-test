@@ -2,7 +2,6 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Monitoring_cont extends CI_Controller
-
 {
 
     function __construct()
@@ -15,6 +14,8 @@ class Monitoring_cont extends CI_Controller
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $searchValue = trim($this->input->post('search')['value']);
+        $startDate = $this->input->post('startDate');
+        $endDate = $this->input->post('endDate');
 
         $order = $this->input->post('order');
         $orderColumnIndex = isset($order[0]['column']) ? $order[0]['column'] : 0;
@@ -44,6 +45,11 @@ class Monitoring_cont extends CI_Controller
 
         $this->db->from('tbl_client as a');
         $this->db->join('tbl_loan as b', 'b.cl_id = a.id', 'left');
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $this->db->where('DATE(a.date_added) >=', $startDate);
+            $this->db->where('DATE(a.date_added) <=', $endDate);
+        }
 
         if (!empty($searchValue)) {
             $this->db->group_start();
@@ -81,27 +87,27 @@ class Monitoring_cont extends CI_Controller
         $this->db->trans_start();
 
         $client_details = array(
-            'full_name'     => $this->input->post('full_name'),
-            'address'       => $this->input->post('address'),
-            'contact_no_1'  => $this->input->post('contact_no_1'),
-            'contact_no_2'  => $this->input->post('contact_no_2'),
-            'date_added'    => $this->input->post('date_added'),
+            'full_name' => $this->input->post('full_name'),
+            'address' => $this->input->post('address'),
+            'contact_no_1' => $this->input->post('contact_no_1'),
+            'contact_no_2' => $this->input->post('contact_no_2'),
+            'date_added' => $this->input->post('date_added'),
         );
 
         $this->db->insert('tbl_client', $client_details);
         $client_id = $this->db->insert_id();
 
         $start_date = $this->input->post('date_added');
-        $due_date = date('Y-m-d', strtotime($start_date . ' +57 days'));
+        $due_date = date('Y-m-d', strtotime($start_date . ' +58 days'));
 
         $loan_details = array(
-            'cl_id'        => $client_id,
-            'capital_amt'  => $this->input->post('capital_amt'),
-            'interest'     => $this->input->post('interest'),
-            'added_amt'    => $this->input->post('added_amt'),
-            'total_amt'    => $this->input->post('total_amt'),
-            'start_date'   => $start_date,
-            'due_date'   => $due_date
+            'cl_id' => $client_id,
+            'capital_amt' => $this->input->post('capital_amt'),
+            'interest' => $this->input->post('interest'),
+            'added_amt' => $this->input->post('added_amt'),
+            'total_amt' => $this->input->post('total_amt'),
+            'start_date' => $start_date,
+            'due_date' => $due_date
         );
 
         $this->db->insert('tbl_loan', $loan_details);
@@ -110,12 +116,12 @@ class Monitoring_cont extends CI_Controller
 
         if ($this->db->trans_status() === FALSE) {
             echo json_encode([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Failed to save client or loan record.'
             ]);
         } else {
             echo json_encode([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Client and loan saved successfully.',
                 'client_id' => $client_id
             ]);
@@ -127,11 +133,11 @@ class Monitoring_cont extends CI_Controller
         $id = $this->input->post('id');
 
         $client_details = array(
-            'full_name'     => $this->input->post('edit_full_name'),
-            'address'       => $this->input->post('edit_address'),
-            'contact_no_1'  => $this->input->post('edit_contact_no_1'),
-            'contact_no_2'  => $this->input->post('edit_contact_no_2'),
-            'date_added'    => $this->input->post('edit_start_date'),
+            'full_name' => $this->input->post('edit_full_name'),
+            'address' => $this->input->post('edit_address'),
+            'contact_no_1' => $this->input->post('edit_contact_no_1'),
+            'contact_no_2' => $this->input->post('edit_contact_no_2'),
+            'date_added' => $this->input->post('edit_start_date'),
         );
 
         $this->db->where('id', $id);
@@ -139,12 +145,12 @@ class Monitoring_cont extends CI_Controller
 
         if (!$updated) {
             echo json_encode([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Failed to update client details.'
             ]);
         } else {
             echo json_encode([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Client updated successfully.'
             ]);
         }
@@ -165,7 +171,7 @@ class Monitoring_cont extends CI_Controller
         $this->db->order_by('id', 'DESC');
 
         $query = $this->db->get();
-        echo json_encode([$query->result_array() ]);
+        echo json_encode([$query->result_array()]);
     }
 
     public function get_loan_details()
@@ -189,15 +195,17 @@ class Monitoring_cont extends CI_Controller
         $this->db->join('tbl_payment as b', 'b.loan_id = a.id', 'left');
         $this->db->where('a.id', $id);
 
+        $this->db->order_by('b.payment_for', 'ASC');
+
         $query = $this->db->get();
         echo json_encode($query->result_array());
     }
 
     public function save_payment()
     {
-        $loan_id      = $this->input->post('loan_id');
-        $payment_for  = $this->input->post('payment_for');
-        $amount       = $this->input->post('amount');
+        $loan_id = $this->input->post('loan_id');
+        $payment_for = $this->input->post('payment_for');
+        $amount = $this->input->post('amount');
 
         $this->db->where('loan_id', $loan_id);
         $this->db->where('payment_for', $payment_for);
@@ -211,39 +219,40 @@ class Monitoring_cont extends CI_Controller
 
             if ($updated) {
                 echo json_encode([
-                    'status'  => 'success',
+                    'status' => 'success',
                     'message' => 'Payment updated successfully.'
                 ]);
             } else {
                 echo json_encode([
-                    'status'  => 'error',
+                    'status' => 'error',
                     'message' => 'Failed to update payment.'
                 ]);
             }
         } else {
             $payment_details = array(
-                'loan_id'      => $loan_id,
-                'payment_for'  => $payment_for,
-                'amt'          => $amount
+                'loan_id' => $loan_id,
+                'payment_for' => $payment_for,
+                'amt' => $amount
             );
 
             $inserted = $this->db->insert('tbl_payment', $payment_details);
 
             if ($inserted) {
                 echo json_encode([
-                    'status'  => 'success',
+                    'status' => 'success',
                     'message' => 'Payment inserted successfully.'
                 ]);
             } else {
                 echo json_encode([
-                    'status'  => 'error',
+                    'status' => 'error',
                     'message' => 'Failed to insert payment.'
                 ]);
             }
         }
     }
 
-    public function complete_payment(){
+    public function complete_payment()
+    {
         $loan_id = $this->input->post('loan_id');
         $complete_date = $this->input->post('complete_date');
         $action = $this->input->post('action');
@@ -262,16 +271,16 @@ class Monitoring_cont extends CI_Controller
         if ($action === "ongoing") {
             $data['status'] = 'ongoing';
             $data['complete_date'] = NULL;
-        } else if ($action === "overdue"){
+        } else if ($action === "overdue") {
             $data['status'] = 'overdue';
             $data['complete_date'] = $due_date;
         }
 
         $loan = $this->db->select('cl_id')
-                        ->from('tbl_loan')
-                        ->where('id', $loan_id)
-                        ->get()
-                        ->row();
+            ->from('tbl_loan')
+            ->where('id', $loan_id)
+            ->get()
+            ->row();
 
         if (!$loan) {
             echo json_encode(['status' => 'error', 'message' => 'Loan not found']);
@@ -283,14 +292,14 @@ class Monitoring_cont extends CI_Controller
 
         if ($updated && $action === "overdue") {
 
-            $new_due_date = date('Y-m-d', strtotime($new_start_date . ' +57 days'));
+            $new_due_date = date('Y-m-d', strtotime($new_start_date . ' +58 days'));
 
             $new_loan_details = array(
                 'cl_id' => $loan->cl_id,
                 'capital_amt' => $running_bal,
                 'interest' => $interest,
                 'added_amt' => $added_amt,
-                'total_amt' => $total_amt,  
+                'total_amt' => $total_amt,
                 'start_date' => $new_start_date,
                 'due_date' => $new_due_date
             );
@@ -298,10 +307,12 @@ class Monitoring_cont extends CI_Controller
             $inserted = $this->db->insert('tbl_loan', $new_loan_details);
         }
 
+        $inserted = false;
+
         if (!$updated) {
             echo json_encode(['status' => 'error']);
         } else {
-            echo json_encode(['status' => 'success']);
+            echo json_encode(['status' => 'success', 'data' => $inserted]);
         }
     }
 
@@ -314,14 +325,14 @@ class Monitoring_cont extends CI_Controller
         $total_amt = $this->input->post('total_amt');
         $start_date = $this->input->post('start_date');
 
-        $due_date = date('Y-m-d', strtotime($start_date . ' +57 days'));
+        $due_date = date('Y-m-d', strtotime($start_date . ' +58 days'));
 
         $new_loan_details = array(
             'cl_id' => $cl_id,
             'capital_amt' => $capital_amt,
             'interest' => $interest,
             'added_amt' => $added_amt,
-            'total_amt' => $total_amt,  
+            'total_amt' => $total_amt,
             'start_date' => $start_date,
             'due_date' => $due_date
         );
@@ -330,12 +341,12 @@ class Monitoring_cont extends CI_Controller
 
         if ($inserted) {
             echo json_encode([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'New Loan inserted successfully.'
             ]);
         } else {
             echo json_encode([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Failed to insert new loan.'
             ]);
         }
@@ -350,7 +361,7 @@ class Monitoring_cont extends CI_Controller
             'capital_amt' => $this->input->post('header_capital_amt'),
             'interest' => $this->input->post('header_interest'),
             'added_amt' => $this->input->post('header_added_amt'),
-            'total_amt' => $this->input->post('header_total_amt'),  
+            'total_amt' => $this->input->post('header_total_amt'),
             'start_date' => $this->input->post('header_loan_date'),
             'due_date' => $this->input->post('header_due_date')
         );
@@ -360,12 +371,12 @@ class Monitoring_cont extends CI_Controller
 
         if (!$updated) {
             echo json_encode([
-                'status'  => 'error',
+                'status' => 'error',
                 'message' => 'Failed to update loan details.'
             ]);
         } else {
             echo json_encode([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => 'Loan updated successfully.'
             ]);
         }
