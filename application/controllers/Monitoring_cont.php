@@ -38,7 +38,7 @@ class Monitoring_cont extends CI_Controller
             a.date_added,
             a.contact_no_1,
             a.contact_no_2,
-            CONCAT(a.contact_no_1, "/", a.contact_no_2) AS contact_no,
+            CONCAT(a.contact_no_1, " | ", a.contact_no_2) AS contact_no,
             COUNT(b.id) AS loan_count
         ');
 

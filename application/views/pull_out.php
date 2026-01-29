@@ -8,7 +8,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 170px;
+        width: 165px;
     }
 
     .total-label {
@@ -213,11 +213,41 @@
                 }
             },
             { data: 'date_added', class: 'text-center' },
-            { data: 'process_fee', class: 'text-end' },
-            { data: 'ticket', class: 'text-end' },
-            { data: 'profit_share', class: 'text-end' },
-            { data: 'pull_out', class: 'text-end' },
-            { data: 'total_pull_out', class: 'text-end' },
+            {
+                data: 'process_fee',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'ticket',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'profit_share',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'pull_out',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'total_pull_out',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
             {
                 data: 'id',
                 orderable: false,
