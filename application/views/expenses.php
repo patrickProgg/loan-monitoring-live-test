@@ -1,56 +1,122 @@
+<style>
+    .total-box {
+        background: linear-gradient(135deg, var(--light-blue), #ffffff);
+        border-radius: 12px;
+        padding: 12px 16px;
+        border: 1px solid var(--light-blue);
+        min-height: 58px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 170px;
+    }
+
+    .total-label {
+        font-size: 11px;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .total-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--blue);
+        line-height: 1.2;
+    }
+
+    .top-bar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .customTotals {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-start;
+        /* left align by default */
+    }
+</style>
 <section id="content">
     <main>
-        <div class="table-data">
+        <div class="table-data mb-5">
             <div class="order">
                 <div class="row">
-                    <!-- Column 1 -->
-                    <div class="col-md-4">
-                        <div class="page-title-box d-sm-flex align-items-center justify-content-between p-0 mb-4">
-                            <h4 class="mb-0 font-size-18">Expense List</h4>
-                        </div>
-                        <div class="col-auto mb-3">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
-                                <i class="fas fa-plus"></i>
-                            </button>
-
-                        </div>
-                        <table class="table table-hover" style="width:100%">
-                            <thead class="table-secondary">
-                                <tr>
-                                    <th style="text-align:center">NO. #</th>
-                                    <th>EXPENSE DESCRIPTION</th>
-                                    <th style="width:50px; text-align:center">ACTION</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <div class="col-2 d-flex flex-column align-items-start gap-2">
+                        <button class="btn btn-outline-primary" onclick="openModal('addExpenses')">
+                            <i class="fas fa-wallet me-1"></i> Add New
+                        </button>
                     </div>
 
-                    <!-- Column 2 -->
-                    <div class="col-md-8">
-                        <div class="page-title-box d-sm-flex align-items-center justify-content-between p-0 mb-4">
-                            <h4 class="mb-0 font-size-18">Expense List</h4>
+                    <div id="customTotalsContainer" style="margin-bottom:10px; display:flex; gap:10px;">
+                        <div class="total-box">
+                            <div class="total-label"><i class="bx bx-wallet me-1"></i>Total Amount</div>
+                            <div class="total-value" id="totalAmt">₱0.00</div>
                         </div>
-                        <div class="col-auto mb-3">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
-                                <i class="fas fa-user-plus me-1"></i> Add New
-                            </button>
-                        </div>
-                        <table class="table table-hover" style="width:100%">
-                            <thead class="table-secondary">
-                                <tr>
-                                    <th style="text-align:center">NO. #</th>
-                                    <th>EXPENSE DESCRIPTION</th>
-                                    <th>AMOUNT</th>
-                                    <th>DATE ADDED</th>
-                                    <th style="width:100px; text-align:center">ACTION</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
                     </div>
+
+                    <table id="expenses_table" class="table table-hover" style="width:100%">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th style="width: 10%; text-align:center">NO. #</th>
+                                <th style="width: 20%">DATE ADDED</th>
+                                <th tyle="width: 30%">EXPENSE DESCRIPTION</th>
+                                <th style="width: 20%">AMOUNT</th>
+                                <th style="width:20%; text-align:center">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="modal fade" id="addExpenses" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+            data-bs-keyboard="false">
+            <div class="modal-dialog" style="margin-top:10px">
+                <div class="modal-content">
+                    <div class="modal-header bg-light border-bottom">
+                        <h5 class="modal-title">Expenses Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <form id="expensesForm">
+                        <div class="modal-body">
+                            <div id="expenseRows">
+                                <div class="row g-2 expense-row mb-2 align-items-end">
+                                    <div class="col-7">
+                                        <label>Type</label>
+                                        <input type="text" class="form-control expense-type" />
+                                    </div>
+                                    <div class="col-4">
+                                        <label>Amount</label>
+                                        <input type="number" class="form-control expense-amount" />
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn btn-sm btn-outline-primary add-row-btn mb-1">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mt-2">
+                                <div class="col-4">
+                                    <label>Date</label>
+                                    <input type="date" class="form-control date-added" value="<?= date('Y-m-d') ?>" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" onclick="handleFormSubmit(currentAction, currentId)" id="submitBtn"
+                                name="submit" class="btn btn-outline-primary">Add</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -58,5 +124,326 @@
 </section>
 
 <script>
-    
+    let currentId = 0;
+
+    var expenses_table = $("#expenses_table").DataTable({
+        dom:
+            "<'top-bar mb-0'lf>" +
+            "rt" +
+            "<'d-flex justify-content-between mt-2'<'dataTables_info'i><'dataTables_paginate'p>>",
+
+        columnDefs: [{ targets: '_all', orderable: true }],
+        lengthMenu: [10, 25, 50, 100],
+        processing: true,
+        serverSide: true,
+        searching: true,
+        ordering: true,
+        ajax: {
+            url: '<?php echo site_url('Expenses_cont/get_expenses'); ?>',
+            type: 'POST',
+            data: function (d) {
+                d.start = d.start || 0;
+                d.length = d.length || 10;
+            },
+            dataType: 'json',
+            error: function (xhr, status, error) {
+                console.error("AJAX request failed: " + error);
+            },
+            dataSrc: function (json) {
+                if (json.total_amt !== undefined) {
+                    $('#totalAmt').text('₱' + parseFloat(json.total_amt).toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+                }
+                return json.data;
+            }
+        },
+        columns: [
+            {
+                data: null,
+                class: 'text-center',
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            { data: 'date_added' },
+            {
+                data: 'type',
+                render: function (data) {
+                    if (!data) return '';
+                    return data.replace(/\b\w/g, char => char.toUpperCase());
+                }
+            },
+            {
+                data: 'amt'
+            },
+            {
+                data: 'id',
+                orderable: false,
+                className: 'text-center',
+                render: function (data, type, row) {
+                    return `
+                        <button class="btn btn-sm btn-outline-success me-1" onclick='openModal("editExpenses", ${JSON.stringify(row)})'>
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteBtn('${data}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    `;
+                }
+            }
+
+        ],
+        initComplete: function () {
+            var $topBar = $('.top-bar');
+
+            $('.dataTables_length').appendTo($topBar).addClass('me-3 pt-3 mb-0');
+
+            $('#customTotalsContainer').appendTo($topBar).addClass('customTotals');
+            $('.customTotals').css({
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'flex-start',
+                flexGrow: 1
+            });
+
+            $('.dataTables_filter').appendTo($topBar).addClass('ms-3 pt-3 mb-0');
+        }
+    });
+
+    $(document).ready(function () {
+
+        $(document).on("click", ".add-row-btn", function () {
+            const newRow = $(`
+            <div class="row g-2 expense-row mb-2 align-items-end">
+                <div class="col-7">
+                    <input type="text" class="form-control expense-type" placeholder="Type" />
+                </div>
+                <div class="col-4">
+                    <input type="number" class="form-control expense-amount" placeholder="Amount" />
+                </div>
+                <div class="col-1">
+                    <button type="button" class="btn btn-sm btn-danger remove-row-btn mb-1">
+                        −
+                    </button>
+                </div>
+            </div>
+        `);
+
+            $("#expenseRows").append(newRow);
+            newRow.find(".expense-type").focus();
+        });
+
+        $(document).on("click", ".remove-row-btn", function () {
+            $(this).closest(".expense-row").remove();
+        });
+
+
+    });
+
+    function openModal(action, row) {
+        currentAction = action;
+
+        if (row) currentId = row.id;
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.textContent = action.startsWith('add') ? 'Add' : 'Update';
+        if (action === 'editExpenses' && row) {
+            $("#expenseRows").empty();
+
+            const editRow = $(`
+                    <div class="row g-2 expense-row mb-2 align-items-end">
+                        <div class="col-8">
+                            <input type="text" class="form-control expense-type" value="${row.type}" />
+                        </div>
+                        <div class="col-4">
+                            <input type="number" class="form-control expense-amount" value="${row.amt}" />
+                        </div>
+                    </div>
+                `);
+
+            $("#expenseRows").append(editRow);
+
+            $(".add-row-btn").hide();
+
+            $('.date-added').val(row.date_added);
+        }
+
+        $('#addExpenses').modal('show');
+    };
+
+    function handleFormSubmit(action, id = null) {
+        const expenses = [];
+        $("#expenseRows .expense-row").each(function () {
+            const type = $(this).find(".expense-type").val().trim();
+            const amt = parseFloat($(this).find(".expense-amount").val()) || 0;
+            if (type !== "" || amt !== 0) expenses.push({ type, amt });
+        });
+
+        const formData = {
+            date: $('.date-added').val(),
+            expenses: expenses
+        };
+
+        console.log("Submitting:", formData);
+
+        let url, method;
+        switch (action) {
+            case 'addExpenses':
+                url = '<?php echo base_url("Expenses_cont/add_expenses"); ?>';
+                method = 'POST';
+                break;
+            case 'editExpenses':
+                url = '<?php echo base_url("Expenses_cont/update_expenses/"); ?>' + id;
+                method = 'POST';
+                break;
+        }
+
+        if (expenses.length === 0) {
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill at least one.' });
+            return;
+        }
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: formData,
+            dataType: 'json',
+            success: function (res) {
+                Swal.fire({
+                    title: 'Success',
+                    text: res.message,
+                    icon: 'success',
+                    timer: 500,
+                    showConfirmButton: false
+                }).then(() => {
+                    expenses_table.ajax.reload();
+                    $('#addExpenses').modal('hide');
+                });
+            },
+            error: function (err) {
+                console.log(err);
+                alert('Server error. Check console.');
+            }
+        });
+    };
+
+    $(document).ready(function () {
+
+        $('#addExpenses').on('hidden.bs.modal', function () {
+            $("#expenseRows").empty();
+
+            const defaultRow = $(`
+                <div class="row g-2 expense-row mb-2 align-items-end">
+                    <div class="col-7">
+                        <label>Type</label>
+                        <input type="text" class="form-control expense-type" placeholder="Type" />
+                    </div>
+                    <div class="col-4">
+                        <label>Amount</label>
+                        <input type="number" class="form-control expense-amount" placeholder="Amount" />
+                    </div>
+                    <div class="col-1">
+                        <button type="button" class="btn btn-sm btn-outline-primary add-row-btn mb-1">+</button>
+                    </div>
+                </div>
+            `);
+
+            $("#expenseRows").append(defaultRow);
+
+            $('.date-added').val(new Date().toISOString().split('T')[0]);
+
+            $(".add-row-btn").show();
+
+            currentAction = 'addExpenses';
+            currentId = 0;
+        });
+
+    });
+
+    function deleteBtn(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action will delete the expense permanently!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            allowEnterKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "<?php echo base_url('Expenses_cont/delete_id'); ?>",
+                    type: 'POST',
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function (res) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: res.message,
+                            icon: 'success',
+                            timer: 500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            expenses_table.ajax.reload();
+                        });
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        Swal.fire('Error', 'Server error. Check console.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+
+
+    // function submitExpenses() {
+    //     const expenses = [];
+
+    //     $("#expenseRows .expense-row").each(function () {
+    //         const type = $(this).find(".expense-type").val().trim();
+    //         const amount = parseFloat($(this).find(".expense-amount").val()) || 0;
+    //         if (type === "" && amount === 0) return;
+    //         expenses.push({ type, amount });
+    //     });
+
+    //     const date = $(".date-added").val();
+
+    //     $.ajax({
+    //         url: "<?php echo base_url('Expenses_cont/add_expenses'); ?>",
+    //         type: "POST",
+    //         dataType: "json",
+    //         data: {
+    //             expenses: expenses,
+    //             date: date
+    //         },
+    //         success: function (res) {
+    //             console.log(res);
+
+    //             if (res.status === 'success') {
+    //                 Swal.fire({
+    //                     icon: 'success',
+    //                     title: 'Success!',
+    //                     text: res.message,
+    //                     showConfirmButton: false,
+    //                     timer: 500,
+    //                     timerProgressBar: true,
+    //                 });
+    //                 expenses_table.ajax.reload();
+    //                 $('#addExpenses').modal('hide');
+    //             }
+    //         }
+    //     });
+    // }
+
+    // $("#addExpenseBtn").on("click", submitExpenses);
+
+    // $("#addExpenses").on("keypress", "input", function (e) {
+    //     if (e.which === 13) {
+    //         e.preventDefault();
+    //         submitExpenses();
+    //     }
+    // });
 </script>

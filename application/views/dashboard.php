@@ -102,7 +102,7 @@
                     style="background: rgba(75, 192, 192, 0.2); color: rgba(75, 192, 192, 1);"></i>
                 <span class="text">
                     <h3>₱<?= number_format($total_loan_amt - $total_loan_payment, 2) ?></h3>
-                    <p>Total Collectibles</p>
+                    <p>Total Receivables</p>
                 </span>
             </li>
         </a>
@@ -122,7 +122,7 @@
             <li style="border-bottom: 2px solid rgba(54, 162, 235, 1); ">
                 <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
                 <span class="text">
-                    <!-- <h3><?= $total_vendors ?></h3> -->
+                    <h3>₱<?= number_format($total_expenses, 2) ?></h3>
                     <p>Total Expenses</p>
                 </span>
             </li>

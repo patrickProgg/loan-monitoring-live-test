@@ -1,121 +1,97 @@
 <style>
     .total-box {
-        /* background: linear-gradient(135deg, var(--light-blue), #ffffff); */
-        background: linear-gradient(135deg, var(--light-grey), #ffffff);
+        background: linear-gradient(135deg, var(--light-blue), #ffffff);
         border-radius: 12px;
         padding: 12px 16px;
-        /* border: 1px solid var(--light-blue); */
-        border: 1px solid var(--light-grey);
+        border: 1px solid var(--light-blue);
         min-height: 58px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 100%;
+        width: 170px;
     }
 
     .total-label {
-        font-size: 12px;
+        font-size: 11px;
         color: #6c757d;
         font-weight: 500;
     }
 
     .total-value {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 600;
         color: var(--blue);
         line-height: 1.2;
     }
 
-    .totalsRow {
-        transition: width 0.5s ease, opacity 0.5s ease;
-        opacity: 1;
-    }
-
-    .totalsRow.collapsed {
-        opacity: 0;
-        pointer-events: none;
+    .top-bar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>
 <section id="content">
     <main>
-        <div class="table-data">
+        <div class="table-data mb-5">
             <div class="order">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between p-0 m-0">
-                    <h4 class="mb-0 font-size-18">Pull Out</h4>
-                </div>
-                <div class="row align-items-end mb-3">
-                    <div class="col-2 mb-3 d-flex justify-content-between align-items-center">
-                        <button class="btn btn-primary" onclick="openModal('addPullOut')">
+                <div class="row">
+                    <div class="col-2">
+                        <button class="btn btn-outline-primary" onclick="openModal('addPullOut')">
                             <i class="fas fa-list me-1"></i> Add New
                         </button>
-                        <button id="toggleTotals" class="btn btn-sm btn-outline-primary">
-                            <i class="bx bx-chevron-down" id="toggleIcon"></i>
-                        </button>
                     </div>
 
+                    <div id="customTotalsContainer" style="margin-bottom:10px; display:flex; gap:10px;">
+                        <div class="total-box">
+                            <div class="total-label">
+                                <i class="bx bx-receipt me-1"></i> Total Processing Fee
+                            </div>
+                            <div class="total-value" id="totalFee">₱0.00</div>
+                        </div>
 
-                    <div class="col-2 totalsRow mb-3">
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-wallet me-1"></i> Total Processing Fee
+                                <i class="bx bx-purchase-tag me-1"></i> Total Ticket
                             </div>
-                            <div class="total-value" id="totalFee">
-                                ₱0.00
-                            </div>
+                            <div class="total-value" id="totalTicket">₱0.00</div>
                         </div>
-                    </div>
-                    <div class="col-2 totalsRow mb-3">
+
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-wallet me-1"></i> Total Ticket
+                                <i class="bx bx-line-chart me-1"></i> Total Sharing Profit
                             </div>
-                            <div class="total-value" id="totalTicket">
-                                ₱0.00
-                            </div>
+                            <div class="total-value" id="totalProfit">₱0.00</div>
                         </div>
-                    </div>
-                    <div class="col-2 totalsRow mb-3">
+
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-wallet me-1"></i> Total Sharing Profit
+                                <i class="bx bx-bar-chart me-1"></i> Total Pull Out 2%
                             </div>
-                            <div class="total-value" id="totalProfit">
-                                ₱0.00
-                            </div>
+                            <div class="total-value" id="totalPullOut">₱0.00</div>
                         </div>
-                    </div>
-                    <div class="col-2 totalsRow mb-3">
+
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-wallet me-1"></i> Total Pull Out 2 %
+                                <i class="bx bx-money me-1"></i> Total Amount
                             </div>
-                            <div class="total-value" id="totalPullOut">
-                                ₱0.00
-                            </div>
+                            <div class="total-value" id="totalAmount">₱0.00</div>
                         </div>
-                    </div>
-                    <div class="col-2 totalsRow mb-3">
-                        <div class="total-box">
-                            <div class="total-label">
-                                <i class="bx bx-wallet me-1"></i> Total Pull Out Amount
-                            </div>
-                            <div class="total-value" id="totalAmount">
-                                ₱0.00
-                            </div>
-                        </div>
+
                     </div>
 
-
-                    <table id="pull_out_table" class="table table-hover" style="width:100%">
+                    <table id="pull_out_table" class="table table-hover mb-0" style="width:100%">
                         <thead class="table-secondary">
                             <tr>
-                                <th style="width: 15%; vertical-align: middle;">DATE</th>
-                                <th style="width: 15%">PROCESSING<br>FEE</th>
-                                <th style="width: 15%; vertical-align: middle;">TICKET</th>
-                                <th style="width: 15%">PULL OUT<br>SHARING PROFIT</th>
-                                <th style="width: 15%; vertical-align: middle;">PULL OUT 2%</th>
-                                <th style="width: 15%">TOTAL AMT <br> PULL OUT</th>
-                                <th style="width: 10%; vertical-align: middle;">ACTION</th>
+                                <th style="width: 5%; vertical-align: middle; text-align:center;">NO. #</th>
+                                <th style="width: 10%; vertical-align: middle;">DATE</th>
+                                <th style="width: 12%; vertical-align: middle;">PROCESSING FEE</th>
+                                <th style="width: 12%; vertical-align: middle;">TICKET</th>
+                                <th style="width: 12%; vertical-align: middle;">PULL OUT SHARING PROFIT</th>
+                                <th style="width: 10%; vertical-align: middle;">PULL OUT 2%</th>
+                                <th style="width: 13%; vertical-align: middle;">TOTAL AMT PULL OUT</th>
+                                <th style="width: 17%; vertical-align: middle; text-align: center;">ACTION</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -128,13 +104,11 @@
         <div class="modal fade" id="addPullOut" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog" style="max-width:600px; margin-top: 10px;">
                 <div class="modal-content">
-                    <!-- Header -->
                     <div class="modal-header bg-light border-bottom">
                         <h5 class="modal-title fw-bold">Pull Out Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <!-- Body -->
                     <div class="modal-body">
                         <div class="container">
                             <form id="client_form">
@@ -165,7 +139,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Total Amount Pull Out</label>
                                         <input type="number" class="form-control" id="total_amt" name="total_amt"
-                                            readonly>
+                                            readonly disabled>
                                     </div>
                                     <div class="col-md-4 position-relative">
                                         <label class="form-label">Date Pull Out</label>
@@ -178,7 +152,7 @@
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" onclick="handleFormSubmit(currentAction, currentId)"
-                                        id="submitBtn" name="submit" class="btn btn-primary">Add</button>
+                                        id="submitBtn" name="submit" class="btn btn-outline-primary">Add</button>
                                     <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                         id="closeModalBtn">Close</button>
                                 </div>
@@ -194,61 +168,14 @@
 </section>
 
 <script>
-
-    $(document).ready(function () {
-        $('#toggleTotals').click(function () {
-            $('.totalsRow').toggleClass('collapsed'); // use class selector
-            $('#toggleIcon').toggleClass('bx-chevron-down bx-chevron-up'); // change icon
-        });
-    });
-
-
-    let startDate = '';
-    let endDate = '';
-
-    $('#datefilter').daterangepicker({
-        autoUpdateInput: false,
-        locale: {
-            cancelLabel: 'Clear'
-        }
-    });
-
-    $('#datefilter').on('apply.daterangepicker', function (ev, picker) {
-        startDate = picker.startDate.format('YYYY/MM/DD');
-        endDate = picker.endDate.format('YYYY/MM/DD');
-
-        $(this).val(startDate + ' - ' + endDate);
-
-        pull_out_table.ajax.reload();
-    });
-
-    $('#datefilter').on('cancel.daterangepicker', function () {
-        startDate = '';
-        endDate = '';
-
-        $(this).val('');
-
-        pull_out_table.ajax.reload();
-    });
-
-    // $('#filterBtn').on('click', function () {
-    //     const dateRange = $('#datefilter').val();
-
-    //     if (dateRange) {
-    //         const dates = dateRange.split(' - ');
-    //         startDate = dates[0];
-    //         endDate = dates[1];
-    //     } else {
-    //         startDate = '';
-    //         endDate = '';
-    //     }
-
-    //     pull_out_table.ajax.reload();
-    // });
-
     let currentId = 0;
 
     var pull_out_table = $("#pull_out_table").DataTable({
+        dom:
+            "<'top-bar mb-0'lf>" +
+            "rt" +
+            "<'d-flex justify-content-between mt-2'<'dataTables_info'i><'dataTables_paginate'p>>",
+
         columnDefs: [{ targets: '_all', orderable: true }],
         lengthMenu: [10, 25, 50, 100],
         processing: true,
@@ -261,8 +188,6 @@
             data: function (d) {
                 d.start = d.start || 0;
                 d.length = d.length || 10;
-                d.startDate = startDate;
-                d.endDate = endDate;
             },
             dataType: 'json',
             error: function (xhr, status, error) {
@@ -280,61 +205,89 @@
             }
         },
         columns: [
+            {
+                data: null,
+                class: 'text-center',
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
             { data: 'date_added', class: 'text-center' },
-            { data: 'process_fee' },
-            { data: 'ticket' },
-            { data: 'profit_share' },
-            { data: 'pull_out' },
-            { data: 'total_pull_out' },
+            { data: 'process_fee', class: 'text-end' },
+            { data: 'ticket', class: 'text-end' },
+            { data: 'profit_share', class: 'text-end' },
+            { data: 'pull_out', class: 'text-end' },
+            { data: 'total_pull_out', class: 'text-end' },
             {
                 data: 'id',
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-success" onclick='openModal("editPullOut", ${JSON.stringify(row)})'>
+                        <button class="btn btn-sm btn-outline-success me-1" onclick='openModal("editPullOut", ${JSON.stringify(row)})'>
                             <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteBtn('${data}')">
+                            <i class="fas fa-trash"></i> Delete
                         </button>
                     `;
                 }
             }
+        ],
+        initComplete: function () {
+            var $topBar = $('.top-bar');
 
-        ]
+            $('.dataTables_length').appendTo($topBar).addClass('me-3 pt-3 mb-0');
+
+            $('#customTotalsContainer').appendTo($topBar).addClass('customTotals');
+            $('.customTotals').css({
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'flex-start',
+                flexGrow: 1
+            });
+
+            $('.dataTables_filter').appendTo($topBar).addClass('ms-3 pt-3 mb-0');
+        }
     });
 
-    $("#add_pull_out").on('click', function (e) {
-        e.preventDefault();
-
-        var process_fee = $("#process_fee").val();
-
-        if (!process_fee) {
-            Swal.fire({ icon: 'error', title: 'Oops...', text: 'All fields are required' });
-            return;
-        }
-
+    function deleteBtn(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "Do you want to add this pull out?",
-            icon: 'question',
+            text: "This action will delete expense permanently!",
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, add it!',
-            cancelButtonText: 'Cancel'
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            allowEnterKey: false
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    type: "POST",
-                    url: "<?= site_url('PullOut_cont/add_pull_out'); ?>",
-                    data: $('#client_form').serialize(),
+                    url: "<?php echo base_url('PullOut_cont/delete_id'); ?>",
+                    type: 'POST',
+                    data: { id: id },
                     dataType: 'json',
-                    success: function (response) {
-                        Swal.fire('Success!', response.message, 'success');
-                        $('#addPullOut').modal('hide');
-                        pull_out_table.ajax.reload();
+                    success: function (res) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: res.message,
+                            icon: 'success',
+                            timer: 800,
+                            showConfirmButton: false
+                        }).then(() => {
+                            pull_out_table.ajax.reload();
+                        });
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        Swal.fire('Error', 'Server error. Check console.', 'error');
                     }
                 });
             }
         });
-    });
+    }
 
     function calculateTotal() {
         let process_fee = parseFloat($('#process_fee').val()) || 0;
@@ -377,17 +330,17 @@
         $('#addPullOut').modal('show');
     }
 
-    function handleFormSubmit(action, id = null) {
-
+    function handleFormSubmit(action, id) {
         const formData = {
-            process_fee: $('#process_fee').val(),
-            ticket: $('#ticket').val(),
-            profit: $('#profit').val(),
-            pull_out: $('#pull_out').val(),
-            total_amt: $('#total_amt').val(),
-            date_added: $('#date_added').val()
+            process_fee: parseFloat($('#process_fee').val()) || 0,
+            ticket: parseFloat($('#ticket').val()) || 0,
+            profit: parseFloat($('#profit').val()) || 0,
+            pull_out: parseFloat($('#pull_out').val()) || 0,
+            total_amt: parseFloat($('#total_amt').val()) || 0,
+            date_added: $('#date_added').val().trim()
         };
 
+        let url, method;
         switch (action) {
             case 'addPullOut':
                 url = '<?php echo base_url("PullOut_cont/add_pull_out"); ?>';
@@ -398,32 +351,53 @@
                 url = '<?php echo base_url("PullOut_cont/update_pull_out/"); ?>' + id;
                 method = 'POST';
                 break;
+
+            default:
+                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Unknown action' });
+                return;
         }
 
-        $.ajax({
-            url: url,
-            type: method,
-            data: formData,
-            dataType: 'json',
-            success: function (res) {
-                Swal.fire({
-                    title: 'Success',
-                    text: res.message,
-                    icon: 'success',
-                    timer: 500,
-                    showConfirmButton: false
-                }).then(() => {
-                    pull_out_table.ajax.reload();
+        if (formData.process_fee <= 0 && formData.ticket <= 0 && formData.profit <= 0 && formData.pull_out <= 0 && formData.total_amt <= 0) {
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please enter at least one value greater than 0' });
+            return;
+        }
 
+        Swal.fire({
+            title: 'Are you sure?',
+            text: action === 'addPullOut' ? 'You are about to add this record.' : 'You are about to update this record.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed!',
+            cancelButtonText: 'Cancel',
+            allowEnterKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function (res) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            pull_out_table.ajax.reload();
+                            $('#addPullOut').modal('hide');
+                        });
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
+                    }
                 });
-            },
-            error: function (err) {
-                console.log(err);
-                alert('Server error. Check console.');
             }
         });
-
-        $('#addPullOut').modal('hide');
     }
 
     document.getElementById('closeModalBtn').addEventListener('click', function () {

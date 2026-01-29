@@ -14,8 +14,7 @@ class Monitoring_cont extends CI_Controller
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $searchValue = trim($this->input->post('search')['value']);
-        $startDate = $this->input->post('startDate');
-        $endDate = $this->input->post('endDate');
+        $history = $this->input->post('history');
 
         $order = $this->input->post('order');
         $orderColumnIndex = isset($order[0]['column']) ? $order[0]['column'] : 0;
@@ -46,9 +45,10 @@ class Monitoring_cont extends CI_Controller
         $this->db->from('tbl_client as a');
         $this->db->join('tbl_loan as b', 'b.cl_id = a.id', 'left');
 
-        if (!empty($startDate) && !empty($endDate)) {
-            $this->db->where('DATE(a.date_added) >=', $startDate);
-            $this->db->where('DATE(a.date_added) <=', $endDate);
+        if ($history) {
+            $this->db->where('a.status', '1');
+        } else {
+            $this->db->where('a.status', '0');
         }
 
         if (!empty($searchValue)) {
@@ -350,7 +350,6 @@ class Monitoring_cont extends CI_Controller
                 'message' => 'Failed to insert new loan.'
             ]);
         }
-
     }
 
     public function update_loan_data()
@@ -378,6 +377,62 @@ class Monitoring_cont extends CI_Controller
             echo json_encode([
                 'status' => 'success',
                 'message' => 'Loan updated successfully.'
+            ]);
+        }
+    }
+
+    public function delete_id()
+    {
+        $id = $this->input->post('id');
+
+        $data = [
+            'status' => "1"
+        ];
+
+        $this->db->where('id', $id);
+        $updated = $this->db->update('tbl_client', $data);
+
+        if (!$updated) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to delete client record.'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Client data deleted successfully.',
+            ]);
+        }
+    }
+
+    public function recover_id()
+    {
+        $id = $this->input->post('id');
+        $type = $this->input->post('type');
+
+        $this->db->where('id', $id);
+
+        $status = [
+            'status' => '0'
+        ];
+
+        if ($type === "client") {
+            $recovered = $this->db->update('tbl_client', $status);
+        } else if ($type === "pull_out") {
+            $recovered = $this->db->update('tbl_pull_out', $status);
+        } else {
+            $recovered = $this->db->update('tbl_expenses', $status);
+        }
+
+        if ($recovered) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Data recovered successfully.'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to recover data.'
             ]);
         }
     }

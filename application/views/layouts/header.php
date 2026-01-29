@@ -246,7 +246,7 @@
         }
 
         .btn {
-            font-size: 12px;
+            font-size: 11px;
         }
 
         #content main {
@@ -398,8 +398,8 @@
 
         .page-content {
             padding: 10px;
-            padding-left: 60px;
-            padding-right: 60px;
+            padding-left: 100px;
+            padding-right: 100px;
         }
 
         .main-content {
@@ -411,9 +411,10 @@
         }
 
         .navbar-nav .nav-link {
-            /* color: var(--bs-dark); */
-            color: black;
-            font-size: 14px;
+            color: var(--bs-dark);
+            /* color: dark; */
+
+            font-size: 12px;
         }
 
         .navbar .container-fluid {
@@ -428,13 +429,14 @@
 
         .active-nav {
             height: 50px;
-            color: var(--bs-primary) !important;
+            color: var(--bs-black) !important;
             padding-top: 11px;
             border-bottom: 3px solid var(--bs-primary) !important;
         }
 
         .navbar-nav .nav-link:hover {
-            color: var(--bs-primary) !important;
+            /* color: var(--bs-primary) !important; */
+            color: var(--bs-black) !important;
         }
 
         #content main {
@@ -462,10 +464,13 @@
             border-bottom: 1px solid var(--bs-primary);
         }
 
-        .dataTables_filter input {
+        /* .dataTables_filter input {
             width: 300px !important;
-            /* adjust as needed */
             display: inline-block;
+        } */
+
+        input[type="text"] {
+            text-transform: capitalize;
         }
     </style>
 
@@ -475,9 +480,9 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm px-0"
         style="height: 50px; background-color: #ffffffff; position: fixed; top: 0; width: 100%; z-index: 1050; padding:0">
-        <a class="navbar-brand d-flex align-items-center" style="margin-left:60px;" href="<?= base_url(); ?>dashboard"
+        <a class="navbar-brand d-flex align-items-center" style="margin-left:120px;" href="<?= base_url(); ?>dashboard"
             style="height: 100%;">
-            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 35px;">
+            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 30px;">
         </a>
 
         <ul class="navbar-nav flex-row align-items-center me-auto" style="margin: 0; padding: 0; column-gap: 12px;">
@@ -510,9 +515,9 @@
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
-                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'receiving') ? 'active-nav' : '' ?>"
-                    href="<?= base_url(); ?>receiving">
-                    <i class='bx bx-download'></i>
+                <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'history') ? 'active-nav' : '' ?>"
+                    href="<?= base_url(); ?>history">
+                    <i class='bx bx-history'></i>
                     <span class="menu-label">History</span>
                 </a>
             </li>
@@ -550,6 +555,30 @@
                 }
             });
         }
+
+        const SESSION_DURATION = 30 * 60 * 1000;
+        // const SESSION_DURATION = 2 * 1000;
+
+        function autoRefresh() {
+            Swal.fire({
+                title: 'Session Expired',
+                text: 'Your session has ended. Reloading page...',
+                icon: 'warning',
+                timer: 500,
+                showConfirmButton: false,
+                timerProgressBar: true
+            }).then(() => location.reload(true));
+        }
+
+        let sessionTimer = setTimeout(autoRefresh, SESSION_DURATION);
+
+        ['click', 'mousemove', 'keydown'].forEach(evt => {
+            document.addEventListener(evt, () => {
+                clearTimeout(sessionTimer);
+                sessionTimer = setTimeout(autoRefresh, SESSION_DURATION);
+            });
+        });
+
 
 
     </script>

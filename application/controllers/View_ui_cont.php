@@ -11,13 +11,7 @@ class View_ui_cont extends CI_Controller
 
     public function index()
     {
-        // if ($this->session->userdata('urc_user')) {
-        //     redirect('dashboard');
-        // }
-
-        $this->load->view('auth/login');
-        //$this->load->view('dashboard');
-        //$this->load->view('layouts/footer');
+        $this->dashboard();
     }
 
     public function dashboard()
@@ -41,12 +35,17 @@ class View_ui_cont extends CI_Controller
             ->row()
             ->total_pull_out;
 
+        $data['total_expenses'] = $this->db
+            ->select_sum('amt')
+            ->get('tbl_expenses')
+            ->row()
+            ->amt;
+
 
         $this->load->view('layouts/header');
         $this->load->view('dashboard', $data);
         $this->load->view('layouts/footer');
     }
-
 
     public function monitoring()
     {
@@ -69,17 +68,10 @@ class View_ui_cont extends CI_Controller
         $this->load->view('layouts/footer');
     }
 
-    public function receiving()
+    public function history()
     {
         $this->load->view('layouts/header');
-        $this->load->view('receiving');
-        $this->load->view('layouts/footer');
-    }
-
-    public function releasing()
-    {
-        $this->load->view('layouts/header');
-        $this->load->view('releasing');
+        $this->load->view('history');
         $this->load->view('layouts/footer');
     }
 

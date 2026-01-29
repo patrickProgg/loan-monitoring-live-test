@@ -49,15 +49,25 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'View_ui_cont';
-$route['404_override'] = '';
-$route['translate_uri_dashes'] = FALSE;
+// $route['default_controller'] = 'View_ui_cont';
+// $route['404_override'] = '';
+// $route['translate_uri_dashes'] = FALSE;
 
+// $route['dashboard'] = 'View_ui_cont/dashboard';
+// $route['client'] = 'View_ui_cont/monitoring';
+// $route['pull_out'] = 'View_ui_cont/pull_out';
+// $route['expenses'] = 'View_ui_cont/expenses';
+// $route['history'] = 'View_ui_cont/history';
+
+$route['default_controller'] = 'View_ui_cont';
 $route['dashboard'] = 'View_ui_cont/dashboard';
 $route['client'] = 'View_ui_cont/monitoring';
 $route['pull_out'] = 'View_ui_cont/pull_out';
 $route['expenses'] = 'View_ui_cont/expenses';
-$route['receiving'] = 'View_ui_cont/receiving';
-$route['releasing'] = 'View_ui_cont/releasing';
-$route['profile'] = 'View_ui_cont/profile';
+$route['history'] = 'View_ui_cont/history';
+
+$route['(:any)'] = 'View_ui_cont/dashboard';
+
+$route['translate_uri_dashes'] = FALSE;
+
 

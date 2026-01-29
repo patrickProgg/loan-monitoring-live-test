@@ -8,11 +8,11 @@
             <div class="col-sm-6">
                 <script>
                     document.write(new Date().getFullYear())
-                </script> © WMS - URC.
+                </script> © LOAN MONITORING SYS.
             </div>
             <div class="col-sm-6">
                 <div class="text-sm-end d-none d-sm-block">
-                    Design & Develop It-Sysdev
+                    <!-- Design & Develop It-Sysdev -->
                 </div>
             </div>
         </div>

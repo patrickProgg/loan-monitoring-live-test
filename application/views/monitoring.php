@@ -16,7 +16,7 @@
         font-weight: normal !important;
     }
 
-    .modal-body .form-label {
+    #viewLoaner .modal-body .form-label {
         display: flex;
         justify-content: space-between;
         align-items: left;
@@ -31,59 +31,30 @@
         transition: background 0.3s, box-shadow 0.3s;
     }
 
-    .modal-body .form-label:hover {
-        background: #e0f0ff;
-        /* highlight on hover */
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .modal-body .form-label span {
+    #viewLoaner .modal-body .form-label span {
         font-weight: bold;
         color: #333;
-    }
-
-    .modal-body .form-label span.currency {
-        color: #0d6efd;
-        /* blue for amounts */
-    }
-
-    .modal-body .form-label span.currency_red {
-        color: #fd0d0d;
-        /* blue for amounts */
-    }
-
-    .modal-body .form-label span.status {
-        color: #28a745;
-        /* green for active status */
-    }
-
-    .modal-body .form-label span.completed {
-        color: #6c757d;
-        /* gray for completed */
     }
 </style>
 
 <section id="content">
     <main>
-        <div class="table-data">
+        <div class="table-data mb-5">
             <div class="order">
-                <div class="page-title-box d-sm-flex align-items-center justify-content-between p-0 m-0">
-                    <h4 class="mb-0 font-size-18">Client</h4>
-                </div>
                 <div class="row align-items-end mb-3">
                     <div class="col-auto me-3">
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
+                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
                             <i class="fas fa-user-plus me-1"></i> Add New
                         </button>
                     </div>
 
-                    <div class="col-md-2">
+                    <!-- <div class="col-md-2">
                         <div class="form-floating">
                             <input type="text" class="form-control" name="datefilter" id="datefilter"
                                 placeholder="Filter date" autocomplete="off" />
                             <label for="datefilter">Filter Date</label>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <table id="client_table" class="table table-hover" style="width:100%">
                     <thead class="table-secondary">
@@ -154,7 +125,8 @@
                                 <div class="mb-3 row">
                                     <div class="col-md-3">
                                         <label for="position" class="form-label">Amount</label>
-                                        <input type="number" class="form-control" id="capital_amt" name="capital_amt">
+                                        <input type="number" class="form-control" id="capital_amt" name="capital_amt"
+                                            placeholder="Enter Amount">
                                     </div>
                                     <div class="col-md-3">
                                         <label for="department" class="form-label">Interest %</label>
@@ -163,12 +135,13 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="department" class="form-label">Added Amount</label>
-                                        <input type="number" class="form-control" id="added_amt" name="added_amt">
+                                        <input type="number" class="form-control" id="added_amt" name="added_amt"
+                                            placeholder="Enter Added Amount">
                                     </div>
                                     <div class="col-md-3">
                                         <label for="department" class="form-label">Total Amount</label>
                                         <input type="number" class="form-control" id="total_amt" name="total_amt"
-                                            readonly>
+                                            readonly disabled>
                                     </div>
                                 </div>
                             </form>
@@ -176,7 +149,7 @@
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" id="add_client" name="submit"
-                                        class="btn btn-primary ">Add</button>
+                                        class="btn btn-outline-primary">Add</button>
                                     <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                         id="closeModalBtn">Close</button>
                                 </div>
@@ -242,8 +215,10 @@
 
                             <div class="row">
                                 <div class="d-flex justify-content-end">
+                                    <button type="button" id="deleteBtn"
+                                        class="btn btn-outline-danger me-2">Delete</button>
                                     <button type="button" id="update_client" name="submit"
-                                        class="btn btn-primary ">Update</button>
+                                        class="btn btn-outline-primary ">Update</button>
                                     <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                         id="closeModalBtn">Close</button>
                                 </div>
@@ -326,20 +301,20 @@
                                         <div class="mb-2">
                                             <label class="form-label">
                                                 Total Amt : ₱ <span id="header_total_amt" style="font-weight: bold;"
-                                                    class="currency"></span>
+                                                    class="text-primary"></span>
                                             </label>
 
                                         </div>
                                         <div class="mb-2">
                                             <label class="form-label">
                                                 Running Bal : ₱ <span id="header_running_balance"
-                                                    style="font-weight: bold;" class="currency_red"></span>
+                                                    style="font-weight: bold;" class="text-danger"></span>
                                             </label>
                                         </div>
                                         <div>
                                             <label class="form-label">
-                                                Date Completed : <span id="header_date_completed"
-                                                    style="font-weight: bold;" class="completed"></span>
+                                                Date Closed : <span id="header_date_completed"
+                                                    style="font-weight: bold;" class="text-secondary"></span>
                                             </label>
                                         </div>
                                         <div style="display: flex; align-items: center; gap: 5px;">
@@ -347,7 +322,7 @@
                                                 style="cursor:pointer; width: 200px; height: 30px">
                                             </select> -->
 
-                                            <div class="dropup" style="width: 167px;">
+                                            <div class="dropdown" style="width: 167px;">
                                                 <button
                                                     class="btn btn-sm btn-outline-secondary dropdown-toggle w-100 text-start"
                                                     type="button" id="dateDropdownBtn" data-bs-toggle="dropdown"
@@ -360,7 +335,7 @@
                                                 </ul>
                                             </div>
 
-                                            <button class="btn btn-sm btn-success" id="editLoanDetails">
+                                            <button class="btn btn-sm btn-outline-success" id="editLoanDetails">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
                                             <button class="btn btn-sm btn-danger" id="cancelEdit" style="display:none;">
@@ -373,7 +348,7 @@
                         </div>
 
                         <div class="table-data">
-                            <div class="order pt-0 px-3" style="max-height: 420px; overflow-y: auto;">
+                            <div class="order pt-0 pb-0" style="max-height: 400px; overflow-y: auto;">
                                 <table id="payment_table" class="table pt-0 pb-0 mt-0 mb-0">
                                     <thead class="sticky-top">
                                         <tr>
@@ -390,12 +365,12 @@
                         </div>
 
                         <div class="modal-footer d-flex justify-content-between align-items-center">
-                            <div class="fw-bold text-end text-black" style="width:500px">
-                                TOTAL PAYMENT: ₱ <span id="total_payment"></span>
+                            <div class="text-end" style="width:610px">
+                                TOTAL PAYMENT : ₱ <span id="total_payment" style="font-weight: bold;"></span>
                             </div>
 
                             <div>
-                                <button type="button" id="addNewLoan" class="btn btn-primary me-2"
+                                <button type="button" id="addNewLoan" class="btn btn-outline-primary me-1"
                                     onclick="openAddNewLoanModal()">
                                     Add New
                                 </button>
@@ -447,7 +422,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="modalContinueBtn">Continue</button>
+                        <button type="button" class="btn btn-outline-primary" id="modalContinueBtn">Continue</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
@@ -458,10 +433,10 @@
         <!-- ADD LOAN SAME CLIENT -->
         <div class="modal fade" id="addLoanSameClient" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
             data-bs-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog" style="margin-top:10px">
                 <div class="modal-content">
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title">Overdue</h5>
+                        <h5 class="modal-title">Loan Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
@@ -556,16 +531,31 @@
             }
         },
         columns: [
-            // { data: 'id', class:'text-center'},
+            // {
+            //     data: null,
+            //     class: 'text-center',
+            //     render: function (data, type, row, meta) {
+            //         return meta.row + meta.settings._iDisplayStart + 1;
+            //     }
+            // },
             {
-                data: null,
-                class: 'text-center',
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
+                data: 'id',
+                class: 'text-center'
+            },
+            {
+                data: 'full_name',
+                render: function (data) {
+                    if (!data) return '';
+                    return data.replace(/\b\w/g, char => char.toUpperCase());
                 }
             },
-            { data: 'full_name' },
-            { data: 'address' },
+            {
+                data: 'address',
+                render: function (data) {
+                    if (!data) return '';
+                    return data.replace(/\b\w/g, char => char.toUpperCase());
+                }
+            },
             { data: 'contact_no' },
             { data: 'loan_count', class: 'text-center' },
             { data: 'date_added', class: 'text-center' },
@@ -575,10 +565,10 @@
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-success" onclick="openEditModal('${data}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
+                        <button class="btn btn-sm btn-outline-success" onclick="openEditModal('${data}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}')">
+                        <button class="btn btn-sm btn-outline-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}')">
                             <i class="fas fa-eye"></i> View
                         </button>
                     `;
@@ -615,7 +605,15 @@
                     data: $('#client_form').serialize(),
                     dataType: 'json',
                     success: function (response) {
-                        Swal.fire('Success!', response.message, 'success');
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            timer: 500,
+                            showConfirmButton: false,
+                            timerProgressBar: true
+                        });
+
                         $('#addLoaner').modal('hide');
                         client_table.ajax.reload();
                     }
@@ -624,13 +622,13 @@
         });
     });
 
-    $('#full_name, #address, #edit_full_name, #edit_address').on('input', function () {
-        let value = $(this).val().toLowerCase();
-        let formatted = value.replace(/\b\w/g, function (char) {
-            return char.toUpperCase();
-        });
-        $(this).val(formatted);
-    });
+    // $('#full_name, #address, #edit_full_name, #edit_address').on('input', function () {
+    //     let value = $(this).val().toLowerCase();
+    //     let formatted = value.replace(/\b\w/g, function (char) {
+    //         return char.toUpperCase();
+    //     });
+    //     $(this).val(formatted);
+    // });
 
     function calculateTotal() {
         let capital = parseFloat($('#capital_amt').val()) || 0;
@@ -665,10 +663,10 @@
 
             Swal.fire({
                 title: 'Are you sure?',
-                text: "Do you want to edit this client?",
+                text: "Do you want to update this client?",
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, edit it!',
+                confirmButtonText: 'Yes, update it!',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -678,7 +676,14 @@
                         data: $('#edit_client_form').serialize() + '&id=' + id,
                         dataType: 'json',
                         success: function (response) {
-                            Swal.fire('Success!', response.message, 'success');
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                timer: 500,
+                                showConfirmButton: false,
+                                timerProgressBar: true
+                            });
                             $('#editLoaner').modal('hide');
                             client_table.ajax.reload();
                         }
@@ -686,18 +691,52 @@
                 }
             });
         });
+
+        $("#deleteBtn").on('click', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action will delete client permanently!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                allowEnterKey: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "<?= site_url('Monitoring_cont/delete_id'); ?>",
+                        data: { id: id },
+                        dataType: 'json',
+                        success: function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                timer: 500,
+                                showConfirmButton: false,
+                                timerProgressBar: true
+                            });
+                            $('#editLoaner').modal('hide');
+                            client_table.ajax.reload();
+                        }
+                    });
+                }
+            });
+        });
+
     }
 
     function openViewModal(id, fullname, address) {
         $('#viewLoaner').modal('show');
 
-        console.log(id);
-        console.log(fullname);
-        console.log(address);
-
         $('#header_id').val(id);
-        $('#header_name').text(fullname);
-        $('#header_address').text(address);
+        $('#header_name').text(fullname.replace(/\b\w/g, c => c.toUpperCase()));
+        $('#header_address').text(address.replace(/\b\w/g, c => c.toUpperCase()));
 
         $.ajax({
             url: "<?php echo base_url('Monitoring_cont/get_start_due_date'); ?>",
@@ -707,8 +746,6 @@
             success: function (response) {
                 // Clear existing options
                 $('#header_date_arr').empty();
-
-                console.log(response);
 
                 if (!response[0] || response[0].length === 0) {
                     $('#dateDropdownBtn').text('No Dates Available');
@@ -874,7 +911,7 @@
                                                 ${paymentAmt !== 0 ? 'readonly' : ''} />
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-success edit-btn" 
+                                            <button class="btn btn-sm btn-outline-success edit-btn" 
                                                 style="${!paymentAmt ? 'display:none;' : ''}">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -902,7 +939,7 @@
                                                 ${paymentAmt !== 0 ? 'readonly' : ''} />
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-success edit-btn" 
+                                            <button class="btn btn-sm btn-outline-success edit-btn" 
                                                 style="${!paymentAmt ? 'display:none;' : ''}">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -922,8 +959,6 @@
                             let paymentAmt = parseFloat(paymentMap[dateStr]) || 0;
                             let formattedAmt = paymentAmt !== 0 ? paymentAmt.toLocaleString('en-US') : '';
 
-                            console.log(paymentAmt);
-
                             totalPayment += paymentAmt;
 
                             tableBody += `
@@ -937,7 +972,7 @@
                                             ${paymentAmt !== 0 ? 'readonly' : ''} />
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-success edit-btn" 
+                                        <button class="btn btn-sm btn-outline-success edit-btn" 
                                             style="${!paymentAmt ? 'display:none;' : ''}">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
@@ -1066,8 +1101,6 @@
 
     function updateTotals(response, loanId, totalPayment, firstStatus) {
 
-        console.log(response);
-
         const lastPaymentFor = response[response.length - 1].payment_for;
 
         $('#total_payment').text(Number(totalPayment).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
@@ -1075,8 +1108,6 @@
         const loanTotal = parseFloat(response[0].total_amt);
         const running_bal = loanTotal - totalPayment;
         const status = response[0].status;
-
-        console.log(status);
 
         const due_date = response[0].due_date;
         const due_date_obj = new Date(due_date);
@@ -1086,8 +1117,6 @@
         const over_due = today - due_date_obj;
 
         const daysOverdue = Math.floor(over_due / (1000 * 60 * 60 * 24));
-
-        console.log(daysOverdue);
 
         let statusText = "";
         let statusClass = "";
@@ -1102,7 +1131,6 @@
             statusText = "OVERDUE";
             statusClass = "text-danger";
         }
-        console.log('first', firstStatus);
 
         // if (firstStatus && status != 'completed') {
         if (firstStatus != "completed") {
@@ -1138,13 +1166,13 @@
             input.removeClass('text-success');
             input.focus();
 
-            btn.removeClass('btn-primary').addClass('btn-danger');
+            btn.removeClass('btn-outline-success').addClass('btn-danger');
             btn.html('<i class="fas fa-times"></i> Cancel');
         } else {
             input.prop('readonly', true);
             if (input.val()) input.addClass('text-success');
 
-            btn.removeClass('btn-danger').addClass('btn-primary');
+            btn.removeClass('btn-danger').addClass('btn-outline-success');
             btn.html('<i class="fas fa-edit"></i> Edit');
         }
     });
@@ -1152,8 +1180,6 @@
     function autoCompleteLoan(loanId, running_bal, due_date, lastPaymentFor, action) {
 
         const completeDate = lastPaymentFor;
-
-        console.log(action);
 
         if (action === "overdue") {
             openOverdueModal(loanId, running_bal, due_date, action, completeDate);
@@ -1291,21 +1317,28 @@
     }
 
     function calculateTotalHeader() {
-        let capital = parseFloat($('#header_capital_amt input').val()) || 0;
-        let interestRaw = $('#header_interest input').val().replace('%', '');
+        // Remove commas before parsing
+        let capital = parseFloat($('#header_capital_amt input').val().replace(/,/g, '')) || 0;
+        let interestRaw = $('#header_interest input').val().replace(/,/g, '').replace('%', '');
         let interest = parseFloat(interestRaw) || 0;
-        let added = parseFloat($('#header_added_amt input').val()) || 0;
+        let added = parseFloat($('#header_added_amt input').val().replace(/,/g, '')) || 0;
 
+        // Calculate total
         let total = capital + (capital * (interest / 100)) + added;
 
+        // Format total with 2 decimals
+        let formattedTotal = total.toFixed(2);
+
+        // Update the span or input
         const totalSpan = $('#header_total_amt');
         const totalInput = totalSpan.find('input');
         if (totalInput.length) {
-            totalInput.val(total.toFixed(2));
+            totalInput.val(formattedTotal);
         } else {
-            totalSpan.text(total.toFixed(2));
+            totalSpan.text(formattedTotal);
         }
     }
+
 
     $('#editLoanDetails').off('click').on('click', function () {
         const btn = $(this);
@@ -1327,25 +1360,24 @@
             btn.data('mode', 'save');
             btn.html('<i class="fas fa-save"></i> Save');
 
-            const numericFields = ['header_capital_amt', 'header_interest', 'header_added_amt', 'header_added_amt'];
+            const numericFields = ['header_capital_amt', 'header_interest', 'header_added_amt'];
             numericFields.forEach(id => {
                 const span = document.getElementById(id);
                 if (!span.querySelector('input')) {
-                    const textNode = document.createTextNode(span.innerText + ' ');
-                    span.innerHTML = '';
-                    span.appendChild(textNode);
+                    const currentText = span.innerText.trim();
+                    const numericValue = currentText.replace(/,/g, ''); // remove commas
 
                     const input = document.createElement('input');
                     input.type = 'text';
-                    input.value = span.innerText.trim();
+                    input.value = numericValue;
                     input.style.width = '80px';
                     input.classList.add('form-control', 'form-control-sm', 'd-inline');
+                    span.innerHTML = ''; // clear old text
                     span.appendChild(input);
 
                     $(input).on('input', calculateTotalHeader);
                 }
             });
-
 
             const loanDateSpan = document.getElementById('header_loan_date');
             const dueDateSpan = document.getElementById('header_due_date');
@@ -1395,7 +1427,6 @@
                 });
             }
 
-
         } else {
             btn.data('mode', 'edit');
             btn.html('<i class="fas fa-edit"></i> Edit');
@@ -1413,20 +1444,21 @@
                 const span = document.getElementById(id);
                 const input = span.querySelector('input');
                 if (input) {
-                    data[id] = input.value;
-                    span.innerText = input.value;
+                    // remove commas before sending
+                    const numericValue = input.value.replace(/,/g, '');
+                    data[id] = numericValue;
+                    span.innerText = Number(numericValue).toLocaleString(); // format with commas
                 } else {
-                    data[id] = span.innerText;
+                    data[id] = span.innerText.replace(/,/g, '');
                 }
             });
 
             data['header_due_date'] = document.getElementById('header_due_date').innerText;
-
             data['loan_id'] = $('#header_loan_id').val();
 
-            id = $('#header_id').val();
-            full_name = $('#header_name').text();
-            address = $('#header_address').text();
+            const id = $('#header_id').val();
+            const full_name = $('#header_name').text();
+            const address = $('#header_address').text();
 
             $.ajax({
                 url: "<?php echo base_url('Monitoring_cont/update_loan_data'); ?>",
@@ -1440,7 +1472,6 @@
                         showConfirmButton: false,
                         timer: 500,
                         timerProgressBar: true,
-
                     });
 
                     $('#header_date_arr').val($('#header_date_arr option:first').val()).trigger('change');
@@ -1472,8 +1503,8 @@
             btn.removeData('original');
             $('#cancelEdit').hide();
         });
-
     });
+
 
     const viewLoanerEl = document.getElementById('viewLoaner');
     const overdueModalEl = document.getElementById('overdueModal');
