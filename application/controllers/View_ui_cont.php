@@ -13,45 +13,10 @@ class View_ui_cont extends CI_Controller
     {
         $this->dashboard();
     }
-
-    // public function dashboard()
-    // {
-    //     $data['total_client'] = $this->db->count_all('tbl_client');
-    //     $data['total_loan_amt'] = $this->db
-    //         ->select_sum('total_amt')
-    //         ->get('tbl_loan')
-    //         ->row()
-    //         ->total_amt;
-
-    //     $data['total_loan_payment'] = $this->db
-    //         ->select_sum('amt')
-    //         ->get('tbl_payment')
-    //         ->row()
-    //         ->amt;
-
-    //     $data['total_pull_out'] = $this->db
-    //         ->select_sum('total_pull_out')
-    //         ->get('tbl_pull_out')
-    //         ->row()
-    //         ->total_pull_out;
-
-    //     $data['total_expenses'] = $this->db
-    //         ->select_sum('amt')
-    //         ->get('tbl_expenses')
-    //         ->row()
-    //         ->amt;
-
-
-    //     $this->load->view('layouts/header');
-    //     $this->load->view('dashboard', $data);
-    //     $this->load->view('layouts/footer');
-    // }
-
     public function dashboard()
     {
-        // Existing dashboard statistics
         $data['total_client'] = $this->db
-            ->where('status !=', 1)
+            ->where('status !=', '1')
             ->count_all_results('tbl_client');
 
         $data['total_loan_amt'] = $this->db
