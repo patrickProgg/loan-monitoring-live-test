@@ -360,6 +360,13 @@
         $('#addPullOut').modal('show');
     }
 
+    $('#client_form').on('keypress', function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            handleFormSubmit(currentAction, currentId);
+        }
+    });
+
     function handleFormSubmit(action, id) {
         const formData = {
             process_fee: parseFloat($('#process_fee').val()) || 0,

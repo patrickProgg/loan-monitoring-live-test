@@ -173,7 +173,10 @@
                 }
             },
             {
-                data: 'amt'
+                data: 'amt',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
             },
             {
                 data: 'id',
@@ -252,9 +255,11 @@
             const editRow = $(`
                     <div class="row g-2 expense-row mb-2 align-items-end">
                         <div class="col-8">
+                            <label>Type</label>
                             <input type="text" class="form-control expense-type" value="${row.type}" />
                         </div>
                         <div class="col-4">
+                            <label>Amount</label>
                             <input type="number" class="form-control expense-amount" value="${row.amt}" />
                         </div>
                     </div>
@@ -269,6 +274,13 @@
 
         $('#addExpenses').modal('show');
     };
+
+    $('#expensesForm').on('keypress', function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            handleFormSubmit(currentAction, currentId);
+        }
+    });
 
     function handleFormSubmit(action, id = null) {
         const expenses = [];
@@ -301,27 +313,40 @@
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill at least one.' });
             return;
         }
-
-        $.ajax({
-            url: url,
-            type: method,
-            data: formData,
-            dataType: 'json',
-            success: function (res) {
-                Swal.fire({
-                    title: 'Success',
-                    text: res.message,
-                    icon: 'success',
-                    timer: 500,
-                    showConfirmButton: false
-                }).then(() => {
-                    expenses_table.ajax.reload();
-                    $('#addExpenses').modal('hide');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: action === 'addExpenses' ? 'You are about to add this record.' : 'You are about to update this record.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, proceed!',
+            cancelButtonText: 'Cancel',
+            allowEnterKey: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function (res) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            timer: 500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            expenses_table.ajax.reload();
+                            $('#addExpenses').modal('hide');
+                        });
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        alert('Server error. Check console.');
+                    }
                 });
-            },
-            error: function (err) {
-                console.log(err);
-                alert('Server error. Check console.');
             }
         });
     };

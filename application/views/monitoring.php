@@ -629,6 +629,13 @@
         });
     });
 
+    $('#client_form').on('keypress', function (e) {
+        if (e.which === 13) { // Enter key code is 13
+            e.preventDefault();
+            $('#add_client').trigger('click'); // Trigger the same function as the button click
+        }
+    });
+
     // $('#full_name, #address, #edit_full_name, #edit_address').on('input', function () {
     //     let value = $(this).val().toLowerCase();
     //     let formatted = value.replace(/\b\w/g, function (char) {
@@ -657,6 +664,13 @@
         $('#edit_contact_no_1').val(contact_1);
         $('#edit_contact_no_2').val(contact_2);
         $('#edit_start_date').val(date_added);
+
+        $('#edit_client_form').on('keypress', function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#update_client').trigger('click');
+            }
+        });
 
         $("#update_client").on('click', function (e) {
             e.preventDefault();
