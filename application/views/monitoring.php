@@ -894,8 +894,8 @@
                     let due = new Date(loan.due_date);
                     let dueDateOnly = due.toISOString().split('T')[0];
 
-                    // let today = new Date();
-                    let today = new Date("2026-05-22");
+                    let today = new Date();
+                    // let today = new Date("2026-05-22");
                     let todayDateOnly = today.toISOString().split('T')[0];
 
                     const status = loan.status;
@@ -1134,8 +1134,8 @@
 
         const due_date = response[0].due_date;
         const due_date_obj = new Date(due_date);
-        const today = new Date("2026-04-05");
-        // const today = new Date();
+        // const today = new Date("2026-04-05");
+        const today = new Date();
 
         const over_due = today - due_date_obj;
 
