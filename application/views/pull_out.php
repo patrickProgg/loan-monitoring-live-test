@@ -86,11 +86,11 @@
                                 <th style="width: 5%; vertical-align: middle; text-align:center;">NO. #</th>
                                 <th style="width: 10%; vertical-align: middle;">DATE</th>
                                 <th style="width: 12%; vertical-align: middle;">PROCESSING FEE</th>
-                                <th style="width: 12%; vertical-align: middle;">TICKET</th>
-                                <th style="width: 12%; vertical-align: middle;">PULL OUT SHARING PROFIT</th>
-                                <th style="width: 10%; vertical-align: middle;">PULL OUT 2%</th>
-                                <th style="width: 13%; vertical-align: middle;">TOTAL AMT PULL OUT</th>
-                                <th style="width: 17%; vertical-align: middle; text-align: center;">ACTION</th>
+                                <th style="width: 12%; vertical-align: middle;">TICKET AMT</th>
+                                <th style="width: 12%; vertical-align: middle;">PULL OUT <br>SHARING PROFIT</th>
+                                <th style="width: 12%; vertical-align: middle;">PULL OUT 2%</th>
+                                <th style="width: 12%; vertical-align: middle;">TOTAL AMT <br>PULL OUT</th>
+                                <th style="width: 20%; vertical-align: middle; text-align: center;">ACTION</th>
 
                             </tr>
                         </thead>
@@ -139,7 +139,7 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Total Amount Pull Out</label>
                                         <input type="number" class="form-control" id="total_amt" name="total_amt"
-                                            readonly disabled>
+                                            readonly>
                                     </div>
                                     <div class="col-md-4 position-relative">
                                         <label class="form-label">Date Pull Out</label>

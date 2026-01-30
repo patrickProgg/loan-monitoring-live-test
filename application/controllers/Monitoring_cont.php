@@ -31,6 +31,8 @@ class Monitoring_cont extends CI_Controller
 
         $orderColumn = $columns[$orderColumnIndex];
 
+        $subquery = '(SELECT loan_id, SUM(amt) AS payment_total FROM tbl_payment GROUP BY loan_id) as p';
+
         $this->db->select('
             a.id,
             a.full_name,
@@ -40,11 +42,25 @@ class Monitoring_cont extends CI_Controller
             a.contact_no_2,
             CONCAT(a.contact_no_1, " | ", a.contact_no_2) AS contact_no,
             COUNT(b.id) AS loan_count,
-            COALESCE(SUM(b.total_amt), 0) AS total_loan_amount
+            COALESCE(SUM(
+                CASE 
+                    WHEN b.status = "overdue" THEN COALESCE(p.payment_total, 0)
+                    ELSE b.total_amt
+                END
+            ), 0) AS total_loan_amount
         ');
 
         $this->db->from('tbl_client as a');
         $this->db->join('tbl_loan as b', 'b.cl_id = a.id', 'left');
+        $this->db->join($subquery, 'p.loan_id = b.id', 'left');
+
+        if ($history) {
+            $this->db->where('a.status', '1');
+        } else {
+            $this->db->where('a.status', '0');
+        }
+
+        $this->db->group_by('a.id');
 
         if ($history) {
             $this->db->where('a.status', '1');

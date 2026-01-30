@@ -179,12 +179,16 @@
             text-align: left;
             padding-left: 5px;
             /* background: silver; */
+            font-weight: bold;
             background: #f8f9fa;
+            padding-right: 0;
         }
 
         #content main .table-data .order table td {
             padding: 10px 0;
             font-size: 14px;
+            padding-left: 5px;
+            padding-right: 5px;
             background: transparent;
 
         }
@@ -299,6 +303,21 @@
 
         input[type="text"] {
             text-transform: capitalize;
+        }
+
+        table.dataTable thead .sorting:after,
+        table.dataTable thead .sorting_asc:after,
+        table.dataTable thead .sorting_desc:after,
+        table.dataTable thead .sorting:before,
+        table.dataTable thead .sorting_asc:before,
+        table.dataTable thead .sorting_desc:before {
+            display: none !important;
+        }
+
+        table.dataTable thead .sorting,
+        table.dataTable thead .sorting_asc,
+        table.dataTable thead .sorting_desc {
+            cursor: pointer;
         }
     </style>
 

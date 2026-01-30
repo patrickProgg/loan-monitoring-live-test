@@ -62,10 +62,10 @@
                             <th style="width:30px; text-align:center">ID #</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
-                            <th>CONTACT NO.</th>
+                            <th style="width:220px">CONTACT NO.</th>
                             <th style="width:30px">COUNT</th>
-                            <th style="width:100px">TOTAL AMT</th>
-                            <th>DATE ADDED</th>
+                            <th style="width:100px">TOTAL LOAN</th>
+                            <th>DATE</th>
                             <th style="width:150px; text-align:center">ACTION</th>
                         </tr>
                     </thead>
@@ -142,7 +142,7 @@
                                     <div class="col-md-3">
                                         <label for="department" class="form-label">Total Amount</label>
                                         <input type="number" class="form-control" id="total_amt" name="total_amt"
-                                            readonly disabled>
+                                            readonly>
                                     </div>
                                 </div>
                             </form>
@@ -350,7 +350,7 @@
 
                         <div class="table-data">
                             <div class="order pt-0 pb-0" style="max-height: 400px; overflow-y: auto;">
-                                <table id="payment_table" class="table pt-0 pb-0 mt-0 mb-0">
+                                <table id="payment_table" class="table pt-0 pb-0 mt-0 mb-0 table-bordered">
                                     <thead class="sticky-top">
                                         <tr>
                                             <th class="text-center" style="width:10%; color:#000;">NO.#</th>
@@ -367,7 +367,8 @@
 
                         <div class="modal-footer d-flex justify-content-between align-items-center">
                             <div class="text-end" style="width:610px">
-                                TOTAL PAYMENT : ₱ <span id="total_payment" style="font-weight: bold;"></span>
+                                TOTAL PAYMENT : ₱ <span class="text-primary" id="total_payment"
+                                    style="font-weight: bold; "></span>
                             </div>
 
                             <div>
@@ -688,7 +689,8 @@
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, update it!',
-                cancelButtonText: 'Cancel'
+                cancelButtonText: 'Cancel',
+                allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -892,8 +894,8 @@
                     let due = new Date(loan.due_date);
                     let dueDateOnly = due.toISOString().split('T')[0];
 
-                    let today = new Date();
-                    // let today = new Date("2026-05-22");
+                    // let today = new Date();
+                    let today = new Date("2026-05-22");
                     let todayDateOnly = today.toISOString().split('T')[0];
 
                     const status = loan.status;
@@ -1132,8 +1134,8 @@
 
         const due_date = response[0].due_date;
         const due_date_obj = new Date(due_date);
-        // const today = new Date("2026-05-22");
-        const today = new Date();
+        const today = new Date("2026-04-05");
+        // const today = new Date();
 
         const over_due = today - due_date_obj;
 

@@ -19,13 +19,26 @@ class View_ui_cont extends CI_Controller
             ->where('status !=', '1')
             ->count_all_results('tbl_client');
 
+        $this->db->select_sum('
+    CASE 
+        WHEN tbl_loan.status = "overdue" THEN COALESCE(p.payment_total, 0)
+        ELSE tbl_loan.total_amt
+    END',
+            'total_amt'
+        );
+
+        // Subquery to sum payments per loan
+        $subquery = '(SELECT loan_id, SUM(amt) AS payment_total FROM tbl_payment GROUP BY loan_id) AS p';
+
         $data['total_loan_amt'] = $this->db
-            ->select_sum('tbl_loan.total_amt')
+            ->from('tbl_loan')
             ->join('tbl_client', 'tbl_loan.cl_id = tbl_client.id')
+            ->join($subquery, 'p.loan_id = tbl_loan.id', 'left')
             ->where('tbl_client.status !=', '1')
-            ->get('tbl_loan')
+            ->get()
             ->row()
             ->total_amt ?: 0;
+
 
         $data['total_loan_payment'] = $this->db
             ->select_sum('tbl_payment.amt')
@@ -47,6 +60,35 @@ class View_ui_cont extends CI_Controller
             ->get('tbl_expenses')
             ->row()
             ->amt;
+
+        // Subquery: total payments per loan
+        $payment_subquery = "
+            (SELECT loan_id, SUM(amt) AS total_paid
+            FROM tbl_payment
+            GROUP BY loan_id) p
+        ";
+
+        $this->db->select("
+            c.full_name,
+            COUNT(DISTINCT l.id) AS total_loans,
+            SUM(CASE WHEN l.status = 'completed' THEN 1 ELSE 0 END) AS completed_loans,
+            SUM(CASE WHEN l.status = 'overdue' THEN 1 ELSE 0 END) AS overdue_loans,
+            SUM(CASE WHEN l.status = 'ongoing' THEN 1 ELSE 0 END) AS ongoing_loans,
+            COALESCE(SUM(p.total_paid), 0) AS total_paid
+        ")
+            ->from('tbl_client c')
+            ->join('tbl_loan l', 'c.id = l.cl_id', 'left')
+            ->join($payment_subquery, 'l.id = p.loan_id', 'left', false)
+            ->where('c.status !=', '1')
+            ->group_by('c.id')
+            ->having('total_loans > 0')
+            ->order_by('overdue_loans', 'ASC')
+            ->order_by('completed_loans', 'DESC')
+            ->limit(5);
+
+        $query = $this->db->get();
+        $data['good_payors'] = $query->result_array();
+
 
         // NEW: Get monthly payment data for the current year
         $current_year = date('Y');
@@ -571,7 +613,6 @@ class View_ui_cont extends CI_Controller
             'label' => 'Expenses Amount'
         ]);
     }
-
     public function monitoring()
     {
         $this->load->view('layouts/header');
