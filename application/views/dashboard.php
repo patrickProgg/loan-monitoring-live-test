@@ -918,4 +918,5 @@
         // Initialize with horizontal bar chart
         createHorizontalBarChart();
     });
+    console.log('patrick');
 </script>
