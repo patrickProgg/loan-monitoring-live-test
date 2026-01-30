@@ -41,7 +41,7 @@
     .box-info li .text h3 {
         font-size: 20px;
         font-weight: 600;
-        color: var(--dark);
+        /* color: var(--dark); */
         margin-top: 5px;
     }
 
@@ -53,24 +53,83 @@
         justify-self: start;
         width: 280px;
     }
+
+    .card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        /* background: linear-gradient(135deg, #dbe2e7 0%, #339af0 100%); */
+        background: var(--light-blue);
+        color: white;
+        border-bottom: none;
+        padding: 20px 25px;
+    }
+
+    .card-header .card-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin: 0;
+    }
+
+    .text-sm {
+        font-size: 0.875rem;
+    }
+
+    .h4 {
+        font-size: 1.5rem;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+        border: 1px solid #e9ecef;
+    }
+
+    .progress {
+        border-radius: 4px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        border-radius: 4px;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+
+    .font-weight-bold {
+        font-weight: 600 !important;
+    }
+
+    #yearSelect {
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-weight: 500;
+    }
+
+    #yearSelect option {
+        background-color: white;
+        color: #495057;
+    }
+
+    #yearSelect:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+    }
 </style>
-
-<div class="row">
-    <div class="col-12">
-        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
-            <div id="container" class="ms-auto"></div>
-        </div>
-    </div>
-</div>
-
 <?php if (!empty($show_greeting)): ?>
     <div id="greeting-toast" class="alert alert-primary" style="transition: opacity 1s;">
         <h4><?= $greeting ?></h4>
     </div>
 <?php endif; ?>
 
-<div class="row mb-5">
+<div class="row px-3">
     <ul class="box-info">
 
         <a href="<?= base_url(); ?>user" style="text-decoration: none; color: inherit;">
@@ -78,7 +137,7 @@
                 <i class='bx bxs-group' style="background: rgba(255, 99, 132, 0.2); color: rgba(255, 99, 132, 1);"></i>
                 <span class="text">
                     <h3><?php echo $total_client; ?></h3>
-                    <p>Clients</p>
+                    <p style="color:rgba(255, 99, 132, 1)">Clients</p>
                 </span>
             </li>
         </a>
@@ -91,7 +150,7 @@
                     style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
                 <span class="text">
                     <h3>₱<?= number_format($total_loan_amt, 2) ?></h3>
-                    <p>Total Loan Amt.</p>
+                    <p style="color:rgba(255, 159, 64, 1)">Total Loan Amt.</p>
                 </span>
             </li>
         </a>
@@ -102,7 +161,7 @@
                     style="background: rgba(75, 192, 192, 0.2); color: rgba(75, 192, 192, 1);"></i>
                 <span class="text">
                     <h3>₱<?= number_format($total_loan_amt - $total_loan_payment, 2) ?></h3>
-                    <p>Total Receivables</p>
+                    <p style="color:rgba(75, 192, 192, 1)">Total Receivables</p>
                 </span>
             </li>
         </a>
@@ -113,7 +172,7 @@
                     style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
                 <span class="text">
                     <h3>₱<?= number_format($total_pull_out, 2) ?></h3>
-                    <p>Total Pull Out</p>
+                    <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
                 </span>
             </li>
         </a>
@@ -123,13 +182,752 @@
                 <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
                 <span class="text">
                     <h3>₱<?= number_format($total_expenses, 2) ?></h3>
-                    <p>Total Expenses</p>
+                    <p style="color:rgba(54, 162, 235, 1)">Total Expenses</p>
                 </span>
             </li>
         </a>
     </ul>
 </div>
 
+<!-- <div class="row">
+    <div class="col-md-12 px-3">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">📊 Monthly Payments -
+                        <?php echo $current_year; ?>
+                    </h3>
+                    <div class="d-flex align-items-center">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <select id="yearSelect" class="form-control" style="color: #444242; 
+                                background-color: white; 
+                                border: 1px solid rgb(165, 159, 159) !important;
+                                border-radius: 5px;">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <canvas id="paymentChart"
+                            style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-4">💰 Year
+                                    <?php echo $current_year; ?> Summary
+                                </h5>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Total Collection</span>
+                                        <span class="font-weight-bold text-success total-collection">
+                                            ₱
+                                            <?php echo number_format($year_total_payment, 2); ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Average Monthly</span>
+                                        <span class="font-weight-bold text-primary average-monthly">
+                                            ₱
+                                            <?php
+                                            $avg_monthly = $year_total_payment / 12;
+                                            echo number_format($avg_monthly, 2);
+                                            ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-primary"
+                                            style="width: <?php echo min(100, ($avg_monthly / max($year_total_payment, 1)) * 100); ?>%">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <?php
+                                    $max_month = $monthly_payments ? max($monthly_payments) : 0;
+                                    $max_month_index = $max_month ? array_search($max_month, $monthly_payments) : 0;
+                                    $max_month_name = $months[$max_month_index] ?? 'N/A';
+                                    ?>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Highest Month (
+                                            <?php echo $max_month_name; ?>)
+                                        </span>
+                                        <span class="font-weight-bold text-warning highest-month">
+                                            ₱
+                                            <?php echo number_format($max_month, 2); ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-warning"
+                                            style="width: <?php echo $max_month ? ($max_month / max($year_total_payment, 1)) * 100 : 0; ?>%">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <?php
+                                    $min_month = $monthly_payments ? min(array_filter($monthly_payments)) : 0;
+                                    $min_month_index = $min_month ? array_search($min_month, $monthly_payments) : 0;
+                                    $min_month_name = $months[$min_month_index] ?? 'N/A';
+                                    ?>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Lowest Month (
+                                            <?php echo $min_month_name; ?>)
+                                        </span>
+                                        <span class="font-weight-bold text-info lowest-month">
+                                            ₱
+                                            <?php echo number_format($min_month, 2); ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-info"
+                                            style="width: <?php echo $min_month ? ($min_month / max($year_total_payment, 1)) * 100 : 0; ?>%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="row">
+    <div class="col-md-12 px-3">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">📊 Monthly
+                        <select id="dataTypeSelect" class="form-control-sm ml-2" style="width: auto; display: inline;">
+                            <option value="payments">Payments</option>
+                            <option value="pullout">Pull Out</option>
+                            <option value="expenses">Expenses</option>
+                        </select>
+                        -
+                        <span id="chartTitleSuffix"><?php echo $current_year; ?></span>
+                    </h3>
+                    <div class="d-flex align-items-center">
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                            <select id="yearSelect" class="form-control" style="color: #444242; 
+                                background-color: white; 
+                                border: 1px solid rgb(165, 159, 159) !important;
+                                border-radius: 5px;">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <canvas id="paymentChart"
+                            style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"></canvas>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title text-center mb-4">💰 Year
+                                    <?php echo $current_year; ?> Summary
+                                </h5>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Total</span>
+                                        <span class="font-weight-bold text-success total-collection">
+                                            ₱
+                                            <?php echo number_format($year_total_payment, 2); ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Average Monthly</span>
+                                        <span class="font-weight-bold text-primary average-monthly">
+                                            ₱
+                                            <?php
+                                            $avg_monthly = $year_total_payment / 12;
+                                            echo number_format($avg_monthly, 2);
+                                            ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-primary"
+                                            style="width: <?php echo min(100, ($avg_monthly / max($year_total_payment, 1)) * 100); ?>%">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <?php
+                                    $max_month = $monthly_payments ? max($monthly_payments) : 0;
+                                    $max_month_index = $max_month ? array_search($max_month, $monthly_payments) : 0;
+                                    $max_month_name = $months[$max_month_index] ?? 'N/A';
+                                    ?>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Highest Month (
+                                            <?php echo $max_month_name; ?>)
+                                        </span>
+                                        <span class="font-weight-bold text-warning highest-month">
+                                            ₱
+                                            <?php echo number_format($max_month, 2); ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-warning"
+                                            style="width: <?php echo $max_month ? ($max_month / max($year_total_payment, 1)) * 100 : 0; ?>%">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <?php
+                                    $min_month = $monthly_payments ? min(array_filter($monthly_payments)) : 0;
+                                    $min_month_index = $min_month ? array_search($min_month, $monthly_payments) : 0;
+                                    $min_month_name = $months[$min_month_index] ?? 'N/A';
+                                    ?>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="text-muted">Lowest Month (
+                                            <?php echo $min_month_name; ?>)
+                                        </span>
+                                        <span class="font-weight-bold text-info lowest-month">
+                                            ₱
+                                            <?php echo number_format($min_month, 2); ?>
+                                        </span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-info"
+                                            style="width: <?php echo $min_month ? ($min_month / max($year_total_payment, 1)) * 100 : 0; ?>%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row pb-5 px-1">
+    <!-- Ongoing Loans -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Ongoing Loans
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?php echo $loan_status_counts['ongoing'] ?? 0; ?>
+                        </div>
+                        <div class="mt-2">
+                            <span class="badge badge-primary">Active</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-sync-alt fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Loans -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Overdue Loans
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?php echo $loan_status_counts['overdue'] ?? 0; ?>
+                        </div>
+                        <div class="mt-2">
+                            <span class="badge badge-danger">Attention Needed</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed Loans -->
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Completed Loans
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <?php echo $loan_status_counts['completed'] ?? 0; ?>
+                        </div>
+                        <div class="mt-2">
+                            <span class="badge badge-success">Paid Off</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- </div>
+        </div>
+    </main>
+</section> -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 
+    // $(document).ready(function () {
+    //     const ctx = document.getElementById('paymentChart').getContext('2d');
+    //     const monthlyData = <?php echo json_encode($monthly_payments); ?>;
+    //     const months = <?php echo json_encode($months); ?>;
+    //     const currentYear = <?php echo $current_year; ?>;
+
+    //     // Create the chart with gradient
+    //     const paymentChart = new Chart(ctx, {
+    //         type: 'bar',
+    //         data: {
+    //             labels: months,
+    //             datasets: [{
+    //                 label: 'Payment Amount',
+    //                 data: monthlyData,
+    //                 backgroundColor: function (context) {
+    //                     const chart = context.chart;
+    //                     const { ctx, chartArea } = chart;
+
+    //                     if (!chartArea) {
+    //                         return '#4dabf7';
+    //                     }
+
+    //                     const gradient = ctx.createLinearGradient(
+    //                         0, chartArea.top,
+    //                         0, chartArea.bottom
+    //                     );
+
+    //                     gradient.addColorStop(0, '#4dabf7');
+    //                     gradient.addColorStop(0.7, '#a5d8ff');
+    //                     gradient.addColorStop(1, '#ffffff');
+
+    //                     return gradient;
+    //                 },
+    //                 borderColor: 'rgba(41, 128, 185, 0.8)',
+    //                 borderWidth: 1.5,
+    //                 borderRadius: 6,
+    //                 borderSkipped: false,
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false,
+    //             plugins: {
+    //                 legend: {
+    //                     display: false,
+    //                 },
+    //                 title: {
+    //                     display: false,
+    //                 },
+    //                 tooltip: {
+    //                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    //                     titleColor: '#ffffff',
+    //                     bodyColor: '#ffffff',
+    //                     borderColor: '#4dabf7',
+    //                     borderWidth: 1,
+    //                     cornerRadius: 6,
+    //                     callbacks: {
+    //                         label: function (context) {
+    //                             const value = context.raw;
+    //                             const total = monthlyData.reduce((a, b) => a + b, 0);
+    //                             const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+    //                             return [
+    //                                 `₱${value.toLocaleString('en-PH')}`,
+    //                                 `(${percentage}% of total)`
+    //                             ];
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     grid: {
+    //                         color: 'rgba(0, 0, 0, 0.05)',
+    //                         drawBorder: false
+    //                     },
+    //                     ticks: {
+    //                         color: '#6c757d',
+    //                         callback: function (value) {
+    //                             return '₱' + value.toLocaleString('en-PH');
+    //                         }
+    //                     },
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Amount (₱)',
+    //                         color: '#495057',
+    //                         font: {
+    //                             size: 14,
+    //                             weight: 'bold'
+    //                         }
+    //                     }
+    //                 },
+    //                 x: {
+    //                     grid: {
+    //                         display: false
+    //                     },
+    //                     ticks: {
+    //                         color: '#495057',
+    //                         font: {
+    //                             size: 13,
+    //                             weight: '500'
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     });
+
+    //     // Load available years
+    //     $.ajax({
+    //         url: '<?php echo site_url("View_ui_cont/get_years"); ?>',
+    //         method: 'GET',
+    //         dataType: 'json',
+    //         success: function (years) {
+    //             const yearSelect = $('#yearSelect');
+    //             yearSelect.empty();
+
+    //             years.forEach(function (year) {
+    //                 const selected = year == currentYear ? 'selected' : '';
+    //                 yearSelect.append(`<option value="${year}" ${selected}>${year}</option>`);
+    //             });
+    //         }
+    //     });
+
+    //     // Handle year change
+    //     $('#yearSelect').change(function () {
+    //         const selectedYear = $(this).val();
+
+    //         $.ajax({
+    //             url: '<?php echo site_url("View_ui_cont/get_payment_chart_data/"); ?>' + selectedYear,
+    //             method: 'GET',
+    //             dataType: 'json',
+    //             success: function (response) {
+    //                 if (response.success) {
+    //                     // Update chart data
+    //                     console.log(response);
+    //                     paymentChart.data.datasets[0].data = response.data;
+    //                     paymentChart.update();
+
+    //                     // Update card title
+    //                     $('.card-title').text('📊 Monthly Payments - ' + response.year);
+
+    //                     // Update summary card via another AJAX call or calculate here
+    //                     updateYearSummary(response.data, selectedYear);
+    //                 }
+    //             }
+    //         });
+    //     });
+
+    //     function updateYearSummary(data, year) {
+    //         const total = data.reduce((a, b) => a + b, 0);
+    //         const avgMonthly = total / 12;
+    //         const maxMonthValue = Math.max(...data);
+    //         const maxMonthIndex = data.indexOf(maxMonthValue);
+    //         const maxMonthName = months[maxMonthIndex];
+    //         const minMonthValue = Math.min(...data.filter(val => val > 0));
+    //         const minMonthIndex = data.indexOf(minMonthValue);
+    //         const minMonthName = months[minMonthIndex];
+
+    //         // Update summary card
+    //         $('.card-title.text-center').text('💰 Year ' + year + ' Summary');
+    //         $('.total-collection').text('₱ ' + total.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+    //         $('.average-monthly').text('₱' + avgMonthly.toFixed(2).toLocaleString('en-PH'));
+    //         $('.highest-month').text('₱ ' + maxMonthValue.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+    //         $('.highest-month').prev().find('span').text('Highest Month (' + maxMonthName + ')');
+    //         $('.lowest-month').text('₱ ' + minMonthValue.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+    //         $('.lowest-month').prev().find('span').text('Lowest Month (' + minMonthName + ')');
+    //     }
+    // });
+
+    $(document).ready(function () {
+        const ctx = document.getElementById('paymentChart').getContext('2d');
+        const monthlyData = <?php echo json_encode($monthly_payments); ?>;
+        const months = <?php echo json_encode($months); ?>;
+        const currentYear = <?php echo $current_year; ?>;
+
+        let paymentChart;
+
+        // Function to format currency
+        function formatCurrency(amount) {
+            return '₱' + amount.toLocaleString('en-PH', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Create the chart with gradient
+        paymentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Payment Amount',
+                    data: monthlyData,
+                    backgroundColor: function (context) {
+                        const chart = context.chart;
+                        const { ctx, chartArea } = chart;
+
+                        if (!chartArea) {
+                            return '#4dabf7';
+                        }
+
+                        const gradient = ctx.createLinearGradient(
+                            0, chartArea.top,
+                            0, chartArea.bottom
+                        );
+
+                        gradient.addColorStop(0, '#4dabf7');
+                        gradient.addColorStop(0.7, '#a5d8ff');
+                        gradient.addColorStop(1, '#ffffff');
+
+                        return gradient;
+                    },
+                    borderColor: 'rgba(41, 128, 185, 0.8)',
+                    borderWidth: 1.5,
+                    borderRadius: 6,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: false,
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#4dabf7',
+                        borderWidth: 1,
+                        cornerRadius: 6,
+                        callbacks: {
+                            label: function (context) {
+                                const value = context.raw;
+                                const total = monthlyData.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                return [
+                                    formatCurrency(value),
+                                    `(${percentage}% of total)`
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#6c757d',
+                            callback: function (value) {
+                                return formatCurrency(value);
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Amount (₱)',
+                            color: '#495057',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#495057',
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Load available years
+        $.ajax({
+            url: '<?php echo site_url("View_ui_cont/get_years"); ?>',
+            method: 'GET',
+            dataType: 'json',
+            success: function (years) {
+                const yearSelect = $('#yearSelect');
+                yearSelect.empty();
+
+                years.forEach(function (year) {
+                    const selected = year == currentYear ? 'selected' : '';
+                    yearSelect.append(`<option value="${year}" ${selected}>${year}</option>`);
+                });
+            }
+        });
+
+        // Handle data type change
+        $('#dataTypeSelect').change(function () {
+            const dataType = $(this).val();
+            const year = $('#yearSelect').val();
+            loadChartData(dataType, year);
+        });
+
+        // Handle year change
+        $('#yearSelect').change(function () {
+            const dataType = $('#dataTypeSelect').val();
+            const year = $(this).val();
+            loadChartData(dataType, year);
+        });
+
+        // Function to load chart data
+        function loadChartData(dataType, year) {
+            let url = '';
+
+            switch (dataType) {
+                case 'payments':
+                    url = '<?php echo site_url("View_ui_cont/get_payment_chart_data/"); ?>' + year;
+                    break;
+                case 'pullout':
+                    url = '<?php echo site_url("View_ui_cont/get_pullout_chart_data/"); ?>' + year;
+                    break;
+                case 'expenses':
+                    url = '<?php echo site_url("View_ui_cont/get_expenses_chart_data/"); ?>' + year;
+                    break;
+            }
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Update chart data
+                        paymentChart.data.datasets[0].data = response.data;
+                        paymentChart.data.datasets[0].label = response.label || getDataTypeLabel(dataType);
+                        paymentChart.update();
+
+                        // Update the year suffix only
+                        $('#chartTitleSuffix').text(`${response.year}`);
+
+                        // Update the data type select value
+                        $('#dataTypeSelect').val(dataType);
+
+                        // Update summary card
+                        updateYearSummary(response.data, year, response.year_total);
+                    }
+                }
+            });
+        }
+
+        function getDataTypeLabel(dataType) {
+            switch (dataType) {
+                case 'payments': return 'Payment Amount';
+                case 'pullout': return 'Pull Out Amount';
+                case 'expenses': return 'Expenses Amount';
+                default: return 'Amount';
+            }
+        }
+
+        function getDataTypeTitle(dataType) {
+            switch (dataType) {
+                case 'payments': return 'Monthly Payments';
+                case 'pullout': return 'Monthly Pull Out';
+                case 'expenses': return 'Monthly Expenses';
+                default: return 'Monthly Data';
+            }
+        }
+
+        function updateYearSummary(data, year, yearTotal = null) {
+            const total = yearTotal || data.reduce((a, b) => a + b, 0);
+            const avgMonthly = total / 12;
+            const maxMonthValue = Math.max(...data);
+            const maxMonthIndex = data.indexOf(maxMonthValue);
+            const maxMonthName = months[maxMonthIndex];
+            const minMonthValue = Math.min(...data.filter(val => val > 0));
+            const minMonthIndex = data.indexOf(minMonthValue);
+            const minMonthName = months[minMonthIndex];
+
+            // Update summary card
+            $('.card-title.text-center').text('💰 Year ' + year + ' Summary');
+            // $('.total-collection').text(formatCurrency(total));
+            $('.total-collection').text('₱ ' + Number(total).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }));
+
+            $('.average-monthly').text('₱' + avgMonthly.toFixed(2).toLocaleString('en-PH'));
+            $('.highest-month').text('₱ ' + maxMonthValue.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+            $('.highest-month').prev().find('span').text('Highest Month (' + maxMonthName + ')');
+            $('.lowest-month').text('₱ ' + minMonthValue.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+            $('.lowest-month').prev().find('span').text('Lowest Month (' + minMonthName + ')');
+
+            // $('.average-monthly').text(formatCurrency(avgMonthly));
+            // $('.highest-month').text(formatCurrency(maxMonthValue));
+            // $('.highest-month').prev().find('span').text('Highest Month (' + maxMonthName + ')');
+            // $('.lowest-month').text(formatCurrency(minMonthValue));
+            // $('.lowest-month').prev().find('span').text('Lowest Month (' + minMonthName + ')');
+
+            // Update progress bars (optional)
+            $('.progress-bar.bg-success').css('width', '100%');
+            $('.progress-bar.bg-primary').css('width', min(100, (avgMonthly / Math.max(total, 1)) * 100) + '%');
+            $('.progress-bar.bg-warning').css('width', maxMonthValue ? (maxMonthValue / Math.max(total, 1)) * 100 : 0 + '%');
+            $('.progress-bar.bg-info').css('width', minMonthValue ? (minMonthValue / Math.max(total, 1)) * 100 : 0 + '%');
+        }
+
+        // Helper functions
+        function min(a, b) {
+            return a < b ? a : b;
+        }
+
+        function max(a, b) {
+            return a > b ? a : b;
+        }
+    });
 </script>

@@ -349,7 +349,7 @@
         #content main .table-data .order table th {
             font-size: 13px;
             text-align: left;
-            padding-left: 0px;
+            padding-left: 5px;
             /* background: silver; */
             background: #f8f9fa;
         }
@@ -482,35 +482,35 @@
         style="height: 50px; background-color: #ffffffff; position: fixed; top: 0; width: 100%; z-index: 1050; padding:0">
         <a class="navbar-brand d-flex align-items-center" style="margin-left:120px;" href="<?= base_url(); ?>dashboard"
             style="height: 100%;">
-            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 30px;">
+            <img src="<?= base_url(); ?>assets/images/loan1.png" alt="Logo" style="height: 30px;">
         </a>
 
         <ul class="navbar-nav flex-row align-items-center me-auto" style="margin: 0; padding: 0; column-gap: 12px;">
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
                 <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'dashboard') ? 'active-nav' : '' ?>"
                     href="<?= base_url(); ?>dashboard">
-                    <i class='bx  bxs-dashboard'></i>
+                    <i class="bx bx-pulse"></i>
                     <span class="menu-label">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
                 <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'client') ? 'active-nav' : '' ?>"
                     href="<?= base_url(); ?>client">
-                    <i class='bx bxs-user'></i>
+                    <i class='bx bx-user'></i>
                     <span class="menu-label">Client</span>
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
                 <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'pull_out') ? 'active-nav' : '' ?>"
                     href="<?= base_url(); ?>pull_out">
-                    <i class='bx bxs-file'></i>
+                    <i class='bx bx-file'></i>
                     <span class="menu-label">Pull Out</span>
                 </a>
             </li>
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
                 <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'expenses') ? 'active-nav' : '' ?>"
                     href="<?= base_url(); ?>expenses">
-                    <i class="bx bxs-wallet"></i>
+                    <i class="bx bx-wallet"></i>
                     <span class="menu-label">Expenses</span>
                 </a>
             </li>

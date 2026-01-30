@@ -59,11 +59,12 @@
                 <table id="client_table" class="table table-hover" style="width:100%">
                     <thead class="table-secondary">
                         <tr>
-                            <th style="width:50px; text-align:center">ID #</th>
+                            <th style="width:30px; text-align:center">ID #</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
                             <th>CONTACT NO.</th>
                             <th style="width:30px">COUNT</th>
+                            <th style="width:100px">TOTAL AMT</th>
                             <th>DATE ADDED</th>
                             <th style="width:150px; text-align:center">ACTION</th>
                         </tr>
@@ -558,6 +559,12 @@
             },
             { data: 'contact_no' },
             { data: 'loan_count', class: 'text-center' },
+            {
+                data: 'total_loan_amount', class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
             { data: 'date_added', class: 'text-center' },
             {
                 data: 'id',
@@ -871,8 +878,8 @@
                     let due = new Date(loan.due_date);
                     let dueDateOnly = due.toISOString().split('T')[0];
 
-                    // let today = new Date();
-                    let today = new Date("2026-05-22");
+                    let today = new Date();
+                    // let today = new Date("2026-05-22");
                     let todayDateOnly = today.toISOString().split('T')[0];
 
                     const status = loan.status;
@@ -1111,8 +1118,8 @@
 
         const due_date = response[0].due_date;
         const due_date_obj = new Date(due_date);
-        const today = new Date("2026-05-22");
-        // const today = new Date();
+        // const today = new Date("2026-05-22");
+        const today = new Date();
 
         const over_due = today - due_date_obj;
 

@@ -39,7 +39,8 @@ class Monitoring_cont extends CI_Controller
             a.contact_no_1,
             a.contact_no_2,
             CONCAT(a.contact_no_1, " | ", a.contact_no_2) AS contact_no,
-            COUNT(b.id) AS loan_count
+            COUNT(b.id) AS loan_count,
+            COALESCE(SUM(b.total_amt), 0) AS total_loan_amount
         ');
 
         $this->db->from('tbl_client as a');
