@@ -133,6 +133,8 @@
     </div>
 <?php endif; ?>
 
+<?php extract($data ?? [], EXTR_SKIP); ?>
+
 <div class="row px-3">
     <ul class="box-info">
 

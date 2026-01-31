@@ -20,11 +20,11 @@ class View_ui_cont extends CI_Controller
             ->count_all_results('tbl_client');
 
         $this->db->select_sum('
-    CASE 
-        WHEN tbl_loan.status = "overdue" THEN COALESCE(p.payment_total, 0)
-        ELSE tbl_loan.total_amt
-    END',
-            'total_amt'
+            CASE 
+                WHEN tbl_loan.status = "overdue" THEN COALESCE(p.payment_total, 0)
+                ELSE tbl_loan.total_amt
+            END',
+                    'total_amt'
         );
 
         // Subquery to sum payments per loan

@@ -246,7 +246,7 @@
             color: var(--bs-dark);
             /* color: dark; */
 
-            font-size: 12px;
+            font-size: 14px;
         }
 
         .navbar .container-fluid {

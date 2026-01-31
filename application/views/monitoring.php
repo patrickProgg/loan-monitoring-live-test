@@ -1028,10 +1028,16 @@
             const cl_id = $('#header_id').val();
             const fullname = $('#header_name').text();
             const address = $('#header_address').text();
+            const running_bal = $('#header_running_balance').text();
 
             let input = $(this);
             let payment = input.val().trim();
             let loan_id = $('#header_loan_id').val();
+
+            if(payment > running_bal){
+                Swal.fire('Invalid', 'Payment must not exceed running balance', 'warning');
+                return;
+            }
 
             let row = input.closest('tr');
             let textDate = row.find('td:eq(1)').text().trim();
@@ -1366,6 +1372,8 @@
     $('#editLoanDetails').off('click').on('click', function () {
         const btn = $(this);
 
+        $('#dateDropdownBtn').prop('disabled', true);
+
         $('#cancelEdit').show();
 
         if (!btn.data('original')) {
@@ -1391,7 +1399,7 @@
                     const numericValue = currentText.replace(/,/g, ''); // remove commas
 
                     const input = document.createElement('input');
-                    input.type = 'text';
+                    input.type = 'number';
                     input.value = numericValue;
                     input.style.width = '80px';
                     input.classList.add('form-control', 'form-control-sm', 'd-inline');
@@ -1496,7 +1504,8 @@
                         timer: 500,
                         timerProgressBar: true,
                     });
-
+                    
+                    $('#dateDropdownBtn').prop('disabled', false);
                     $('#header_date_arr').val($('#header_date_arr option:first').val()).trigger('change');
                     openViewModal(id, full_name, address);
                     $('#cancelEdit').hide();
