@@ -21,7 +21,7 @@ class Monitoring_cont extends CI_Controller
         $orderDir = isset($order[0]['dir']) ? $order[0]['dir'] : 'DESC';
 
         $columns = [
-            0 => 'a.id',
+            0 => 'a.acc_no',
             1 => 'a.full_name',
             2 => 'a.address',
             3 => 'a.date_added',
@@ -35,6 +35,7 @@ class Monitoring_cont extends CI_Controller
 
         $this->db->select('
             a.id,
+            a.acc_no,
             a.full_name,
             a.address,
             a.date_added,
@@ -104,6 +105,7 @@ class Monitoring_cont extends CI_Controller
         $this->db->trans_start();
 
         $client_details = array(
+            'acc_no' => $this->input->post('acc_no'),
             'full_name' => $this->input->post('full_name'),
             'address' => $this->input->post('address'),
             'contact_no_1' => $this->input->post('contact_no_1'),
@@ -150,6 +152,7 @@ class Monitoring_cont extends CI_Controller
         $id = $this->input->post('id');
 
         $client_details = array(
+            'acc_no' => $this->input->post('edit_acc_no'),
             'full_name' => $this->input->post('edit_full_name'),
             'address' => $this->input->post('edit_address'),
             'contact_no_1' => $this->input->post('edit_contact_no_1'),

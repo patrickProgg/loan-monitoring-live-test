@@ -13,8 +13,12 @@ class View_ui_cont extends CI_Controller
     {
         $this->dashboard();
     }
+    
     public function dashboard()
     {
+        ini_set('max_execution_time', 300); // 5 minutes
+        ini_set('memory_limit', '512M'); // 512MB
+
         $data['total_client'] = $this->db
             ->where('status !=', '1')
             ->count_all_results('tbl_client');
@@ -61,7 +65,7 @@ class View_ui_cont extends CI_Controller
             ->row()
             ->amt;
 
-        // Subquery: total payments per loan
+        // In your controller, after fetching the data:
         $payment_subquery = "
             (SELECT loan_id, SUM(amt) AS total_paid
             FROM tbl_payment
@@ -76,19 +80,72 @@ class View_ui_cont extends CI_Controller
             SUM(CASE WHEN l.status = 'ongoing' THEN 1 ELSE 0 END) AS ongoing_loans,
             COALESCE(SUM(p.total_paid), 0) AS total_paid
         ")
-            ->from('tbl_client c')
-            ->join('tbl_loan l', 'c.id = l.cl_id', 'left')
-            ->join($payment_subquery, 'l.id = p.loan_id', 'left', false)
-            ->where('c.status !=', '1')
-            ->group_by('c.id')
-            ->having('total_loans > 0')
-            ->order_by('overdue_loans', 'ASC')
-            ->order_by('completed_loans', 'DESC')
-            ->limit(5);
+        ->from('tbl_client c')
+        ->join('tbl_loan l', 'c.id = l.cl_id', 'left')
+        ->join($payment_subquery, 'l.id = p.loan_id', 'left', false)
+        ->where('c.status !=', '1')
+        ->group_by('c.id')
+        ->having('total_loans > 0')
+        ->having('completed_loans > 0')
+        ->limit(10); // Get more than needed
 
         $query = $this->db->get();
-        $data['good_payors'] = $query->result_array();
+        $payors = $query->result_array();
 
+        // Calculate performance score for each payor and sort
+        foreach ($payors as &$payor) {
+            $score = $payor['completed_loans'] * 10;
+            $score -= $payor['overdue_loans'] * 20;
+            if ($payor['total_loans'] > 0) {
+                $score += ($payor['completed_loans'] / $payor['total_loans']) * 100;
+            }
+            $payor['performance_score'] = round($score, 2);
+        }
+
+        // Sort by performance score (descending)
+        usort($payors, function($a, $b) {
+            return $b['performance_score'] <=> $a['performance_score'];
+        });
+
+        // Take top 5
+        $data['good_payors'] = array_slice($payors, 0, 5);
+
+// In your dashboard() function:
+$selected_date = $this->input->get('selected_date') ?: date('Y-m-d');
+$range_type = $this->input->get('range_type') ?: 'day';
+
+
+// Calculate dates
+// Calculate dates
+if ($range_type === 'month') {
+    $start_date = date('Y-m-01', strtotime($selected_date));
+    $end_date = date('Y-m-t', strtotime($selected_date));
+} elseif ($range_type === 'week') {
+    $start_date = date('Y-m-d', strtotime('monday this week', strtotime($selected_date)));
+    $end_date = date('Y-m-d', strtotime('sunday this week', strtotime($selected_date)));
+} else {
+    $start_date = $selected_date;
+    $end_date = $selected_date;
+}
+
+// Query with table aliases
+$this->db->select_sum('p.amt', 'total_payments')
+    ->from('tbl_payment p')
+    ->join('tbl_loan l', 'l.id = p.loan_id', 'left')
+    ->join('tbl_client c', 'c.id = l.cl_id', 'left')
+    ->where('c.status !=', '1')
+    ->where('DATE(p.payment_for) >=', $start_date)
+    ->where('DATE(p.payment_for) <=', $end_date);
+
+$query = $this->db->get();
+$row = $query->row();
+
+// Store ALL variables in $data array
+$data['range_total'] = $row ? ($row->total_payments ?: 0) : 0;
+$data['selected_date'] = $selected_date;
+$data['range_type'] = $range_type;
+$data['start_date'] = $start_date;
+$data['end_date'] = $end_date;
 
         // NEW: Get monthly payment data for the current year
         $current_year = date('Y');
@@ -286,6 +343,7 @@ class View_ui_cont extends CI_Controller
             $data['loan_status_counts'][$row['status']] = $row['count'];
             $data['loan_status_totals'][$row['status']] = $row['total'];
         }
+        
         // ========== END LOAN STATISTICS ==========
 
         // Load views

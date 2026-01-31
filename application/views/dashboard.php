@@ -126,6 +126,30 @@
     .bg-warning-light {
         background-color: rgba(255, 193, 7, 0.1) !important;
     }
+
+.date-input-wrapper {
+    position: relative;
+}
+.date-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 10;
+}
+.date-input {
+    padding-left: 40px;
+    height: 48px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+.date-input:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
 </style>
 <?php if (!empty($show_greeting)): ?>
     <div id="greeting-toast" class="alert alert-primary" style="transition: opacity 1s;">
@@ -193,6 +217,176 @@
             </li>
         </a>
     </ul>
+</div>
+
+
+<div class="row">
+    <!-- Payment Filter Card (Full width on mobile, 8 columns on medium+) -->
+    <div class="col-md-8 px-3">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">💰 Payment Filter</h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Date Range Selector Form -->
+                <form method="GET" action="" class="mb-4" id="dateForm">
+                    <div class="form-group">
+                        <label for="selected_date" class="font-weight-bold mb-2">
+                            <i class="fas fa-calendar text-primary mr-2"></i> Select Payment Date
+                        </label>
+                        <input type="date" 
+                            class="form-control" 
+                            id="selected_date" 
+                            name="selected_date" 
+                            value="<?php echo $selected_date; ?>"
+                            onchange="document.getElementById('dateForm').submit()"
+                            style="width: 200px;">
+                    </div>
+                </form>
+                
+                <!-- Result Display -->
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <?php
+                        // Format dates for display
+                        $display_start = date('M j, Y', strtotime($start_date));
+                        $display_end = date('M j, Y', strtotime($end_date));
+                        $is_single_day = ($range_type == 'day');
+                        ?>
+                        
+                        <h4 class="text-muted mb-3">
+                            <?php if ($is_single_day): ?>
+                                Payments for <span class="text-primary"><?php echo $display_start; ?></span>
+                            <?php else: ?>
+                                Payments from 
+                                <span class="text-primary"><?php echo $display_start; ?></span>
+                                to 
+                                <span class="text-primary"><?php echo $display_end; ?></span>
+                            <?php endif; ?>
+                        </h4>
+                        
+                        <div class="display-4 font-weight-bold text-success mb-3">
+                            ₱<?php echo number_format($range_total, 2); ?>
+                        </div>
+                        
+                        <div class="text-muted">
+                            <i class="fas fa-calendar-alt"></i> 
+                            <?php 
+                            if ($is_single_day) {
+                                echo 'Single day';
+                            } else {
+                                $days = (strtotime($end_date) - strtotime($start_date)) / (60*60*24) + 1;
+                                echo $days . ' day' . ($days > 1 ? 's' : '');
+                            }
+                            ?>
+                            
+                            <?php if ($range_type == 'day' && $selected_date == date('Y-m-d')): ?>
+                                <span class="badge badge-success ml-2">Today</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        Quick select: 
+                        <a href="?selected_date=<?php echo date('Y-m-d'); ?>&range_type=day" 
+                           class="btn btn-sm btn-outline-secondary">
+                            Today
+                        </a>
+                        <a href="?selected_date=<?php echo date('Y-m-d'); ?>&range_type=week" 
+                           class="btn btn-sm btn-outline-secondary">
+                            This Week
+                        </a>
+                        <a href="?selected_date=<?php echo date('Y-m-d'); ?>&range_type=month" 
+                           class="btn btn-sm btn-outline-secondary">
+                            This Month
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Status Cards - Beside Payment Filter on medium+, below on mobile -->
+    <div class="col-md-4 px-3">
+        <div class="row">
+            <!-- Ongoing Loans -->
+            <div class="col-md-12 mb-4 mt-2">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body py-2">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Ongoing Loans
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <?php echo $loan_status_counts['ongoing'] ?? 0; ?>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge badge-primary">Active</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-sync-alt fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overdue Loans -->
+            <div class="col-md-12 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body py-2">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Overdue Loans
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <?php echo $loan_status_counts['overdue'] ?? 0; ?>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge badge-danger">Attention Needed</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Loans -->
+            <div class="col-md-12">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body py-2">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Completed Loans
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <?php echo $loan_status_counts['completed'] ?? 0; ?>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="badge badge-success">Paid Off</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -312,7 +506,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12 px-3">
+    <div class="col-md-12 px-3 pb-5">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -387,79 +581,6 @@
     </div>
 </div>
 
-<div class="row px-1 pb-5">
-    <!-- Ongoing Loans -->
-    <div class="col-md-4 mb-3">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body py-2">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Ongoing Loans
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo $loan_status_counts['ongoing'] ?? 0; ?>
-                        </div>
-                        <div class="mt-2">
-                            <span class="badge badge-primary">Active</span>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-sync-alt fa-2x text-primary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Overdue Loans -->
-    <div class="col-md-4 mb-3">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body py-2">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Overdue Loans
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo $loan_status_counts['overdue'] ?? 0; ?>
-                        </div>
-                        <div class="mt-2">
-                            <span class="badge badge-danger">Attention Needed</span>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Completed Loans -->
-    <div class="col-md-4 mb-3">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body py-2">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Completed Loans
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <?php echo $loan_status_counts['completed'] ?? 0; ?>
-                        </div>
-                        <div class="mt-2">
-                            <span class="badge badge-success">Paid Off</span>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-check-circle fa-2x text-success"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <script>
@@ -720,204 +841,215 @@
     });
 
     $(document).ready(function () {
-        const goodPayorsCtx = document.getElementById('goodPayorsChart').getContext('2d');
-        let goodPayorsChart;
+    const goodPayorsCtx = document.getElementById('goodPayorsChart').getContext('2d');
+    let goodPayorsChart;
 
-        // Initial data from PHP
-        const initialGoodPayors = <?php echo json_encode($good_payors); ?>;
+    // Initial data from PHP
+    const initialGoodPayors = <?php echo json_encode($good_payors); ?>;
 
-        // Prepare chart data
-        // const payorNames = initialGoodPayors.map(p => p.full_name);
-        const payorNames = initialGoodPayors.map(p => {
-            if (!p.full_name) return '';
-            return p.full_name.split(' ').map(word =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-            ).join(' ');
-        });
-        const overdueCounts = initialGoodPayors.map(p => p.overdue_loans);
-        const completedCounts = initialGoodPayors.map(p => p.completed_loans);
-        const ongoingCounts = initialGoodPayors.map(p => p.ongoing_loans);
+    // Sort the data by performance score (if not already sorted in PHP)
+    const sortedPayors = [...initialGoodPayors].sort((a, b) => {
+        // Calculate performance score if not already present
+        const scoreA = a.performance_score || calculateScore(a);
+        const scoreB = b.performance_score || calculateScore(b);
+        return scoreB - scoreA; // Descending order
+    });
 
-        // Create the chart
+    // Helper function to calculate performance score
+    function calculateScore(payor) {
+        let score = payor.completed_loans * 10;
+        score -= payor.overdue_loans * 20;
+        score += (payor.total_loans > 0) ? (payor.completed_loans / payor.total_loans) * 100 : 0;
+        return score;
+    }
+
+    // Prepare chart data from SORTED payors
+    const payorNames = sortedPayors.map(p => {
+        if (!p.full_name) return '';
+        return p.full_name.split(' ').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        ).join(' ');
+    });
+
+    // Performance scores for the chart
+    const performanceScores = sortedPayors.map(p => 
+        p.performance_score || calculateScore(p)
+    );
+
+    // Create horizontal bar chart (already in your code, just need to update data source)
+    function createHorizontalBarChart() {
+        if (goodPayorsChart) {
+            goodPayorsChart.destroy();
+        }
+
         goodPayorsChart = new Chart(goodPayorsCtx, {
             type: 'bar',
             data: {
                 labels: payorNames,
-                datasets: [
-                    {
-                        label: 'Completed Loans',
-                        data: completedCounts,
-                        backgroundColor: 'rgba(76, 175, 80, 0.7)',
-                        borderColor: 'rgba(76, 175, 80, 1)',
-                        borderWidth: 1
+                datasets: [{
+                    label: 'Performance Score (Higher is Better)',
+                    data: performanceScores,
+                    backgroundColor: function (context) {
+                        const chart = context.chart;
+                        const { ctx, chartArea } = chart;
+                        const value = context.dataset.data[context.dataIndex];
+                        const rank = context.dataIndex + 1;
+
+                        if (!chartArea) {
+                            if (rank === 1) return 'rgba(255, 193, 7, 0.8)'; // Gold for 1st
+                            if (rank === 2) return 'rgba(192, 192, 192, 0.8)'; // Silver for 2nd
+                            if (rank === 3) return 'rgba(205, 127, 50, 0.8)'; // Bronze for 3rd
+                            if (value >= 80) return 'rgba(76, 175, 80, 0.7)';
+                            if (value >= 50) return 'rgba(33, 150, 243, 0.7)';
+                            return 'rgba(244, 67, 54, 0.7)';
+                        }
+
+                        // Right-to-left gradient
+                        const gradient = ctx.createLinearGradient(
+                            chartArea.right, 0,
+                            chartArea.left, 0
+                        );
+
+                        if (rank === 1) {
+                            gradient.addColorStop(0, 'rgba(255, 193, 7, 0.9)');
+                            gradient.addColorStop(0.7, 'rgba(255, 213, 79, 0.7)');
+                            gradient.addColorStop(1, 'rgba(255, 248, 200, 0.5)');
+                        } else if (rank === 2) {
+                            gradient.addColorStop(0, 'rgba(192, 192, 192, 0.9)');
+                            gradient.addColorStop(0.7, 'rgba(211, 211, 211, 0.7)');
+                            gradient.addColorStop(1, 'rgba(245, 245, 245, 0.5)');
+                        } else if (rank === 3) {
+                            gradient.addColorStop(0, 'rgba(205, 127, 50, 0.9)');
+                            gradient.addColorStop(0.7, 'rgba(210, 140, 70, 0.7)');
+                            gradient.addColorStop(1, 'rgba(255, 235, 215, 0.5)');
+                        } else if (value >= 80) {
+                            gradient.addColorStop(0, 'rgba(76, 175, 80, 0.9)');
+                            gradient.addColorStop(0.7, 'rgba(129, 199, 132, 0.7)');
+                            gradient.addColorStop(1, 'rgba(240, 255, 240, 0.5)');
+                        } else if (value >= 50) {
+                            gradient.addColorStop(0, 'rgba(33, 150, 243, 0.9)');
+                            gradient.addColorStop(0.7, 'rgba(100, 181, 246, 0.7)');
+                            gradient.addColorStop(1, 'rgba(227, 242, 253, 0.5)');
+                        } else {
+                            gradient.addColorStop(0, 'rgba(244, 67, 54, 0.9)');
+                            gradient.addColorStop(0.7, 'rgba(239, 83, 80, 0.7)');
+                            gradient.addColorStop(1, 'rgba(255, 235, 238, 0.5)');
+                        }
+
+                        return gradient;
                     },
-                    {
-                        label: 'Ongoing Loans',
-                        data: ongoingCounts,
-                        backgroundColor: 'rgba(33, 150, 243, 0.7)',
-                        borderColor: 'rgba(33, 150, 243, 1)',
-                        borderWidth: 1
+                    borderColor: function (context) {
+                        const value = context.dataset.data[context.dataIndex];
+                        const rank = context.dataIndex + 1;
+                        
+                        if (rank === 1) return 'rgba(218, 165, 32, 1)';
+                        if (rank === 2) return 'rgba(169, 169, 169, 1)';
+                        if (rank === 3) return 'rgba(139, 90, 43, 1)';
+                        if (value >= 80) return 'rgba(56, 142, 60, 1)';
+                        if (value >= 50) return 'rgba(25, 118, 210, 1)';
+                        return 'rgba(198, 40, 40, 1)';
                     },
-                    {
-                        label: 'Overdue Loans',
-                        data: overdueCounts,
-                        backgroundColor: 'rgba(255, 152, 0, 0.7)',
-                        borderColor: 'rgba(255, 152, 0, 1)',
-                        borderWidth: 1
-                    }
-                ]
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
             },
             options: {
+                indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
+                        display: true,
                         position: 'top',
+                        labels: {
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
                     },
                     title: {
                         display: true,
-                        text: 'Loan Status Distribution by Client'
+                        text: 'Top Good Payors - Performance Score Ranking',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        }
                     },
                     tooltip: {
                         callbacks: {
-                            label: function (context) {
-                                return `${context.dataset.label}: ${context.raw}`;
+                            title: function(context) {
+                                const rank = context[0].dataIndex + 1;
+                                const rankText = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                                return `${rankText} ${context[0].label}`;
+                            },
+                            label: function(context) {
+                                return `Score: ${context.parsed.x.toFixed(1)}`;
+                            },
+                            afterLabel: function (context) {
+                                const payor = sortedPayors[context.dataIndex];
+                                const score = performanceScores[context.dataIndex];
+                                const rank = context.dataIndex + 1;
+                                
+                                return [
+                                    `Rank: ${rank}/${sortedPayors.length}`,
+                                    `Total Loans: ${payor.total_loans}`,
+                                    `Completed: ${payor.completed_loans} (${payor.total_loans > 0 ? Math.round((payor.completed_loans / payor.total_loans) * 100) : 0}%)`,
+                                    `Overdue: ${payor.overdue_loans}`,
+                                    `Ongoing: ${payor.ongoing_loans}`,
+                                    `Amount Paid: ₱${parseFloat(payor.total_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+                                ];
                             }
                         }
                     }
                 },
                 scales: {
-                    y: {
+                    x: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Number of Loans'
+                            text: 'Performance Score',
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
                         },
-                        stacked: false
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
                     },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Clients'
+                    y: {
+                        grid: {
+                            display: false
                         },
                         ticks: {
-                            maxRotation: 45,
-                            minRotation: 45
+                            padding: 15,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            callback: function(value, index) {
+                                const rank = index + 1;
+                                const rankIcon = rank === 1 ? '🥇 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : '';
+                                return rankIcon + this.getLabelForValue(value);
+                            }
                         }
                     }
+                },
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutQuart'
                 }
             }
         });
+    }
 
-        // Alternative: Horizontal bar chart (better for long names)
-        function createHorizontalBarChart() {
-            if (goodPayorsChart) {
-                goodPayorsChart.destroy();
-            }
-
-            goodPayorsChart = new Chart(goodPayorsCtx, {
-                type: 'bar',
-                data: {
-                    labels: payorNames,
-                    datasets: [{
-                        label: 'Performance Score (Higher is Better)',
-                        data: initialGoodPayors.map(p => {
-                            let score = p.completed_loans * 10;
-                            score -= p.overdue_loans * 20;
-                            score += (p.total_loans > 0) ? (p.completed_loans / p.total_loans) * 100 : 0;
-                            return score;
-                        }),
-                        backgroundColor: function (context) {
-                            const chart = context.chart;
-                            const { ctx, chartArea } = chart;
-                            const value = context.dataset.data[context.dataIndex];
-
-                            if (!chartArea) {
-                                if (value >= 80) return 'rgba(76, 175, 80, 0.7)';
-                                if (value >= 50) return 'rgba(255, 193, 7, 0.7)';
-                                return 'rgba(244, 67, 54, 0.7)';
-                            }
-
-                            // Right-to-left gradient
-                            const gradient = ctx.createLinearGradient(
-                                chartArea.right, 0,   // start at the right
-                                chartArea.left, 0     // end at the left
-                            );
-
-                            if (value >= 80) {
-                                gradient.addColorStop(0, 'rgba(76, 175, 80, 0.9)');
-                                gradient.addColorStop(0.7, 'rgba(129, 199, 132, 0.7)');
-                                gradient.addColorStop(1, 'rgb(255, 255, 255)');
-                            } else if (value >= 50) {
-                                gradient.addColorStop(0, 'rgba(255, 193, 7, 0.9)');
-                                gradient.addColorStop(0.7, 'rgba(255, 213, 79, 0.7)');
-                                gradient.addColorStop(1, 'rgb(255, 255, 255)');
-                            } else {
-                                gradient.addColorStop(0, 'rgba(244, 67, 54, 0.9)');
-                                gradient.addColorStop(0.7, 'rgba(239, 83, 80, 0.7)');
-                                gradient.addColorStop(1, 'rgba(255, 255, 255, 0.99)');
-                            }
-
-                            return gradient;
-                        },
-                        borderColor: function (context) {
-                            const value = context.dataset.data[context.dataIndex];
-                            if (value >= 80) return 'rgba(56, 155, 60, 0.8)';
-                            if (value >= 50) return 'rgba(235, 173, 0, 0.8)';
-                            return 'rgba(224, 47, 34, 0.8)';
-                        },
-                        borderWidth: 1.5,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Good Payors Performance Score'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                afterLabel: function (context) {
-                                    const payor = initialGoodPayors[context.dataIndex];
-                                    return [
-                                        `Total Loans: ${payor.total_loans}`,
-                                        `Completed: ${payor.completed_loans} (${payor.total_loans > 0 ? Math.round((payor.completed_loans / payor.total_loans) * 100) : 0}%)`,
-                                        `Overdue: ${payor.overdue_loans}`,
-                                        `Amount Paid: ₱${parseFloat(payor.total_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
-                                    ];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Performance Score'
-                            },
-                        },
-                        y: {
-                            grid: {
-                                display: false // Removes vertical grid lines
-                            },
-                            ticks: {
-                                padding: 10 // Adds spacing between labels and bars
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        // Initialize with horizontal bar chart
-        createHorizontalBarChart();
-    });
+    // Initialize with horizontal bar chart
+    createHorizontalBarChart();
+});
 </script>

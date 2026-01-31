@@ -59,7 +59,7 @@
                 <table id="client_table" class="table table-hover" style="width:100%">
                     <thead class="table-secondary">
                         <tr>
-                            <th style="width:30px; text-align:center">ID #</th>
+                            <th style="width:100px; text-align:center">ACC #</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
                             <th style="width:220px">CONTACT NO.</th>
@@ -89,7 +89,12 @@
                         <div class="container">
                             <form id="client_form">
                                 <div class="mb-3 row align-items-center">
-                                    <div class="col-md-12 position-relative">
+                                    <div class="col-md-3 position-relative">
+                                        <label for="acc_no" class="form-label">Acc No.</label>
+                                        <input type="text" class="form-control" placeholder="Enter Acc No."
+                                            id="acc_no" name="acc_no" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-9 position-relative">
                                         <label for="fullName" class="form-label">Full Name</label>
                                         <input type="text" class="form-control" placeholder="Enter Fullname"
                                             id="full_name" name="full_name" autocomplete="off">
@@ -177,7 +182,12 @@
                         <div class="container">
                             <form id="edit_client_form">
                                 <div class="mb-3 row align-items-center">
-                                    <div class="col-md-12 position-relative">
+                                     <div class="col-md-3 position-relative">
+                                        <label for="edit_acc_no" class="form-label">Acc No.</label>
+                                        <input type="text" class="form-control" placeholder="Enter Acc No."
+                                            id="edit_acc_no" name="edit_acc_no" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-9 position-relative">
                                         <label for="fullName" class="form-label">Full Name</label>
                                         <input type="text" class="form-control" placeholder="Enter Fullname"
                                             id="edit_full_name" name="edit_full_name" autocomplete="off">
@@ -541,7 +551,7 @@
             //     }
             // },
             {
-                data: 'id',
+                data: 'acc_no',
                 class: 'text-center'
             },
             {
@@ -573,7 +583,7 @@
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-outline-success me-1" onclick="openEditModal('${data}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
+                        <button class="btn btn-sm btn-outline-success me-1" onclick="openEditModal('${data}', '${row.acc_no}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         <button class="btn btn-sm btn-outline-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}')">
@@ -658,8 +668,9 @@
 
     $('#capital_amt, #interest, #added_amt').on('input', calculateTotal);
 
-    function openEditModal(id, fullname, address, contact_1, contact_2, date_added) {
+    function openEditModal(id, acc_no, fullname, address, contact_1, contact_2, date_added) {
         $('#editLoaner').modal('show');
+        $('#edit_acc_no').val(acc_no);
         $('#edit_full_name').val(fullname);
         $('#edit_address').val(address);
         $('#edit_contact_no_1').val(contact_1);
@@ -1028,11 +1039,16 @@
             const cl_id = $('#header_id').val();
             const fullname = $('#header_name').text();
             const address = $('#header_address').text();
-            const running_bal = $('#header_running_balance').text();
+            const running_bal = Number(
+            $('#header_running_balance').text().replace(/,/g, '')
+            );
+
 
             let input = $(this);
             let payment = input.val().trim();
             let loan_id = $('#header_loan_id').val();
+            console.log(running_bal);
+            console.log(payment);
 
             if(payment > running_bal){
                 Swal.fire('Invalid', 'Payment must not exceed running balance', 'warning');
