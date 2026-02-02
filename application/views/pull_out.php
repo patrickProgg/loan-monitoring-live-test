@@ -8,7 +8,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 165px;
+        width: 138px;
     }
 
     .total-label {
@@ -45,30 +45,36 @@
                     <div id="customTotalsContainer" style="margin-bottom:10px; display:flex; gap:10px;">
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-receipt me-1"></i> Total Processing Fee
+                                <i class="bx bx-receipt me-1"></i> Processing Fee
                             </div>
                             <div class="total-value" id="totalFee">₱0.00</div>
                         </div>
 
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-purchase-tag me-1"></i> Total Ticket
+                                <i class="bx bx-purchase-tag me-1"></i> Ticket
                             </div>
                             <div class="total-value" id="totalTicket">₱0.00</div>
                         </div>
 
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-line-chart me-1"></i> Total Sharing Profit
+                                <i class="bx bx-line-chart me-1"></i> Sharing Profit
                             </div>
                             <div class="total-value" id="totalProfit">₱0.00</div>
                         </div>
 
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="bx bx-bar-chart me-1"></i> Total Pull Out 2%
+                                <i class="bx bx-bar-chart me-1"></i> Pull Out 2%
                             </div>
                             <div class="total-value" id="totalPullOut">₱0.00</div>
+                        </div>
+                        <div class="total-box">
+                            <div class="total-label">
+                                <i class="fas fa-cash-register me-1"></i> Pull Out Capital
+                            </div>
+                            <div class="total-value" id="totalPullOutCapital">₱0.00</div>
                         </div>
 
                         <div class="total-box">
@@ -89,6 +95,7 @@
                                 <th style="width: 12%; vertical-align: middle;">TICKET AMT</th>
                                 <th style="width: 12%; vertical-align: middle;">PULL OUT <br>SHARING PROFIT</th>
                                 <th style="width: 12%; vertical-align: middle;">PULL OUT 2%</th>
+                                <th style="width: 12%; vertical-align: middle;">PULL OUT CAPITAL</th>
                                 <th style="width: 12%; vertical-align: middle;">TOTAL AMT <br>PULL OUT</th>
                                 <th style="width: 20%; vertical-align: middle; text-align: center;">ACTION</th>
 
@@ -137,10 +144,18 @@
                                             id="pull_out" name="pull_out">
                                     </div>
                                     <div class="col-md-4">
+                                        <label class="form-label">Pull Out Capital</label>
+                                        <input type="number" class="form-control" placeholder="Enter Pull Out Capital"
+                                            id="pull_out_capital" name="pull_out_capital">
+                                    </div>
+                                    <div class="col-md-4">
                                         <label class="form-label">Total Amount Pull Out</label>
                                         <input type="number" class="form-control" id="total_amt" name="total_amt"
                                             readonly>
                                     </div>
+                                </div>
+
+                                <div class="mb-3 row">
                                     <div class="col-md-4 position-relative">
                                         <label class="form-label">Date Pull Out</label>
                                         <input type="date" class="form-control" id="date_added" name="date_added"
@@ -199,6 +214,7 @@
                     $('#totalTicket').text('₱' + parseFloat(json.total_ticket).toLocaleString('en-PH', { minimumFractionDigits: 2 }));
                     $('#totalProfit').text('₱' + parseFloat(json.total_profit).toLocaleString('en-PH', { minimumFractionDigits: 2 }));
                     $('#totalPullOut').text('₱' + parseFloat(json.total_pull_out).toLocaleString('en-PH', { minimumFractionDigits: 2 }));
+                    $('#totalPullOutCapital').text('₱' + parseFloat(json.total_pull_out_capital).toLocaleString('en-PH', { minimumFractionDigits: 2 }));
                     $('#totalAmount').text('₱' + parseFloat(json.total_amt).toLocaleString('en-PH', { minimumFractionDigits: 2 }));
                 }
                 return json.data;
@@ -236,6 +252,13 @@
             },
             {
                 data: 'pull_out',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'pull_out_capital',
                 class: 'text-end',
                 render: function (data, type, row) {
                     return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -324,13 +347,14 @@
         let ticket = parseFloat($('#ticket').val()) || 0;
         let profit = parseFloat($('#profit').val()) || 0;
         let pull_out = parseFloat($('#pull_out').val()) || 0;
+        let pull_out_capital = parseFloat($('#pull_out_capital').val()) || 0;
 
-        let total = process_fee + ticket + profit + pull_out;
+        let total = process_fee + ticket + profit + pull_out + pull_out_capital;
 
         $('#total_amt').val(total.toFixed(2));
     }
 
-    $('#process_fee, #ticket, #profit, #pull_out').on('input', calculateTotal);
+    $('#process_fee, #ticket, #profit, #pull_out, #pull_out_capital').on('input', calculateTotal);
 
     function openModal(action, row) {
 
@@ -353,6 +377,7 @@
             $('#ticket').val(row.ticket);
             $('#profit').val(row.profit_share);
             $('#pull_out').val(row.pull_out);
+            $('#pull_out_capital').val(row.pull_out_capital);
             $('#total_amt').val(row.total_pull_out);
             $('#date_added').val(row.date_added);
         }
@@ -373,6 +398,7 @@
             ticket: parseFloat($('#ticket').val()) || 0,
             profit: parseFloat($('#profit').val()) || 0,
             pull_out: parseFloat($('#pull_out').val()) || 0,
+            pull_out_capital: parseFloat($('#pull_out_capital').val()) || 0,
             total_amt: parseFloat($('#total_amt').val()) || 0,
             date_added: $('#date_added').val().trim()
         };

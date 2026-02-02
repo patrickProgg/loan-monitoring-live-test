@@ -13,17 +13,21 @@ class View_ui_cont extends CI_Controller
     {
         $this->dashboard();
     }
+
     public function dashboard()
     {
+        ini_set('max_execution_time', 300); // 5 minutes
+        ini_set('memory_limit', '512M'); // 512MB
+
         $data['total_client'] = $this->db
             ->where('status !=', '1')
             ->count_all_results('tbl_client');
 
         $this->db->select_sum('
-    CASE 
-        WHEN tbl_loan.status = "overdue" THEN COALESCE(p.payment_total, 0)
-        ELSE tbl_loan.total_amt
-    END',
+            CASE 
+                WHEN tbl_loan.status = "overdue" THEN COALESCE(p.payment_total, 0)
+                ELSE tbl_loan.total_amt
+            END',
             'total_amt'
         );
 
@@ -39,15 +43,15 @@ class View_ui_cont extends CI_Controller
             ->row()
             ->total_amt ?: 0;
 
-
         $data['total_loan_payment'] = $this->db
             ->select_sum('tbl_payment.amt')
             ->join('tbl_loan', 'tbl_loan.id = tbl_payment.loan_id')
             ->join('tbl_client', 'tbl_client.id = tbl_loan.cl_id')
             ->where('tbl_client.status !=', '1')
+            ->where("tbl_payment.payment_for BETWEEN DATE_ADD(tbl_loan.start_date, INTERVAL 1 DAY) AND tbl_loan.due_date", NULL, FALSE)
             ->get('tbl_payment')
             ->row()
-            ->amt;
+            ->amt ?? 0;
 
         $data['total_pull_out'] = $this->db
             ->select_sum('total_pull_out')
@@ -61,10 +65,16 @@ class View_ui_cont extends CI_Controller
             ->row()
             ->amt;
 
-        // Subquery: total payments per loan
+        // In your controller, after fetching the data:
         $payment_subquery = "
             (SELECT loan_id, SUM(amt) AS total_paid
-            FROM tbl_payment
+            FROM tbl_payment 
+            WHERE payment_for BETWEEN DATE_ADD(
+                (SELECT start_date FROM tbl_loan WHERE id = tbl_payment.loan_id), 
+                INTERVAL 1 DAY
+            ) AND (
+                SELECT due_date FROM tbl_loan WHERE id = tbl_payment.loan_id
+            )
             GROUP BY loan_id) p
         ";
 
@@ -82,13 +92,73 @@ class View_ui_cont extends CI_Controller
             ->where('c.status !=', '1')
             ->group_by('c.id')
             ->having('total_loans > 0')
-            ->order_by('overdue_loans', 'ASC')
-            ->order_by('completed_loans', 'DESC')
-            ->limit(5);
+            ->having('completed_loans > 0')
+            ->limit(10); // Get more than needed
 
         $query = $this->db->get();
-        $data['good_payors'] = $query->result_array();
+        $payors = $query->result_array();
 
+        // Calculate performance score for each payor and sort
+        foreach ($payors as &$payor) {
+            $score = $payor['completed_loans'] * 10;
+            $score -= $payor['overdue_loans'] * 20;
+            if ($payor['total_loans'] > 0) {
+                $score += ($payor['completed_loans'] / $payor['total_loans']) * 100;
+            }
+            $payor['performance_score'] = round($score, 2);
+        }
+
+        // Sort by performance score (descending)
+        usort($payors, function ($a, $b) {
+            return $b['performance_score'] <=> $a['performance_score'];
+        });
+
+        // Take top 5
+        $data['good_payors'] = array_slice($payors, 0, 5);
+
+        // In your dashboard() function:
+        $selected_date = $this->input->get('selected_date') ?: date('Y-m-d');
+        $range_type = $this->input->get('range_type') ?: 'day';
+
+        // Calculate dates
+        if ($range_type === 'month') {
+            $start_date = date('Y-m-01', strtotime($selected_date));
+            $end_date = date('Y-m-t', strtotime($selected_date));
+        } elseif ($range_type === 'week') {
+            $start_date = date('Y-m-d', strtotime('monday this week', strtotime($selected_date)));
+            $end_date = date('Y-m-d', strtotime('sunday this week', strtotime($selected_date)));
+        } else {
+            $start_date = $selected_date;
+            $end_date = $selected_date;
+        }
+
+        // Query with table aliases
+        // $this->db->select_sum('p.amt', 'total_payments')
+        //     ->from('tbl_payment p')
+        //     ->join('tbl_loan l', 'l.id = p.loan_id', 'left')
+        //     ->join('tbl_client c', 'c.id = l.cl_id', 'left')
+        //     ->where('c.status !=', '1')
+        //     ->where('DATE(p.payment_for) >=', $start_date)
+        //     ->where('DATE(p.payment_for) <=', $end_date);
+
+        $this->db->select_sum('p.amt', 'total_payments')
+            ->from('tbl_payment p')
+            ->join('tbl_loan l', 'l.id = p.loan_id', 'left')
+            ->join('tbl_client c', 'c.id = l.cl_id', 'left')
+            ->where('c.status !=', '1')
+            ->where('DATE(p.payment_for) >=', $start_date)
+            ->where('DATE(p.payment_for) <=', $end_date)
+            ->where("p.payment_for BETWEEN DATE_ADD(l.start_date, INTERVAL 1 DAY) AND l.due_date", NULL, FALSE);
+
+        $query = $this->db->get();
+        $row = $query->row();
+
+        // Store ALL variables in $data array
+        $data['range_total'] = $row ? ($row->total_payments ?: 0) : 0;
+        $data['selected_date'] = $selected_date;
+        $data['range_type'] = $range_type;
+        $data['start_date'] = $start_date;
+        $data['end_date'] = $end_date;
 
         // NEW: Get monthly payment data for the current year
         $current_year = date('Y');
@@ -100,6 +170,7 @@ class View_ui_cont extends CI_Controller
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
             ->where('c.status !=', '1')
             ->where('YEAR(a.payment_for)', $current_year)
+            ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->group_by('MONTH(a.payment_for)')
             ->order_by('MONTH(a.payment_for)');
 
@@ -122,6 +193,7 @@ class View_ui_cont extends CI_Controller
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
             ->where('c.status !=', '1')
+            ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->where('YEAR(a.payment_for)', $current_year);
 
         $year_total_query = $this->db->get();
@@ -209,13 +281,6 @@ class View_ui_cont extends CI_Controller
         $today_query = $this->db->get();
         $data['today_payments'] = $today_query->row()->amt ?: 0;
 
-        // Get this month's payments
-        $this_month = date('Y-m');
-        $this->db->select_sum('amt')
-            ->from('tbl_payment')
-            ->where("DATE_FORMAT(payment_for, '%Y-%m') =", $this_month);
-        $month_query = $this->db->get();
-        $data['this_month_payments'] = $month_query->row()->amt ?: 0;
 
         // ========== LOAN STATISTICS WITH CLIENT FILTER ==========
         // Get loan counts by status with client filter (exclude inactive clients where status != 1)
@@ -286,6 +351,7 @@ class View_ui_cont extends CI_Controller
             $data['loan_status_counts'][$row['status']] = $row['count'];
             $data['loan_status_totals'][$row['status']] = $row['total'];
         }
+
         // ========== END LOAN STATISTICS ==========
 
         // Load views
@@ -306,6 +372,7 @@ class View_ui_cont extends CI_Controller
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
             ->where('c.status !=', '1')
+            ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->where('YEAR(a.payment_for)', $year)
             ->group_by('MONTH(a.payment_for)')
             ->order_by('MONTH(a.payment_for)');
@@ -328,6 +395,7 @@ class View_ui_cont extends CI_Controller
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
             ->where('c.status !=', '1')
+            ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->where('YEAR(a.payment_for)', $year);
         $year_total_query = $this->db->get();
         $year_total = $year_total_query->row()->amt ?: 0;
@@ -442,62 +510,6 @@ class View_ui_cont extends CI_Controller
             'overdue_amount' => $overdue_amount,
             'ongoing_amount' => $ongoing_amount,
             'completed_amount' => $completed_amount
-        ]);
-    }
-
-    // NEW: Get dashboard summary statistics WITH CLIENT FILTER
-    public function get_dashboard_stats()
-    {
-        $current_year = date('Y');
-
-        // Today's payments
-        $today = date('Y-m-d');
-        $this->db->select_sum('amt')
-            ->from('tbl_payment')
-            ->where('DATE(payment_for)', $today);
-        $today_query = $this->db->get();
-        $today_payments = $today_query->row()->amt ?: 0;
-
-        // This month's payments
-        $this_month = date('Y-m');
-        $this->db->select_sum('amt')
-            ->from('tbl_payment')
-            ->where("DATE_FORMAT(payment_for, '%Y-%m') =", $this_month);
-        $month_query = $this->db->get();
-        $month_payments = $month_query->row()->amt ?: 0;
-
-        // Year to date payments
-        $this->db->select_sum('amt')
-            ->from('tbl_payment')
-            ->where('YEAR(payment_for)', $current_year);
-        $year_query = $this->db->get();
-        $year_payments = $year_query->row()->amt ?: 0;
-
-        // Loan statistics with client filter
-        $active_loans = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'ongoing')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        $overdue_loans = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'overdue')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        echo json_encode([
-            'success' => true,
-            'today_payments' => $today_payments,
-            'month_payments' => $month_payments,
-            'year_payments' => $year_payments,
-            'active_loans' => $active_loans,
-            'overdue_loans' => $overdue_loans,
-            'current_year' => $current_year
         ]);
     }
 

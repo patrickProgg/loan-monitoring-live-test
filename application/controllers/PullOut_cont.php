@@ -27,7 +27,8 @@ class PullOut_cont extends CI_Controller
             3 => 'ticket',
             4 => 'profit_share',
             5 => 'pull_out',
-            6 => 'total_pull_out'
+            6 => 'pull_out_capital',
+            7 => 'total_pull_out'
         ];
 
         $orderColumn = $columns[$orderColumnIndex];
@@ -39,6 +40,7 @@ class PullOut_cont extends CI_Controller
             ticket, 
             profit_share, 
             pull_out, 
+            pull_out_capital,
             total_pull_out
         ');
 
@@ -76,6 +78,7 @@ class PullOut_cont extends CI_Controller
         $this->db->select_sum('ticket');
         $this->db->select_sum('profit_share');
         $this->db->select_sum('pull_out');
+        $this->db->select_sum('pull_out_capital');
         $this->db->select_sum('total_pull_out');
 
         $this->db->where('status !=', '1');
@@ -98,6 +101,7 @@ class PullOut_cont extends CI_Controller
         $totalTicket = $totalRow->ticket ?? 0;
         $totalProfit = $totalRow->profit_share ?? 0;
         $totalPullOut = $totalRow->pull_out ?? 0;
+        $totalPullOutCapital = $totalRow->pull_out_capital ?? 0;
         $totalAmount = $totalRow->total_pull_out ?? 0;
 
         echo json_encode([
@@ -108,6 +112,7 @@ class PullOut_cont extends CI_Controller
             "total_ticket" => $totalTicket,
             "total_profit" => $totalProfit,
             "total_pull_out" => $totalPullOut,
+            "total_pull_out_capital" => $totalPullOutCapital,
             "total_amt" => $totalAmount,
             "data" => $data
         ]);
@@ -119,6 +124,7 @@ class PullOut_cont extends CI_Controller
             'ticket' => $this->input->post('ticket'),
             'profit_share' => $this->input->post('profit'),
             'pull_out' => $this->input->post('pull_out'),
+            'pull_out_capital' => $this->input->post('pull_out_capital'),
             'total_pull_out' => $this->input->post('total_amt'),
             'date_added' => $this->input->post('date_added'),
         );
@@ -146,6 +152,7 @@ class PullOut_cont extends CI_Controller
             'ticket' => $this->input->post('ticket'),
             'profit_share' => $this->input->post('profit'),
             'pull_out' => $this->input->post('pull_out'),
+            'pull_out_capital' => $this->input->post('pull_out_capital'),
             'total_pull_out' => $this->input->post('total_amt'),
             'date_added' => $this->input->post('date_added'),
         );

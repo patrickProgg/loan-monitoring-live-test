@@ -84,11 +84,24 @@
 
                     <form id="expensesForm">
                         <div class="modal-body">
-                            <div id="expenseRows">
+                            <!-- <div id="expenseRows">
                                 <div class="row g-2 expense-row mb-2 align-items-end">
                                     <div class="col-7">
                                         <label>Type</label>
-                                        <input type="text" class="form-control expense-type" />
+                                        <select class="form-control expense-type" id="expenseType">
+                                            <option value="">Select type</option>
+                                            <option value="gas">Gas</option>
+                                            <option value="meal">Meal</option>
+                                            <option value="motor_shop">Motor Shop</option>
+                                            <option value="ca">Cash Advance</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <input
+                                            type="text"
+                                            class="form-control mt-2 d-none"
+                                            id="otherExpense"
+                                            placeholder="Enter other type"
+                                        />
                                     </div>
                                     <div class="col-4">
                                         <label>Amount</label>
@@ -100,7 +113,37 @@
                                         </button>
                                     </div>
                                 </div>
+                            </div> -->
+
+                            <div id="expenseRows">
+                                <div class="row g-2 expense-row mb-2 align-items-end">
+                                    <div class="col-7">
+                                        <label>Type</label>
+                                        <select class="form-control expense-type">
+                                            <option value="">Select type</option>
+                                            <option value="gas">Gas</option>
+                                            <option value="meal">Meal</option>
+                                            <option value="motor_shop">Motor Shop</option>
+                                            <option value="ca">Cash Advance</option>
+                                            <option value="other">Other</option>
+                                        </select>
+
+                                        <input type="text" class="form-control mt-2 other-expense d-none"
+                                            placeholder="Enter other type" />
+                                    </div>
+
+                                    <div class="col-4">
+                                        <label>Amount</label>
+                                        <input type="number" class="form-control expense-amount" />
+                                    </div>
+
+                                    <div class="col-1">
+                                        <button type="button"
+                                            class="btn btn-sm btn-outline-primary add-row-btn mb-1">+</button>
+                                    </div>
+                                </div>
                             </div>
+
 
                             <div class="row g-2 mt-2">
                                 <div class="col-4">
@@ -169,7 +212,20 @@
                 data: 'type',
                 render: function (data) {
                     if (!data) return '';
-                    return data.replace(/\b\w/g, char => char.toUpperCase());
+
+                    if (data === 'ca') {
+                        return 'Cash Advance';
+                    } else if (data === 'motor_shop') {
+                        return 'Motor Shop';
+                    } else if (data === 'gas') {
+                        return 'Gas';
+                    } else if (data === 'meal') {
+                        return 'Meal';
+                    } else if (data === 'ca') {
+                        return 'Cash Advance';
+                    } else {
+                        return data.replace(/\b\w/g, char => char.toUpperCase());
+                    }
                 }
             },
             {
@@ -212,21 +268,65 @@
         }
     });
 
+    // $(document).ready(function () {
+
+    //     $(document).on("click", ".add-row-btn", function () {
+    //         const newRow = $(`
+    //         <div class="row g-2 expense-row mb-2 align-items-end">
+    //             <div class="col-7">
+    //                 <input type="text" class="form-control expense-type" placeholder="Type" />
+    //             </div>
+    //             <div class="col-4">
+    //                 <input type="number" class="form-control expense-amount" placeholder="Amount" />
+    //             </div>
+    //             <div class="col-1">
+    //                 <button type="button" class="btn btn-sm btn-danger remove-row-btn mb-1">
+    //                     −
+    //                 </button>
+    //             </div>
+    //         </div>
+    //     `);
+
+    //         $("#expenseRows").append(newRow);
+    //         newRow.find(".expense-type").focus();
+    //     });
+
+    //     $(document).on("click", ".remove-row-btn", function () {
+    //         $(this).closest(".expense-row").remove();
+    //     });
+
+
+    // });
+
     $(document).ready(function () {
 
         $(document).on("click", ".add-row-btn", function () {
             const newRow = $(`
             <div class="row g-2 expense-row mb-2 align-items-end">
                 <div class="col-7">
-                    <input type="text" class="form-control expense-type" placeholder="Type" />
+                    <label>Type</label>
+                    <select class="form-control expense-type">
+                        <option value="">Select type</option>
+                        <option value="gas">Gas</option>
+                        <option value="meal">Meal</option>
+                        <option value="motor_shop">Motor Shop</option>
+                        <option value="ca">Cash Advance</option>
+                        <option value="other">Other</option>
+                    </select>
+
+                    <input type="text"
+                        class="form-control mt-2 other-expense d-none"
+                        placeholder="Enter other type" />
                 </div>
+
                 <div class="col-4">
+                    <label>Amount</label>
                     <input type="number" class="form-control expense-amount" placeholder="Amount" />
                 </div>
+
                 <div class="col-1">
-                    <button type="button" class="btn btn-sm btn-danger remove-row-btn mb-1">
-                        −
-                    </button>
+                    <button type="button"
+                        class="btn btn-sm btn-danger remove-row-btn mb-1">−</button>
                 </div>
             </div>
         `);
@@ -239,7 +339,45 @@
             $(this).closest(".expense-row").remove();
         });
 
+        // Show "Other" input when selected
+        $(document).on("change", ".expense-type", function () {
+            const $row = $(this).closest(".expense-row");
+            const $other = $row.find(".other-expense");
 
+            if ($(this).val() === "other") {
+                $other.removeClass("d-none").focus();
+            } else {
+                $other.addClass("d-none").val("");
+            }
+        });
+
+    });
+
+
+    $(document).on('change', '.expense-type', function () {
+        const row = $(this).closest('.expense-row');
+        const otherInput = row.find('.other-expense');
+
+        if ($(this).val() === 'other') {
+            otherInput.removeClass('d-none').prop('required', true);
+        } else {
+            otherInput.addClass('d-none').prop('required', false).val('');
+        }
+    });
+
+
+    const expenseType = document.getElementById('expenseType');
+    const otherExpense = document.getElementById('otherExpense');
+
+    expenseType.addEventListener('change', function () {
+        if (this.value === 'other') {
+            otherExpense.classList.remove('d-none');
+            otherExpense.required = true;
+        } else {
+            otherExpense.classList.add('d-none');
+            otherExpense.required = false;
+            otherExpense.value = '';
+        }
     });
 
     function openModal(action, row) {
@@ -252,25 +390,48 @@
         if (action === 'editExpenses' && row) {
             $("#expenseRows").empty();
 
+            const isPreset = ['gas', 'meal', 'motor_shop', 'ca'].includes(row.type);
+
             const editRow = $(`
-                    <div class="row g-2 expense-row mb-2 align-items-end">
-                        <div class="col-8">
-                            <label>Type</label>
-                            <input type="text" class="form-control expense-type" value="${row.type}" />
-                        </div>
-                        <div class="col-4">
-                            <label>Amount</label>
-                            <input type="number" class="form-control expense-amount" value="${row.amt}" />
-                        </div>
+                <div class="row g-2 expense-row mb-2 align-items-end">
+                    <div class="col-7">
+                        <label>Type</label>
+                        <select class="form-control expense-type">
+                            <option value="">Select type</option>
+                            <option value="gas">Gas</option>
+                            <option value="meal">Meal</option>
+                            <option value="motor_shop">Motor Shop</option>
+                            <option value="ca">Cash Advance</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <input type="text"
+                            class="form-control mt-2 other-expense d-none"
+                            placeholder="Enter other type">
                     </div>
-                `);
+
+                    <div class="col-4">
+                        <label>Amount</label>
+                        <input type="number"
+                            class="form-control expense-amount"
+                            value="${row.amt}">
+                    </div>
+                </div>
+            `);
 
             $("#expenseRows").append(editRow);
 
-            $(".add-row-btn").hide();
+            if (isPreset) {
+                editRow.find('.expense-type').val(row.type);
+            } else {
+                editRow.find('.expense-type').val('other').trigger('change');
+                editRow.find('.other-expense').val(row.type);
+            }
 
+            $(".add-row-btn").hide();
             $('.date-added').val(row.date_added);
         }
+
 
         $('#addExpenses').modal('show');
     };
@@ -282,13 +443,96 @@
         }
     });
 
+    // function handleFormSubmit(action, id = null) {
+    //     const expenses = [];
+    //     $("#expenseRows .expense-row").each(function () {
+    //         const type = $(this).find(".expense-type").val().trim();
+    //         const amt = parseFloat($(this).find(".expense-amount").val()) || 0;
+    //         if (type !== "" || amt !== 0) expenses.push({ type, amt });
+    //     });
+
+    //     const formData = {
+    //         date: $('.date-added').val(),
+    //         expenses: expenses
+    //     };
+
+    //     console.log("Submitting:", formData);
+
+    //     let url, method;
+    //     switch (action) {
+    //         case 'addExpenses':
+    //             url = '<?php echo base_url("Expenses_cont/add_expenses"); ?>';
+    //             method = 'POST';
+    //             break;
+    //         case 'editExpenses':
+    //             url = '<?php echo base_url("Expenses_cont/update_expenses/"); ?>' + id;
+    //             method = 'POST';
+    //             break;
+    //     }
+
+    //     if (expenses.length === 0) {
+    //         Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill at least one.' });
+    //         return;
+    //     }
+    //     Swal.fire({
+    //         title: 'Are you sure?',
+    //         text: action === 'addExpenses' ? 'You are about to add this record.' : 'You are about to update this record.',
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: 'Yes, proceed!',
+    //         cancelButtonText: 'Cancel',
+    //         allowEnterKey: false
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             $.ajax({
+    //                 url: url,
+    //                 type: method,
+    //                 data: formData,
+    //                 dataType: 'json',
+    //                 success: function (res) {
+    //                     Swal.fire({
+    //                         title: 'Success',
+    //                         text: res.message,
+    //                         icon: 'success',
+    //                         timer: 500,
+    //                         showConfirmButton: false
+    //                     }).then(() => {
+    //                         expenses_table.ajax.reload();
+    //                         $('#addExpenses').modal('hide');
+    //                     });
+    //                 },
+    //                 error: function (err) {
+    //                     console.log(err);
+    //                     alert('Server error. Check console.');
+    //                 }
+    //             });
+    //         }
+    //     });
+    // };
+
     function handleFormSubmit(action, id = null) {
         const expenses = [];
+
         $("#expenseRows .expense-row").each(function () {
-            const type = $(this).find(".expense-type").val().trim();
+            let type = $(this).find(".expense-type").val();
+            const otherType = $(this).find(".other-expense").val().trim();
             const amt = parseFloat($(this).find(".expense-amount").val()) || 0;
-            if (type !== "" || amt !== 0) expenses.push({ type, amt });
+
+            if (type === 'other') {
+                type = otherType;
+            }
+
+            if (type && amt > 0) {
+                expenses.push({ type, amt });
+            }
         });
+
+        if (expenses.length === 0) {
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill at least one.' });
+            return;
+        }
 
         const formData = {
             date: $('.date-added').val(),
@@ -297,37 +541,29 @@
 
         console.log("Submitting:", formData);
 
-        let url, method;
+        let url = '';
         switch (action) {
             case 'addExpenses':
                 url = '<?php echo base_url("Expenses_cont/add_expenses"); ?>';
-                method = 'POST';
                 break;
             case 'editExpenses':
                 url = '<?php echo base_url("Expenses_cont/update_expenses/"); ?>' + id;
-                method = 'POST';
                 break;
         }
 
-        if (expenses.length === 0) {
-            Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill at least one.' });
-            return;
-        }
         Swal.fire({
             title: 'Are you sure?',
-            text: action === 'addExpenses' ? 'You are about to add this record.' : 'You are about to update this record.',
+            text: action === 'addExpenses'
+                ? 'You are about to add this record.'
+                : 'You are about to update this record.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, proceed!',
-            cancelButtonText: 'Cancel',
-            allowEnterKey: false
+            confirmButtonText: 'Yes, proceed!'
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
                     url: url,
-                    type: method,
+                    type: 'POST',
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
@@ -341,15 +577,12 @@
                             expenses_table.ajax.reload();
                             $('#addExpenses').modal('hide');
                         });
-                    },
-                    error: function (err) {
-                        console.log(err);
-                        alert('Server error. Check console.');
                     }
                 });
             }
         });
-    };
+    }
+
 
     $(document).ready(function () {
 

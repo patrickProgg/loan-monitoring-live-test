@@ -46,6 +46,9 @@
                         <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
                             <i class="fas fa-user-plus me-1"></i> Add New
                         </button>
+                        <button class="btn btn-outline-success" id="generate_excel">
+                            <i class="fas fa-download me-1"></i> Print
+                        </button>
                     </div>
 
                     <!-- <div class="col-md-2">
@@ -59,7 +62,7 @@
                 <table id="client_table" class="table table-hover" style="width:100%">
                     <thead class="table-secondary">
                         <tr>
-                            <th style="width:30px; text-align:center">ID #</th>
+                            <th style="width:100px; text-align:center">ACC #</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
                             <th style="width:220px">CONTACT NO.</th>
@@ -89,7 +92,12 @@
                         <div class="container">
                             <form id="client_form">
                                 <div class="mb-3 row align-items-center">
-                                    <div class="col-md-12 position-relative">
+                                    <div class="col-md-3 position-relative">
+                                        <label for="acc_no" class="form-label">Acc No.</label>
+                                        <input type="text" class="form-control" placeholder="Enter Acc No." id="acc_no"
+                                            name="acc_no" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-9 position-relative">
                                         <label for="fullName" class="form-label">Full Name</label>
                                         <input type="text" class="form-control" placeholder="Enter Fullname"
                                             id="full_name" name="full_name" autocomplete="off">
@@ -177,7 +185,12 @@
                         <div class="container">
                             <form id="edit_client_form">
                                 <div class="mb-3 row align-items-center">
-                                    <div class="col-md-12 position-relative">
+                                    <div class="col-md-3 position-relative">
+                                        <label for="edit_acc_no" class="form-label">Acc No.</label>
+                                        <input type="text" class="form-control" placeholder="Enter Acc No."
+                                            id="edit_acc_no" name="edit_acc_no" autocomplete="off">
+                                    </div>
+                                    <div class="col-md-9 position-relative">
                                         <label for="fullName" class="form-label">Full Name</label>
                                         <input type="text" class="form-control" placeholder="Enter Fullname"
                                             id="edit_full_name" name="edit_full_name" autocomplete="off">
@@ -247,10 +260,25 @@
                             <div class="container">
                                 <div class="row g-3" style="font-size: 14px;">
                                     <div class="col-md-5">
-                                        <div class="mb-2">
+                                        <!-- <div class="mb-2">
                                             <label class="form-label">Name :
                                                 <span id="header_name" style="font-weight: bold;"></span>
                                             </label>
+                                        </div> -->
+                                        <div class="row mb-2">
+                                            <!-- Left column: Account Number -->
+                                            <div class="col-3">
+                                                <label class="form-label">No :
+                                                    <span id="header_acc_no" style="font-weight: bold;"></span>
+                                                </label>
+                                            </div>
+
+                                            <!-- Right column: Full Name -->
+                                            <div class="col-9">
+                                                <label class="form-label">Full Name:
+                                                    <span id="header_name" style="font-weight: bold;"></span>
+                                                </label>
+                                            </div>
                                         </div>
                                         <div class="mb-2">
                                             <label class="form-label">Address :
@@ -481,6 +509,9 @@
     </main>
 </section>
 
+
+<script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <script>
 
     let startDate = '';
@@ -541,7 +572,7 @@
             //     }
             // },
             {
-                data: 'id',
+                data: 'acc_no',
                 class: 'text-center'
             },
             {
@@ -573,10 +604,10 @@
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-outline-success me-1" onclick="openEditModal('${data}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
+                        <button class="btn btn-sm btn-outline-success me-1" onclick="openEditModal('${data}', '${row.acc_no}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}')">
+                        <button class="btn btn-sm btn-outline-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}', '${row.acc_no}')">
                             <i class="fas fa-eye"></i> View
                         </button>
                     `;
@@ -621,7 +652,7 @@
                             showConfirmButton: false,
                             timerProgressBar: true
                         });
-
+                        document.getElementById('client_form').reset();
                         $('#addLoaner').modal('hide');
                         client_table.ajax.reload();
                     }
@@ -658,8 +689,9 @@
 
     $('#capital_amt, #interest, #added_amt').on('input', calculateTotal);
 
-    function openEditModal(id, fullname, address, contact_1, contact_2, date_added) {
+    function openEditModal(id, acc_no, fullname, address, contact_1, contact_2, date_added) {
         $('#editLoaner').modal('show');
+        $('#edit_acc_no').val(acc_no);
         $('#edit_full_name').val(fullname);
         $('#edit_address').val(address);
         $('#edit_contact_no_1').val(contact_1);
@@ -754,10 +786,11 @@
 
     }
 
-    function openViewModal(id, fullname, address) {
+    function openViewModal(id, fullname, address, acc_no) {
         $('#viewLoaner').modal('show');
 
         $('#header_id').val(id);
+        $('#header_acc_no').text(acc_no);
         $('#header_name').text(fullname.replace(/\b\w/g, c => c.toUpperCase()));
         $('#header_address').text(address.replace(/\b\w/g, c => c.toUpperCase()));
 
@@ -1026,12 +1059,24 @@
             e.preventDefault();
 
             const cl_id = $('#header_id').val();
+            const acc_no = $('#header_acc_no').val();
             const fullname = $('#header_name').text();
             const address = $('#header_address').text();
+            const running_bal = Number(
+                $('#header_running_balance').text().replace(/,/g, '')
+            );
+
 
             let input = $(this);
             let payment = input.val().trim();
             let loan_id = $('#header_loan_id').val();
+            console.log(running_bal);
+            console.log(payment);
+
+            if (payment > running_bal) {
+                Swal.fire('Invalid', 'Payment must not exceed running balance', 'warning');
+                return;
+            }
 
             let row = input.closest('tr');
             let textDate = row.find('td:eq(1)').text().trim();
@@ -1043,10 +1088,10 @@
 
             let date = `${yyyy}-${mm}-${dd}`;
 
-            if (!payment || isNaN(payment) || payment === "0") {
-                Swal.fire('Invalid', 'Please enter a valid amount', 'warning');
-                return;
-            }
+            // if (!payment || isNaN(payment) || payment === "0") {
+            //     Swal.fire('Invalid', 'Please enter a valid amount', 'warning');
+            //     return;
+            // }
 
             Swal.fire({
                 title: 'Confirm Payment',
@@ -1112,7 +1157,7 @@
                                 allowEnterKey: false,
                                 stopKeydownPropagation: true
                             });
-                            openViewModal(cl_id, fullname, address);
+                            openViewModal(cl_id, fullname, address, acc_no);
                             // $('#header_date_arr').trigger('change');
 
                         }
@@ -1211,6 +1256,7 @@
         }
 
         cl_id = $('#header_id').val();
+        acc_no = $('#header_acc_no').text();
         fullname = $('#header_name').text();
         address = $('#header_address').text();
 
@@ -1242,7 +1288,7 @@
                                 showConfirmButton: false
                             });
                         }
-                        openViewModal(cl_id, fullname, address);
+                        openViewModal(cl_id, fullname, address, acc_no);
 
                         $('#overdueModal').modal('hide');
 
@@ -1366,6 +1412,8 @@
     $('#editLoanDetails').off('click').on('click', function () {
         const btn = $(this);
 
+        $('#dateDropdownBtn').prop('disabled', true);
+
         $('#cancelEdit').show();
 
         if (!btn.data('original')) {
@@ -1391,7 +1439,7 @@
                     const numericValue = currentText.replace(/,/g, ''); // remove commas
 
                     const input = document.createElement('input');
-                    input.type = 'text';
+                    input.type = 'number';
                     input.value = numericValue;
                     input.style.width = '80px';
                     input.classList.add('form-control', 'form-control-sm', 'd-inline');
@@ -1480,6 +1528,7 @@
             data['loan_id'] = $('#header_loan_id').val();
 
             const id = $('#header_id').val();
+            const acc_no = $('#header_acc_no').text();
             const full_name = $('#header_name').text();
             const address = $('#header_address').text();
 
@@ -1497,8 +1546,9 @@
                         timerProgressBar: true,
                     });
 
+                    $('#dateDropdownBtn').prop('disabled', false);
                     $('#header_date_arr').val($('#header_date_arr option:first').val()).trigger('change');
-                    openViewModal(id, full_name, address);
+                    openViewModal(id, full_name, address, acc_no);
                     $('#cancelEdit').hide();
                 },
                 error: function (xhr, status, error) {
@@ -1528,6 +1578,41 @@
         });
     });
 
+    document.getElementById('generate_excel').addEventListener('click', function () {
+        // Get today's date in YYYY-MM-DD format for default value
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0
+        const dd = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+        // Show Swal with date input
+        Swal.fire({
+            title: 'Select Date for Report',
+            input: 'date',
+            inputLabel: 'Date',
+            inputValue: formattedDate, // default is today
+            inputAttributes: {
+                style: 'display: block; margin: 0 auto; text-align: center; width: 200px;' // centers the input
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Download',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            const selectedDate = result.value;
+            $.ajax({
+                url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
+                type: 'POST',
+                data: { date: selectedDate },
+                success: function (response) {
+                    Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+                },
+                error: function () {
+                    Swal.fire('Error', 'Something went wrong.', 'error');
+                }
+            });
+        });
+    });
 
     const viewLoanerEl = document.getElementById('viewLoaner');
     const overdueModalEl = document.getElementById('overdueModal');
