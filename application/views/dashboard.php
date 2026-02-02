@@ -898,11 +898,18 @@
                     scales: {
                         x: {
                             beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            border: {
+                                display: false // ✅ removes the line under bars
+                            },
                             title: {
                                 display: true,
                                 text: 'Performance Score'
-                            },
-                        },
+                            }
+                        }
+                        ,
                         y: {
                             grid: {
                                 display: false // Removes vertical grid lines
