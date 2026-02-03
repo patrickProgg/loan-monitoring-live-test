@@ -165,19 +165,19 @@
 <div class="row px-3">
     <ul class="box-info">
 
-        <a href="<?= base_url(); ?>user" style="text-decoration: none; color: inherit;">
-            <li style="border-bottom: 2px solid rgba(255, 99, 132, 1);">
-                <i class='bx bxs-group' style="background: rgba(255, 99, 132, 0.2); color: rgba(255, 99, 132, 1);"></i>
-                <span class="text">
-                    <h3><?php echo $total_client; ?></h3>
-                    <p style="color:rgba(255, 99, 132, 1)">Clients</p>
-                </span>
-            </li>
-        </a>
+        <!-- <a href="<?= base_url(); ?>user" style="text-decoration: none; color: inherit;"> -->
+        <li style="border-bottom: 2px solid rgba(255, 99, 132, 1);">
+            <i class='bx bxs-group' style="background: rgba(255, 99, 132, 0.2); color: rgba(255, 99, 132, 1);"></i>
+            <span class="text">
+                <h3><?php echo $total_client; ?></h3>
+                <p style="color:rgba(255, 99, 132, 1)">Clients</p>
+            </span>
+        </li>
+        <!-- </a> -->
 
         <!-- background: linear-gradient(135deg, var(--light-blue), #ffffff); -->
 
-        <a href="<?= base_url(); ?>masterfile" style="text-decoration: none; color: inherit;">
+        <!-- <a href="<?= base_url(); ?>masterfile" style="text-decoration: none; color: inherit;"> -->
             <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
                 <i class='bx bx-dollar-circle'
                     style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
@@ -186,9 +186,9 @@
                     <p style="color:rgba(255, 159, 64, 1)">Total Loan Amt.</p>
                 </span>
             </li>
-        </a>
+        <!-- </a> -->
 
-        <a href="<?= base_url(); ?>location" style="text-decoration: none; color: inherit;">
+        <!-- <a href="<?= base_url(); ?>location" style="text-decoration: none; color: inherit;"> -->
             <li style="border-bottom: 2px solid rgba(75, 192, 192, 1);">
                 <i class='bx bx-wallet-alt'
                     style="background: rgba(75, 192, 192, 0.2); color: rgba(75, 192, 192, 1);"></i>
@@ -197,9 +197,9 @@
                     <p style="color:rgba(75, 192, 192, 1)">Total Receivables</p>
                 </span>
             </li>
-        </a>
+        <!-- </a> -->
 
-        <a href="<?= base_url(); ?>receiving" style="text-decoration: none; color: inherit;">
+        <!-- <a href="<?= base_url(); ?>receiving" style="text-decoration: none; color: inherit;"> -->
             <li style="border-bottom: 2px solid rgba(153, 102, 255, 1);">
                 <i class='bx bx-log-out'
                     style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
@@ -208,9 +208,9 @@
                     <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
                 </span>
             </li>
-        </a>
+        <!-- </a> -->
 
-        <a href="<?= base_url(); ?>releasing" style="text-decoration: none; color: inherit;">
+        <!-- <a href="<?= base_url(); ?>releasing" style="text-decoration: none; color: inherit;"> -->
             <li style="border-bottom: 2px solid rgba(54, 162, 235, 1); ">
                 <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
                 <span class="text">
@@ -218,7 +218,7 @@
                     <p style="color:rgba(54, 162, 235, 1)">Total Expenses</p>
                 </span>
             </li>
-        </a>
+        <!-- </a> -->
     </ul>
 </div>
 

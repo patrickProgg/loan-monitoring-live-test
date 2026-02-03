@@ -477,103 +477,65 @@ class Monitoring_cont extends CI_Controller
 
         // Column widths
         $sheet->getColumnDimension('A')->setWidth(15);
-        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(18);
         $sheet->getColumnDimension('C')->setWidth(15);
         $sheet->getColumnDimension('D')->setWidth(15);
         $sheet->getColumnDimension('E')->setWidth(15);
-        $sheet->getColumnDimension('F')->setWidth(15);
-        $sheet->getColumnDimension('G')->setWidth(13);
-        $sheet->getColumnDimension('H')->setWidth(17);
-        $sheet->getColumnDimension('I')->setWidth(15);
-        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(17);
+        $sheet->getColumnDimension('H')->setWidth(15);
 
         $loanData = $this->get_loan_released($selectedDate);
 
         $formattedDate = date('F j, Y', strtotime($selectedDate));
-        $excelDateHeader = date('m/d/Y', strtotime($selectedDate));
+        $excelDateHeader = Date::PHPToExcel(strtotime($selectedDate));
+        $previousDay = Date::PHPToExcel(strtotime($selectedDate . ' -1 day'));
 
-        // Data array - ADDED empty row after row 18
         $data = [
             [$formattedDate],
-            ["AREA 4'-Payment", "", "", "", 7854.00],
-            ["Savings", "", "", "", 420.00],
-            ["Processing Fee", "", "", "", ""],
-            ["EXCESS", "", "", "", 20],
-            ["T O T A L - C P", "", "", "", 8294.00],
-            ["LESS : E X P E N S E S", "", "", "", ""],
-            ["Savings Withdrawal", "", "", "", ""],
-            ["Gas for motor mio", "", "", "", 180.00],
-            ["RELEASED C/O REMITTANCE", "", "", "", ""],
-            ["change oil jason", "", "", "", ""],
-            ["", "", "", "", ""],
-            ["", "", "", "", ""],
-            ["", "", "", "", ""],
-            ["", "", "", "", ""],
-            ["T O T A L E X P E N S E S", "", "", "", 180.00],
-            ["Collector's Cash Remitt", "", $excelDateHeader, "", 8114.00],
-            ["Ending Cash on Hand", "", "01/29/2026", "", 4965.50],
-            ["", "", "", "", ""], // ADDED: Empty row under Ending Cash on Hand (row 19)
-            ["TOTAL MONEY", "", "", "", 13079.50],
-            ["LESS(RELEASED)", "", "", "", ""],
-            ["Date", "Name", "", "Amount", "", "", "", "RP LENDING SERVICES", "", ""],
-            ["", "", "", "", "", "", "Area 4", "", "", ""],
-            ["", "", "", "", "", "", "CASH ONHAND", "", "", ""],
-            ["", "", "", "", "", "", "CASH COUNT", "", "", ""],
-            ["", "", "", "", "", "", "NO. OF PIECE", "DENOMINATION", "AMOUNT", ""],
-            ["", "", "", "", "", "", "", "1,000.00", "", ""],
-            ["TOTAL RELEASED", "", "", "", "", "", "", "500.00", "", ""],
-            ["LESS(WITHDRAWAL)", "", "", "", "", "", "", "200.00", "", ""],
-            ["Date", "Name", "", "Amount", "", "", "", "100.00", "", ""],
-            ["", "", "", "", "", "", "", "50.00", "", ""],
-            ["", "", "", "", "", "", "", "20.00", "", ""],
-            ["", "", "", "", "", "", "", "10.00", "", ""],
-            ["", "", "", "", "", "", "", "5.00", "", ""],
-            ["", "", "", "", "", "", "", "1.00", "", ""],
-            ["TOTAL WITHDRAW", "", "", "", "", "", "", "0.25", "", ""],
-            ["", "", "", "", "", "", "T O T A L", "", "", ""],
-            ["ENDING CASH ONHAND", "", "", "", 13079.50],
+            ["AREA 4'-Payment", "", "", ""],
+            ["Processing Fee", "", "", "", "", "", "RP LENDING SERVICES", ""],
+            ["EXCESS", "", "", "", "", "Area 4", "", ""],
+            ["T O T A L - C P", "", "", "", "", "LEAH MAE GUCOR", "", ""],
+            ["LESS : E X P E N S E S", "", "", "", "", "CASH COUNT", "", ""],
+            ["Gas", "", "", "", "", "PIECES", "DENOMINATION", "AMOUNT"],
+            ["Motor Shop", "", "", "", "", "", "", ""],
+            ["Others", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["T O T A L E X P E N S E S", "", "", "", "", "", "", ""],
+            ["Collector's Cash Remitt", "", $excelDateHeader, "", "", "", "", ""],
+            ["Ending Cash on Hand", "", $previousDay, "", "", "", "", ""],
+            ["", "", "", "", "", "", "", ""],
+            ["TOTAL MONEY", "", "", "", "", "TOTAL", "", ""],
+            ["LESS(RELEASED)", "", "", ""],
+            ["Date", "Name", "", "Amount"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["TOTAL RELEASED", "", "", ""],
+            ["", "", "", ""],
+            ["LESS(PULLOUT)", "", "", ""],
+            ["Capital", "10 % Profit Sharing", "Ticket", "Amount"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["TOTAL PULLOUT", "", "", ""],
+            ["ENDING CASH ONHAND", "", "", ""],
         ];
-
-        // Set formulas for AMOUNT column (I = G * H) for rows 27-36
-        for ($row = 27; $row <= 36; $row++) {
-            // Set formula: I = G * H (only calculate if G is not empty)
-            $sheet->setCellValue('I' . $row, '=IF(G' . $row . '="","",G' . $row . '*H' . $row . ')');
-
-            // Apply number format to the formula result
-            $sheet->getStyle('I' . $row)->getNumberFormat()
-                ->setFormatCode('#,##0.00');
-        }
-
-        // Set formula for TOTAL in I37 (sum of I27:I36)
-        $sheet->setCellValue('I37', '=SUM(I27:I36)');
-
-        // Make sure I37 has the same formatting
-        $sheet->getStyle('I37')->getNumberFormat()
-            ->setFormatCode('#,##0.00');
-
-        // Set formulas for WITHDRAWAL section (Column E) based on cash count
-        $sheet->setCellValue('E38', '=I37'); // TOTAL WITHDRAW = Cash Count Total
-
-        // Update ENDING CASH ONHAND formula to use the calculated total
-// E36 = E20 (TOTAL MONEY) - I37 (CASH COUNT TOTAL)
-        $sheet->setCellValue('E36', '=E20-I37');
-
-        // Also set the value in H column as numbers (remove commas from your data array)
-        $denominationValues = [1000, 500, 200, 100, 50, 20, 10, 5, 1, 0.25];
-        for ($row = 27; $row <= 36; $row++) {
-            $index = $row - 27;
-            if (isset($denominationValues[$index])) {
-                $sheet->setCellValue('H' . $row, $denominationValues[$index]);
-                $sheet->getStyle('H' . $row)->getNumberFormat()
-                    ->setFormatCode('#,##0.00');
-            }
-        }
-
-        // Clear the static values from your data array for these cells
-// since we're setting them dynamically above
-        for ($row = 27; $row <= 36; $row++) {
-            $sheet->setCellValue('I' . $row, ''); // Clear static value, formula will compute
-        }
 
         // Write data to sheet
         $rowNumber = 1;
@@ -586,20 +548,23 @@ class Monitoring_cont extends CI_Controller
             $rowNumber++;
         }
 
-        // Populate loan release data starting from Excel row 23 (was 22, now +1)
-        $excelRow = 23;
+        // Populate loan release data starting from Excel row 21
+        $excelRow = 21;
 
         foreach ($loanData as $loan) {
-            if ($excelRow > 27) // Was 26, now 27
+            if ($excelRow > 32)
                 break;
 
             $timestamp = strtotime($loan['start_date']);
             $excelDate = Date::PHPToExcel($timestamp);
 
+            // Convert full name to title case
+            $fullName = ucwords(strtolower($loan['full_name']));
+
             $sheet->setCellValue('A' . $excelRow, $excelDate);
             $sheet->getStyle('A' . $excelRow)->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->setCellValue('B' . $excelRow, $loan['full_name']);
+            $sheet->setCellValue('B' . $excelRow, $fullName); // Use the capitalized version
             $sheet->setCellValue('D' . $excelRow, (float) $loan['total_amt']);
             $sheet->getStyle('D' . $excelRow)->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -607,140 +572,165 @@ class Monitoring_cont extends CI_Controller
             $excelRow++;
         }
 
-        // Calculate TOTAL RELEASED in Excel row 28 (was 27, now +1)
+        // Calculate TOTAL RELEASED in Excel row 33
         $totalReleased = array_sum(array_column($loanData, 'total_amt'));
-        $sheet->setCellValue('E28', (float) $totalReleased); // Row 28
-
-        // Update LESS(RELEASED) in Excel row 21 (was 20, now +1)
-        $sheet->setCellValue('E21', (float) $totalReleased); // Row 21
-
-        // Update ENDING CASH ONHAND in Excel row 37 (was 35, now 37)
-        $totalMoney = 13079.50;
-        $totalExpenses = 180.00;
-        $endingCash = $totalMoney - $totalReleased - $totalExpenses;
-        $sheet->setCellValue('E36', (float) $endingCash);
+        $sheet->setCellValue('D33', (float) $totalReleased);
 
         // Apply number formatting to ALL number cells
         $numberCells = [
-            'E2',
-            'E3',
-            'E5',
-            'E6',
-            'E8',
-            'E9',
-            'E10',
-            'E11',
-            'E15',
-            'E16',
-            'E17',
-            'E18',
-            'E21', // E21 instead of E20
-            'E36',
+            'D1',
+            'D2',
+            'D3',
+            'D4',
+            'D5',
+            'D6',
+            'D7',
+            'D8',
+            'D9',
+            'D10',
+            'D11',
+            'D12',
+            'D13',
+            'D14',
+            'D15',
+            'D16',
+            'D17',
+            'D18',
+            'D19',
+            'D20',
+            'D21',
+            'D22',
             'D23',
             'D24',
             'D25',
             'D26',
             'D27',
-            'E28',
-            'E38',
-            'H27',
-            'H28',
-            'H29',
-            'H30',
-            'H31',
-            'H32',
-            'H33',
-            'H34',
-            'H35',
-            'H36',
-            'I27',
-            'I28',
-            'I29',
-            'I30',
-            'I31',
-            'I32',
-            'I33',
-            'I34',
-            'I35',
-            'I36',
-            'I37',
+            'D28',
+            'D29',
+            'D30',
+            'D31',
+            'D32',
+            'D33',
+            'D34',
+            'D35',
+            'D36',
+            'D37',
+            'D38',
+            'D39',
+            'D40',
+            'D41',
+            'D42',
+            'D43',
+            'A37',
+            'A38',
+            'A39',
+            'A40',
+            'A41',
+            'B37',
+            'B38',
+            'B39',
+            'B40',
+            'B41',
+            'C37',
+            'C38',
+            'C39',
+            'C40',
+            'C41',
+            'G8',
+            'G9',
+            'G10',
+            'G11',
+            'G12',
+            'G13',
+            'G14',
+            'G15',
+            'G16',
+            'G17',
+            'G18',
+            'H8',
+            'H9',
+            'H10',
+            'H11',
+            'H12',
+            'H13',
+            'H14',
+            'H15',
+            'H16',
+            'H17',
+            'H18',
+
         ];
 
         foreach ($numberCells as $cell) {
             $sheet->getStyle($cell)->getNumberFormat()
                 ->setFormatCode('#,##0.00');
+            $sheet->getStyle($cell)->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER);
         }
 
-        // Apply date formatting to date cells (rows shifted +1)
-        $dateCells = ['A23', 'A24', 'A25', 'A26', 'A27'];
+        // Apply date formatting to date cells
+        $dateCells = [
+            'A21',
+            'A22',
+            'A23',
+            'A24',
+            'A25',
+            'A26',
+            'A27',
+            'A28',
+            'A29',
+            'A30',
+            'A31',
+            'A32',
+            'C15',
+            'C16'
+        ];
         foreach ($dateCells as $cell) {
             $sheet->getStyle($cell)->getNumberFormat()
                 ->setFormatCode('mm/dd/yyyy');
         }
 
         // Merge cells
-        for ($row = 1; $row <= 16; $row++) {
+        for ($row = 1; $row <= 14; $row++) {
             $sheet->mergeCells('A' . $row . ':C' . $row);
         }
-
-        for ($row = 17; $row <= 18; $row++) {
+        $sheet->mergeCells('G3:H3');
+        $sheet->mergeCells('F5:H5');
+        $sheet->mergeCells('F6:H6');
+        for ($row = 15; $row <= 16; $row++) {
             $sheet->mergeCells('A' . $row . ':B' . $row);
         }
-
-        for ($row = 20; $row <= 21; $row++) { // Row 19-20 (TOTAL MONEY and LESS RELEASED)
+        $sheet->mergeCells('A17:D17');
+        for ($row = 18; $row <= 19; $row++) {
             $sheet->mergeCells('A' . $row . ':C' . $row);
         }
-
-        for ($row = 22; $row <= 27; $row++) { // Row 22-27 (loan data area)
+        $sheet->mergeCells('F18:G18');
+        for ($row = 20; $row <= 32; $row++) {
             $sheet->mergeCells('B' . $row . ':C' . $row);
         }
-
-        for ($row = 28; $row <= 29; $row++) { // Row 28-29 (TOTAL RELEASED and LESS WITHDRAWAL)
-            $sheet->mergeCells('A' . $row . ':C' . $row);
-        }
-
-
-        $rowsToMerge = [36, 38]; // ENDING CASH ONHAND and empty row
-
-        foreach ($rowsToMerge as $row) {
-            $sheet->mergeCells('A' . $row . ':C' . $row);
-            $sheet->getStyle('A' . $row . ':C' . $row)->getAlignment()
-                ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        }
-
-        $rowsToMerge = [24, 25];
-
-        foreach ($rowsToMerge as $row) {
-            $sheet->mergeCells('G' . $row . ':J' . $row);
-            $sheet->getStyle('G' . $row . ':J' . $row)->getAlignment()
-                ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        }
-
-        for ($row = 26; $row <= 36; $row++) { // Row 22-27 (loan data area)
-            $sheet->mergeCells('I' . $row . ':J' . $row);
-        }
-
-        $rowToMerge = 22;
-        $sheet->mergeCells('H' . $rowToMerge . ':I' . $rowToMerge);
-        $sheet->getStyle('H' . $rowToMerge . ':I' . $rowToMerge)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-        $rowToMerge = 37;
-        $sheet->mergeCells('G' . $rowToMerge . ':H' . $rowToMerge);
-        $sheet->getStyle('G' . $rowToMerge . ':H' . $rowToMerge)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-        $rowToMerge = 37;
-        $sheet->mergeCells('I' . $rowToMerge . ':J' . $rowToMerge);
-        $sheet->getStyle('I' . $rowToMerge . ':J' . $rowToMerge)->getAlignment()
-            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->mergeCells('A33:C33');
+        $sheet->mergeCells('A34:D34');
+        $sheet->mergeCells('A35:C35');
+        $sheet->mergeCells('A42:C42');
+        $sheet->mergeCells('A43:C43');
 
         // Apply center alignment
-        $sheet->getStyle('A1:C16')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A17:C18')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A20:C21')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A28:C29')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('E:E')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:C14')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('F3:H18')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('F18:G18')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A15:B16')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C15:C16')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A18:C19')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A20:D20')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A21:A32')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C21:C32')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A33:C33')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A35:C35')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A36:C36')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A37:C41')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A42:C42')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A43:C43')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        // $sheet->getStyle('E:E')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         // Style for title row
         $sheet->getStyle('A1')->getFont()->setBold(true);
@@ -750,18 +740,32 @@ class Monitoring_cont extends CI_Controller
             ->getStartColor()
             ->setRGB('6ECF50');
 
-        $sheet->getStyle('E17')->getFill()
+        $sheet->getStyle('D15')->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()
             ->setRGB('FF66CC');
 
-        $sheet->getStyle('E38')->getFill()
+        $sheet->getStyle('D43')->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()
             ->setRGB('FF66CC');
 
-
-        $dangerCells = ['A7', 'A16', 'A21', 'A29', 'E16', 'E9', 'E28', 'E36']; // Updated row numbers
+        $dangerCells = [
+            'A6',
+            'D7',
+            'D8',
+            'D9',
+            'D10',
+            'D11',
+            'D12',
+            'D13',
+            'D14',
+            'A14',
+            'A19',
+            'D33',
+            'A35',
+            'D42',
+        ];
 
         foreach ($dangerCells as $cell) {
             $sheet->getStyle($cell)->getFont()
@@ -769,60 +773,70 @@ class Monitoring_cont extends CI_Controller
                 ->getColor()->setARGB(Color::COLOR_RED);
         }
 
-        // Bold TOTAL rows - UPDATED ROW NUMBERS
-        $totalRows = ['E6', 'E16', 'E28', 'E36', 'E37', 'A37', 'A2', 'A6', 'A38', 'E17', 'E18', 'E38', 'A20', 'A17', 'A18', 'H22', 'G24', 'G25', 'G37', 'G26', 'H26', 'I26', 'G23'];
+        // Bold rows
+        $totalRows = ['D2', 'D3', 'D4', 'D5', 'D15', 'D16', 'A18', 'D16', 'D18', 'A20', 'B20', 'D20', 'A33', 'A36', 'B36', 'C36', 'D36', 'A42', 'A43', 'F7', 'G7', 'H7', 'F18', 'H18', 'G3', 'F4', 'F5', 'F6', 'A5', 'A15', 'A16', 'D43', 'A2'];
         foreach ($totalRows as $cell) {
             $sheet->getStyle($cell)->getFont()->setBold(true);
         }
 
         // Borders - UPDATED ROW NUMBERS
-        $sheet->getStyle('A1:E21')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A22:D27')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A28:E29')->getBorders()->getRight()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A30:D35')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A36:E36')->getBorders()->getRight()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A37:E37')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('A38:E38')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('E22:E27')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('E30:E35')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A1:D19')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('F3:H5')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('F6:H6')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('F18:G18')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('H18:H18')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('F7:H17')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A20:D32')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A33:D33')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A34:D35')->getBorders()->getRight()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A36:D41')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A42:D42')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A43:D43')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
 
-        $sheet->getStyle('G22:J24')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('G25:J26')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('G26:J36')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('G37:H37')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('I37:J37')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
-        $sheet->getStyle('G38:J38')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $lastRow = 4; // Row just before D5
+        $sheet->setCellValue('D5', '=SUM(D2:D' . $lastRow . ')');
 
-        // Center align the headers - UPDATED ROW NUMBERS
-        $sheet->getStyle('A22:E22')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('I26:J36')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A30:E30')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('A22:E22')->getFont()->setBold(true);
-        $sheet->getStyle('A30:E30')->getFont()->setBold(true);
+        $lastRow = 13; // Row just before D14
+        $sheet->setCellValue('D14', '=SUM(D7:D' . $lastRow . ')');
 
-        $sheet->getStyle('G23:G23')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('G26:I36')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->setCellValue('D15', '=D5-D14');
 
+        $sheet->setCellValue('D18', '=SUM(D15,D16)');
+
+        $lastRow = 32; // Row just before D33
+        $sheet->setCellValue('D33', '=SUM(D21:D' . $lastRow . ')');
+
+        $sheet->setCellValue('D37', '=SUM(A37,B37,C37)');
+        $sheet->setCellValue('D38', '=SUM(A38,B38,C38)');
+        $sheet->setCellValue('D39', '=SUM(A39,B39,C39)');
+        $sheet->setCellValue('D40', '=SUM(A40,B40,C40)');
+        $sheet->setCellValue('D41', '=SUM(A41,B41,C41)');
+
+        $lastRow = 41; // Row just before D42
+        $sheet->setCellValue('D42', '=SUM(D37:D' . $lastRow . ')');
+
+        // $sheet->setCellValue('D43', '=SUM(D18,D33,D42)');
+        $sheet->setCellValue('D43', '=SUM(D18,D33)-D42');
 
         $denominationValues = [1000, 500, 200, 100, 50, 20, 10, 5, 1, 0.25];
 
-        for ($row = 27; $row <= 36; $row++) {
-            $index = $row - 27;
+        for ($row = 8; $row <= 17; $row++) {
+            $index = $row - 8;
 
             // Set fixed H (denomination)
-            $sheet->setCellValue('H' . $row, $denominationValues[$index]);
-            $sheet->getStyle('H' . $row)->getNumberFormat()
+            $sheet->setCellValue('G' . $row, $denominationValues[$index]);
+            $sheet->getStyle('G' . $row)->getNumberFormat()
                 ->setFormatCode('#,##0.00');
 
             // Set formula in I = G * H (dynamic)
-            $sheet->setCellValue('I' . $row, '=IF(G' . $row . '="","",G' . $row . '*H' . $row . ')');
-            $sheet->getStyle('I' . $row)->getNumberFormat()
+            $sheet->setCellValue('H' . $row, '=IF(F' . $row . '="","",F' . $row . '*G' . $row . ')');
+            $sheet->getStyle('H' . $row)->getNumberFormat()
                 ->setFormatCode('#,##0.00');
         }
 
         // Update total in I37
-        $sheet->setCellValue('I37', '=SUM(I27:I36)');
-        $sheet->getStyle('I37')->getNumberFormat()
+        $sheet->setCellValue('H18', '=SUM(H8:H17)');
+        $sheet->getStyle('H18')->getNumberFormat()
             ->setFormatCode('#,##0.00');
 
 
@@ -833,7 +847,7 @@ class Monitoring_cont extends CI_Controller
 
         // $writer->save('php://output');
 
-        $saveFolder = "C:/laragon/www/loan-monitoring/DAILY_REPORT";
+        $saveFolder = "C:/laragon/www/DAILY_REPORT";
         if (!is_dir($saveFolder))
             mkdir($saveFolder, 0777, true);
 
@@ -868,6 +882,7 @@ class Monitoring_cont extends CI_Controller
         $this->db->from('tbl_loan as a');
         $this->db->join('tbl_client as b', 'b.id = a.cl_id');
         $this->db->where('a.start_date', $selectedDate);
+        $this->db->where('b.status !=', '1');
 
         $query = $this->db->get();
         return $query->result_array();

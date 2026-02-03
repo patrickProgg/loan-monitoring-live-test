@@ -60,6 +60,7 @@
             --light-yellow: #FFF2C6;
             --orange: #FD7238;
             --light-orange: #FFE0D3;
+            --silver: #f3efefa2;
         }
 
         body.dark {
@@ -69,7 +70,8 @@
         }
 
         body {
-            background: var(--grey);
+            background: var(--silver);
+            /* background: silver; */
             overflow-x: hidden;
         }
 

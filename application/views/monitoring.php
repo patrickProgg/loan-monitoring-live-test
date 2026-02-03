@@ -49,6 +49,9 @@
                         <button class="btn btn-outline-success" id="generate_excel">
                             <i class="fas fa-download me-1"></i> Print
                         </button>
+                        <button class="btn btn-primary" id="generate_excel">
+                            <i class="fas fa-credit-card me-1"></i> Bulk Payment
+                        </button>
                     </div>
 
                     <!-- <div class="col-md-2">
@@ -1579,38 +1582,44 @@
     });
 
     document.getElementById('generate_excel').addEventListener('click', function () {
-        // Get today's date in YYYY-MM-DD format for default value
         const today = new Date();
         const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-        // Show Swal with date input
         Swal.fire({
             title: 'Select Date for Report',
             input: 'date',
             inputLabel: 'Date',
-            inputValue: formattedDate, // default is today
+            inputValue: formattedDate,
             inputAttributes: {
-                style: 'display: block; margin: 0 auto; text-align: center; width: 200px;' // centers the input
+                style: 'display: block; margin: 0 auto; text-align: center; width: 200px;'
             },
             showCancelButton: true,
             confirmButtonText: 'Download',
             cancelButtonText: 'Cancel'
         }).then((result) => {
-            const selectedDate = result.value;
-            $.ajax({
-                url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
-                type: 'POST',
-                data: { date: selectedDate },
-                success: function (response) {
-                    Swal.fire('Saved!', 'Daily report has been saved.', 'success');
-                },
-                error: function () {
-                    Swal.fire('Error', 'Something went wrong.', 'error');
+            if (result.isConfirmed) {
+                const selectedDate = result.value;
+
+                if (!selectedDate) {
+                    Swal.fire('Error', 'Please select a valid date.', 'error');
+                    return;
                 }
-            });
+
+                $.ajax({
+                    url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
+                    type: 'POST',
+                    data: { date: selectedDate },
+                    success: function (response) {
+                        Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Something went wrong.', 'error');
+                    }
+                });
+            }
         });
     });
 
