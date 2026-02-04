@@ -165,59 +165,57 @@
 <div class="row px-3">
     <ul class="box-info">
 
-        <!-- <a href="<?= base_url(); ?>user" style="text-decoration: none; color: inherit;"> -->
-        <li style="border-bottom: 2px solid rgba(255, 99, 132, 1);">
-            <i class='bx bxs-group' style="background: rgba(255, 99, 132, 0.2); color: rgba(255, 99, 132, 1);"></i>
-            <span class="text">
-                <h3><?php echo $total_client; ?></h3>
-                <p style="color:rgba(255, 99, 132, 1)">Clients</p>
-            </span>
-        </li>
-        <!-- </a> -->
+        <a href="<?= base_url(); ?>client" style="text-decoration: none; color: inherit;">
+            <li style="border-bottom: 2px solid rgba(255, 99, 132, 1);">
+                <i class='bx bx-group' style="background: rgba(255, 99, 132, 0.2); color: rgba(255, 99, 132, 1);"></i>
+                <span class="text">
+                    <h3><?php echo $total_client; ?></h3>
+                    <p style="color:rgba(255, 99, 132, 1)">Clients</p>
+                </span>
+            </li>
+        </a>
 
         <!-- background: linear-gradient(135deg, var(--light-blue), #ffffff); -->
 
         <!-- <a href="<?= base_url(); ?>masterfile" style="text-decoration: none; color: inherit;"> -->
-            <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
-                <i class='bx bx-dollar-circle'
-                    style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
-                <span class="text">
-                    <h3>₱<?= number_format($total_loan_amt, 2) ?></h3>
-                    <p style="color:rgba(255, 159, 64, 1)">Total Loan Amt.</p>
-                </span>
-            </li>
+        <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
+            <i class='bx bx-dollar-circle'
+                style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
+            <span class="text">
+                <h3>₱<?= number_format($total_loan_amt, 2) ?></h3>
+                <p style="color:rgba(255, 159, 64, 1)">Total Loan Amt.</p>
+            </span>
+        </li>
         <!-- </a> -->
 
         <!-- <a href="<?= base_url(); ?>location" style="text-decoration: none; color: inherit;"> -->
-            <li style="border-bottom: 2px solid rgba(75, 192, 192, 1);">
-                <i class='bx bx-wallet-alt'
-                    style="background: rgba(75, 192, 192, 0.2); color: rgba(75, 192, 192, 1);"></i>
-                <span class="text">
-                    <h3>₱<?= number_format($total_loan_amt - $total_loan_payment, 2) ?></h3>
-                    <p style="color:rgba(75, 192, 192, 1)">Total Receivables</p>
-                </span>
-            </li>
+        <li style="border-bottom: 2px solid rgba(75, 192, 192, 1);">
+            <i class='bx bx-wallet-alt' style="background: rgba(75, 192, 192, 0.2); color: rgba(75, 192, 192, 1);"></i>
+            <span class="text">
+                <h3>₱<?= number_format($total_loan_amt - $total_loan_payment, 2) ?></h3>
+                <p style="color:rgba(75, 192, 192, 1)">Total Receivables</p>
+            </span>
+        </li>
         <!-- </a> -->
 
         <!-- <a href="<?= base_url(); ?>receiving" style="text-decoration: none; color: inherit;"> -->
-            <li style="border-bottom: 2px solid rgba(153, 102, 255, 1);">
-                <i class='bx bx-log-out'
-                    style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
-                <span class="text">
-                    <h3>₱<?= number_format($total_pull_out, 2) ?></h3>
-                    <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
-                </span>
-            </li>
+        <li style="border-bottom: 2px solid rgba(153, 102, 255, 1);">
+            <i class='bx bx-log-out' style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
+            <span class="text">
+                <h3>₱<?= number_format($total_pull_out, 2) ?></h3>
+                <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
+            </span>
+        </li>
         <!-- </a> -->
 
         <!-- <a href="<?= base_url(); ?>releasing" style="text-decoration: none; color: inherit;"> -->
-            <li style="border-bottom: 2px solid rgba(54, 162, 235, 1); ">
-                <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
-                <span class="text">
-                    <h3>₱<?= number_format($total_expenses, 2) ?></h3>
-                    <p style="color:rgba(54, 162, 235, 1)">Total Expenses</p>
-                </span>
-            </li>
+        <li style="border-bottom: 2px solid rgba(54, 162, 235, 1); ">
+            <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
+            <span class="text">
+                <h3>₱<?= number_format($total_expenses, 2) ?></h3>
+                <p style="color:rgba(54, 162, 235, 1)">Total Expenses</p>
+            </span>
+        </li>
         <!-- </a> -->
     </ul>
 </div>
@@ -225,7 +223,7 @@
 
 <div class="row mb-3">
     <div class="col-md-8 px-3">
-        <div class="card h-100"> <!-- Added h-100 here -->
+        <div class="card h-100">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0" style="display: flex; align-items: center; gap: 10px;">
@@ -235,8 +233,7 @@
                                 style="width: 150px; display: inline-block; height: 28px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-info)"
                                 class="form-control" id="selected_date" name="selected_date"
                                 value="<?php echo $selected_date; ?>"
-                                onchange="document.getElementById('dateForm').submit()"
-                                style="width: 200px; display: inline-block;">
+                                onchange="document.getElementById('dateForm').submit()">
                         </form>
                     </h3>
                 </div>
@@ -307,14 +304,12 @@
         </div>
     </div>
 
-    <!-- Loan Status Cards - Beside Payment Filter on medium+, below on mobile -->
     <div class="col-md-4 px-3">
-        <div class="row h-100"> <!-- Added h-100 here -->
-            <!-- Ongoing Loans -->
-            <div class="col-md-12 d-flex"> <!-- Added d-flex -->
-                <div class="card border-left-success shadow h-100 w-100"> <!-- Changed h-76 to h-100 and added w-100 -->
-                    <div class="card-body py-2 d-flex flex-column justify-content-between"> <!-- Added flex classes -->
-                        <div class="row no-gutters align-items-center flex-grow-1"> <!-- Added flex-grow-1 -->
+        <div class="row h-100">
+            <div class="col-md-12 d-flex">
+                <div class="card border-left-success shadow h-100 w-100">
+                    <div class="card-body py-2 d-flex flex-column justify-content-between">
+                        <div class="row no-gutters align-items-center flex-grow-1">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Ongoing Loans
@@ -323,7 +318,7 @@
                                     <?php echo $loan_status_counts['ongoing'] ?? 0; ?>
                                 </div>
                                 <div class="mt-2">
-                                    <span class="badge badge-primary">Active</span>
+                                    <span class="badge badge-primary text-primary">Active</span>
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -334,11 +329,10 @@
                 </div>
             </div>
 
-            <!-- Overdue Loans -->
-            <div class="col-md-12 d-flex mt-3"> <!-- Added d-flex and mt-3 -->
-                <div class="card border-left-warning shadow h-100 w-100"> <!-- Changed h-76 to h-100 and added w-100 -->
-                    <div class="card-body py-2 d-flex flex-column justify-content-between"> <!-- Added flex classes -->
-                        <div class="row no-gutters align-items-center flex-grow-1"> <!-- Added flex-grow-1 -->
+            <div class="col-md-12 d-flex mt-3">
+                <div class="card border-left-warning shadow h-100 w-100">
+                    <div class="card-body py-2 d-flex flex-column justify-content-between">
+                        <div class="row no-gutters align-items-center flex-grow-1">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                     Overdue Loans
@@ -347,7 +341,7 @@
                                     <?php echo $loan_status_counts['overdue'] ?? 0; ?>
                                 </div>
                                 <div class="mt-2">
-                                    <span class="badge badge-danger">Attention Needed</span>
+                                    <span class="badge badge-danger text-danger">Attention Needed</span>
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -358,11 +352,10 @@
                 </div>
             </div>
 
-            <!-- Completed Loans -->
-            <div class="col-md-12 d-flex mt-3"> <!-- Added d-flex and mt-3 -->
-                <div class="card border-left-info shadow h-100 w-100"> <!-- Changed h-76 to h-100 and added w-100 -->
-                    <div class="card-body py-2 d-flex flex-column justify-content-between"> <!-- Added flex classes -->
-                        <div class="row no-gutters align-items-center flex-grow-1"> <!-- Added flex-grow-1 -->
+            <div class="col-md-12 d-flex mt-3">
+                <div class="card border-left-info shadow h-100 w-100">
+                    <div class="card-body py-2 d-flex flex-column justify-content-between">
+                        <div class="row no-gutters align-items-center flex-grow-1">
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                     Completed Loans
@@ -371,7 +364,7 @@
                                     <?php echo $loan_status_counts['completed'] ?? 0; ?>
                                 </div>
                                 <div class="mt-2">
-                                    <span class="badge badge-success">Paid Off</span>
+                                    <span class="badge badge-success text-success">Paid Off</span>
                                 </div>
                             </div>
                             <div class="col-auto">
