@@ -141,11 +141,12 @@
         }
 
         #content main .table-data>div {
-            border-radius: 20px;
+            /* border-radius: 20px; */
             background: var(--light);
             padding: 24px;
             overflow-x: auto;
             background-color: rgb(255, 255, 255);
+            /* background-color: transparent; */
             /* White background with 50% opacity */
         }
 
@@ -240,7 +241,7 @@
             width: 100%;
             padding: 10px;
             margin-left: 0 !important;
-            padding-top: 60px;
+            padding-top: 40px;
             overflow: hidden;
         }
 

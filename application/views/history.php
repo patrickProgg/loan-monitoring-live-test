@@ -36,12 +36,13 @@
                             <table id="client_table" class="table table-hover" style="width:100%">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th style="width:50px; text-align:center">NO. #</th>
+                                        <th style="width:100px; text-align:center">ACC #</th>
                                         <th>FULL NAME</th>
                                         <th>ADDRESS</th>
                                         <th>CONTACT NO.</th>
                                         <th style="width:30px">COUNT</th>
-                                        <th>DATE ADDED</th>
+                                        <th>TOTAL LOAN</th>
+                                        <th style="width:110px">DATE</th>
                                         <th style="width:150px; text-align:center">ACTION</th>
                                     </tr>
                                 </thead>
@@ -57,11 +58,12 @@
                                         <th style="width: 5%; vertical-align: middle; text-align:center;">NO. #</th>
                                         <th style="width: 10%; vertical-align: middle;">DATE</th>
                                         <th style="width: 12%; vertical-align: middle;">PROCESSING FEE</th>
-                                        <th style="width: 12%; vertical-align: middle;">TICKET</th>
-                                        <th style="width: 12%; vertical-align: middle;">PULL OUT SHARING PROFIT</th>
-                                        <th style="width: 10%; vertical-align: middle;">PULL OUT 2%</th>
-                                        <th style="width: 13%; vertical-align: middle;">TOTAL AMT PULL OUT</th>
-                                        <th style="width: 17%; vertical-align: middle; text-align: center;">ACTION</th>
+                                        <th style="width: 12%; vertical-align: middle;">TICKET AMT</th>
+                                        <th style="width: 12%; vertical-align: middle;">PULL OUT <br>SHARING PROFIT</th>
+                                        <th style="width: 12%; vertical-align: middle;">PULL OUT 2%</th>
+                                        <th style="width: 12%; vertical-align: middle;">PULL OUT CAPITAL</th>
+                                        <th style="width: 12%; vertical-align: middle;">TOTAL AMT <br>PULL OUT</th>
+                                        <th style="width: 20%; vertical-align: middle; text-align: center;">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -73,10 +75,10 @@
                                 <thead class="table-secondary">
                                     <tr>
                                         <th style="width: 10%; text-align:center">NO. #</th>
-                                        <th>DATE ADDED</th>
-                                        <th>EXPENSE DESCRIPTION</th>
-                                        <th>AMOUNT</th>
-                                        <th style="width:200px; text-align:center">ACTION</th>
+                                        <th style="width: 20%">DATE ADDED</th>
+                                        <th tyle="width: 30%">EXPENSE DESCRIPTION</th>
+                                        <th style="width: 20%">AMOUNT</th>
+                                        <th style="width:20%; text-align:center">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -127,11 +129,8 @@
         },
         columns: [
             {
-                data: null,
-                class: 'text-center',
-                render: function (data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                }
+                data: 'acc_no',
+                class: 'text-center'
             },
             {
                 data: 'full_name',
@@ -147,8 +146,24 @@
                     return data.replace(/\b\w/g, char => char.toUpperCase());
                 }
             },
-            { data: 'contact_no' },
+            {
+                data: 'contact_no',
+                render: function (data) {
+
+                    let numbers = data.split('|')
+                        .map(n => n.trim())
+                        .filter(n => n !== '');
+
+                    return numbers.length > 0 ? numbers.join(' | ') : '';
+                }
+            },
             { data: 'loan_count', class: 'text-center' },
+            {
+                data: 'total_loan_amount', class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
             { data: 'date_added', class: 'text-center' },
             {
                 data: 'id',
@@ -196,11 +211,48 @@
                 }
             },
             { data: 'date_added', class: 'text-center' },
-            { data: 'process_fee', class: 'text-end' },
-            { data: 'ticket', class: 'text-end' },
-            { data: 'profit_share', class: 'text-end' },
-            { data: 'pull_out', class: 'text-end' },
-            { data: 'total_pull_out', class: 'text-end' },
+            {
+                data: 'process_fee',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'ticket',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'profit_share',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'pull_out',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'pull_out_capital',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
+            {
+                data: 'total_pull_out',
+                class: 'text-end',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
             {
                 data: 'id',
                 orderable: false,
@@ -250,10 +302,28 @@
                 data: 'type',
                 render: function (data) {
                     if (!data) return '';
-                    return data.replace(/\b\w/g, char => char.toUpperCase());
+
+                    if (data === 'ca') {
+                        return 'Cash Advance';
+                    } else if (data === 'motor_shop') {
+                        return 'Motor Shop';
+                    } else if (data === 'gas') {
+                        return 'Gas';
+                    } else if (data === 'meal') {
+                        return 'Meal';
+                    } else if (data === 'ca') {
+                        return 'Cash Advance';
+                    } else {
+                        return data.replace(/\b\w/g, char => char.toUpperCase());
+                    }
                 }
             },
-            { data: 'amt' },
+            {
+                data: 'amt',
+                render: function (data, type, row) {
+                    return Number(data).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            },
             {
                 data: 'id',
                 orderable: false,

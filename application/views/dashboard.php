@@ -162,7 +162,7 @@
 
 <?php extract($data ?? [], EXTR_SKIP); ?>
 
-<div class="row px-3">
+<div class="row px-3" style="padding-top:10px">
     <ul class="box-info">
 
         <a href="<?= base_url(); ?>client" style="text-decoration: none; color: inherit;">
@@ -386,8 +386,9 @@
                     <h3 class="card-title mb-0">
                         <span class="mr-2">📊 Monthly</span>
                         <select id="dataTypeSelect" class="form-control-sm border-info"
-                            style="width: 100px; display: inline-block; height: 28px; color: #444242; border-radius: 6px;">
+                            style="width: 120px; display: inline-block; height: 28px; color: #444242; border-radius: 6px;">
                             <option value="payments">Payments</option>
+                            <option value="loan">Loan Released</option>
                             <option value="pullout">Pull Out</option>
                             <option value="expenses">Expenses</option>
                         </select>
@@ -727,6 +728,9 @@
             let url = '';
 
             switch (dataType) {
+                case 'loan':
+                    url = '<?php echo site_url("View_ui_cont/get_loan_chart_data/"); ?>' + year;
+                    break;
                 case 'payments':
                     url = '<?php echo site_url("View_ui_cont/get_payment_chart_data/"); ?>' + year;
                     break;
@@ -764,6 +768,7 @@
 
         function getDataTypeLabel(dataType) {
             switch (dataType) {
+                case 'loan': return 'Loan Amount';
                 case 'payments': return 'Payment Amount';
                 case 'pullout': return 'Pull Out Amount';
                 case 'expenses': return 'Expenses Amount';
@@ -773,6 +778,7 @@
 
         function getDataTypeTitle(dataType) {
             switch (dataType) {
+                case 'loan': return 'Monthly Loan Release';
                 case 'payments': return 'Monthly Payments';
                 case 'pullout': return 'Monthly Pull Out';
                 case 'expenses': return 'Monthly Expenses';
@@ -802,9 +808,11 @@
             }));
 
             $('.highest-month').text('₱ ' + maxMonthValue.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
-            $('.highest-month').prev().find('span').text('Highest Month (' + maxMonthName + ')');
+            // $('.highest-month').prev().find('span').text('Highest Month (' + maxMonthName + ')');
+            $('.highest-month').prev('span').text('Highest Month (' + maxMonthName + ')');
             $('.lowest-month').text('₱ ' + minMonthValue.toLocaleString('en-PH', { minimumFractionDigits: 2 }));
-            $('.lowest-month').prev().find('span').text('Lowest Month (' + minMonthName + ')');
+            // $('.lowest-month').prev().find('span').text('Lowest Month (' + minMonthName + ')');
+            $('.lowest-month').prev('span').text('Lowest Month (' + minMonthName + ')');
 
             // $('.average-monthly').text(formatCurrency(avgMonthly));
             // $('.highest-month').text(formatCurrency(maxMonthValue));
@@ -1342,7 +1350,7 @@
                         y: {
                             grid: {
                                 display: false
-                            },
+                            },  
                             ticks: {
                                 padding: 15,
                                 font: {

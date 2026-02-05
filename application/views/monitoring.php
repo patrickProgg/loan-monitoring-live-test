@@ -91,10 +91,10 @@
                             <th style="width:100px; text-align:center">ACC #</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
-                            <th style="width:220px">CONTACT NO.</th>
+                            <th>CONTACT NO.</th>
                             <th style="width:30px">COUNT</th>
-                            <th style="width:100px">TOTAL LOAN</th>
-                            <th>DATE</th>
+                            <th>TOTAL LOAN</th>
+                            <th style="width:110px">DATE</th>
                             <th style="width:150px; text-align:center">ACTION</th>
                         </tr>
                     </thead>
@@ -276,12 +276,6 @@
             <div class="modal-dialog" style="max-width:1200px; margin-top: 10px;">
                 <div class="table-data">
                     <div class="modal-content">
-
-                        <!-- <div class="modal-header border-bottom">
-                            <h5 class="modal-title fw-bold">Monitoring</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div> -->
-
                         <div class="modal-body">
                             <div class="container">
                                 <div class="row g-3" style="font-size: 14px;">
@@ -435,7 +429,7 @@
         </div>
         <!-- VIEW MODAL -->
 
-        <!-- Overdue Modal -->
+        <!-- OVERDUE -->
         <div class="modal fade" id="overdueModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
             data-bs-keyboard="false">
             <div class="modal-dialog" style="margin-top:10px">
@@ -478,7 +472,7 @@
                 </div>
             </div>
         </div>
-        <!-- Overdue Modal -->
+        <!-- OVERDUE -->
 
         <!-- ADD LOAN SAME CLIENT -->
         <div class="modal fade" id="addLoanSameClient" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
@@ -525,20 +519,19 @@
         </div>
         <!-- ADD LOAN SAME CLIENT -->
 
+        <!-- BULK PAYMENT -->
         <div class="modal fade" id="bulk_payment_modal" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog" style="max-width:1500px; margin-top: 10px;">
+            <div class="modal-dialog" style="max-width:100%; margin-top: 10px; margin-right:10px;  margin-left:10px">
                 <div class="modal-content">
 
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title fw-bold">Bulk Payment For : <span id="bulk_date"
+                        <h5 class="modal-title fw-bold">Bulk Payment For - <span id="bulk_date"
                                 style="font-weight: bold;"></span></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <!-- <div class="container w-100"> -->
 
-                        <!-- Replace your current table wrapper with this -->
                         <div class="table-responsive" style="overflow-x: auto; display: block;">
                             <table id="bulk_payment_table" class="table table-sm">
                                 <thead>
@@ -563,12 +556,12 @@
                                     id="closeModalBtn">Close</button>
                             </div>
                         </div>
-                        <!-- </div> -->
                     </div>
 
                 </div>
             </div>
         </div>
+        <!-- BULK PAYMENT -->
 
     </main>
 </section>
@@ -1663,57 +1656,59 @@
     });
 
     $(document).on('click', '#generate_excel', function () {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const formattedDate = `${yyyy}-${mm}-${dd}`;
+        // const today = new Date();
+        // const yyyy = today.getFullYear();
+        // const mm = String(today.getMonth() + 1).padStart(2, '0');
+        // const dd = String(today.getDate()).padStart(2, '0');
+        // const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-        Swal.fire({
-            title: 'Select Date for Report',
-            input: 'date',
-            inputLabel: 'Date',
-            inputValue: formattedDate,
-            inputAttributes: {
-                style: 'display: block; margin: 0 auto; text-align: center; width: 200px;'
+        const selectedDate = $('#selected_date').val();
+
+        // Swal.fire({
+        //     title: 'Select Date for Report',
+        //     // input: 'date',
+        //     // inputLabel: 'Date',
+        //     // inputValue: formattedDate,
+        //     // inputAttributes: {
+        //     //     style: 'display: block; margin: 0 auto; text-align: center; width: 200px;'
+        //     // },
+        //     showCancelButton: true,
+        //     confirmButtonText: 'Download',
+        //     cancelButtonText: 'Cancel'
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         const selectedDate = result.value;
+
+        if (!selectedDate) {
+            Swal.fire('Error', 'Please select a valid date.', 'error');
+            return;
+        }
+
+        // Swal.fire({
+        //     title: 'Generating Excel Report...',
+        //     html: 'Please wait while we generate your report.<br><br><div class="spinner-border text-primary" role="status"></div>',
+        //     allowOutsideClick: false,
+        //     allowEscapeKey: false,
+        //     showConfirmButton: false,
+        //     didOpen: () => {
+        //         Swal.showLoading();
+        //     }
+        // });
+
+        $.ajax({
+            url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
+            type: 'POST',
+            data: { date: selectedDate },
+            success: function (response) {
+                // Swal.close();
+                Swal.fire('Saved!', 'Daily report has been saved.', 'success');
             },
-            showCancelButton: true,
-            confirmButtonText: 'Download',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const selectedDate = result.value;
-
-                if (!selectedDate) {
-                    Swal.fire('Error', 'Please select a valid date.', 'error');
-                    return;
-                }
-
-                // Swal.fire({
-                //     title: 'Generating Excel Report...',
-                //     html: 'Please wait while we generate your report.<br><br><div class="spinner-border text-primary" role="status"></div>',
-                //     allowOutsideClick: false,
-                //     allowEscapeKey: false,
-                //     showConfirmButton: false,
-                //     didOpen: () => {
-                //         Swal.showLoading();
-                //     }
-                // });
-
-                $.ajax({
-                    url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
-                    type: 'POST',
-                    data: { date: selectedDate },
-                    success: function (response) {
-                        // Swal.close();
-                        Swal.fire('Saved!', 'Daily report has been saved.', 'success');
-                    },
-                    error: function () {
-                        Swal.fire('Error', 'Something went wrong.', 'error');
-                    }
-                });
+            error: function () {
+                Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });
+        //     }
+        // });
     });
 
     let bulkPaymentData = {

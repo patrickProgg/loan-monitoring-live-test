@@ -625,6 +625,64 @@ class View_ui_cont extends CI_Controller
             'label' => 'Expenses Amount'
         ]);
     }
+
+    public function get_loan_chart_data($year = null)
+    {
+        if (!$year) {
+            $year = date('Y');
+        }
+
+        $this->db->select("MONTH(a.start_date) as month, SUM(a.capital_amt) as total")
+            ->from('tbl_loan as a')
+            ->join('tbl_client as b', 'b.id = a.cl_id', 'left')
+            ->where('b.status !=', '1')
+            ->where('YEAR(a.start_date)', $year)
+            ->group_by('MONTH(a.start_date)')
+            ->order_by('MONTH(a.start_date)');
+
+        $query = $this->db->get();
+        $result = $query->result_array();
+
+        // Prepare data for all 12 months
+        $monthly_totals = array_fill(1, 12, 0);
+
+        foreach ($result as $row) {
+            $month = (int) $row['month'];
+            $monthly_totals[$month] = floatval($row['total']);
+        }
+
+        // Get year total
+        $this->db->select_sum('a.capital_amt')
+            ->from('tbl_loan as a')
+            ->join('tbl_client as b', 'b.id = a.cl_id', 'left')
+            ->where('b.status !=', '1')
+            ->where('YEAR(a.start_date)', $year);
+        $year_total_query = $this->db->get();
+        $year_total = $year_total_query->row()->capital_amt ?: 0;
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'data' => array_values($monthly_totals),
+            'year' => $year,
+            'year_total' => $year_total,
+            'months' => [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec'
+            ],
+            'label' => 'Loan Amount'
+        ]);
+    }
     public function monitoring()
     {
         $this->load->view('layouts/header');
