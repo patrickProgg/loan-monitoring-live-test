@@ -62,13 +62,13 @@
             <div class="order">
                 <div class="row align-items-end mb-3">
                     <div class="col-auto me-3">
-                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
                             <i class="fas fa-user-plus me-1"></i> Add New
                         </button>
-                        <button class="btn btn-outline-success" id="generate_excel">
+                        <button class="btn btn-success" id="generate_excel">
                             <i class="fas fa-download me-1"></i> Print
                         </button>
-                        <button class="btn btn-primary" id="bulk_payment">
+                        <button class="btn btn-info" id="bulk_payment">
                             <i class="fas fa-credit-card me-1"></i> Bulk Payment
                         </button>
 
@@ -2207,8 +2207,7 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, save payments!',
-            cancelButtonText: 'Cancel',
-            reverseButtons: true
+            cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
                 proceedWithSave(payments, updatedBalances, totalAmount);
@@ -2283,6 +2282,17 @@
     const viewLoanerEl = document.getElementById('viewLoaner');
     const overdueModalEl = document.getElementById('overdueModal');
     const addNewModalEl = document.getElementById('addLoanSameClient');
+
+    viewLoanerEl.addEventListener('hidden.bs.modal', () => {
+        $('#dateDropdownBtn').prop('disabled', false);
+
+        $('#cancelEdit').hide();
+        const btn = $('#editLoanDetails');
+
+        btn.data('mode', 'edit');
+        btn.prop('disabled', false);
+        btn.html('<i class="fas fa-edit"></i> Edit');
+    });
 
     overdueModalEl.addEventListener('show.bs.modal', () => {
         viewLoanerEl.classList.add('modal-dimmed');

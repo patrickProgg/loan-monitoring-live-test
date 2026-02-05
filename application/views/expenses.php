@@ -44,7 +44,7 @@
             <div class="order">
                 <div class="row">
                     <div class="col-2 d-flex flex-column align-items-start gap-2">
-                        <button class="btn btn-outline-primary" onclick="openModal('addExpenses')">
+                        <button class="btn btn-primary" onclick="openModal('addExpenses')">
                             <i class="fas fa-wallet me-1"></i> Add New
                         </button>
                     </div>

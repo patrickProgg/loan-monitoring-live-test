@@ -170,7 +170,7 @@
                 <i class='bx bx-group' style="background: rgba(255, 99, 132, 0.2); color: rgba(255, 99, 132, 1);"></i>
                 <span class="text">
                     <h3><?php echo $total_client; ?></h3>
-                    <p style="color:rgba(255, 99, 132, 1)">Clients</p>
+                    <p style="color:rgba(255, 99, 132, 1)">Active Clients</p>
                 </span>
             </li>
         </a>
@@ -183,7 +183,7 @@
                 style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
             <span class="text">
                 <h3>₱<?= number_format($total_loan_amt, 2) ?></h3>
-                <p style="color:rgba(255, 159, 64, 1)">Total Loan Amt.</p>
+                <p style="color:rgba(255, 159, 64, 1)">Total Collectibles</p>
             </span>
         </li>
         <!-- </a> -->
@@ -829,6 +829,334 @@
         }
     });
 
+    // $(document).ready(function () {
+    //     const goodPayorsCtx = document.getElementById('goodPayorsChart').getContext('2d');
+    //     let goodPayorsChart;
+
+    //     // Initial data from PHP
+    //     const initialGoodPayors = <?php echo json_encode($good_payors); ?>;
+
+    //     // Sort the data by performance score (if not already sorted in PHP)
+    //     const sortedPayors = [...initialGoodPayors].sort((a, b) => {
+    //         // Calculate performance score if not already present
+    //         const scoreA = a.performance_score || calculateScore(a);
+    //         const scoreB = b.performance_score || calculateScore(b);
+    //         return scoreB - scoreA; // Descending order
+    //     });
+
+    //     // Helper function to calculate performance score
+    //     function calculateScore(payor) {
+    //         let score = payor.completed_loans * 10;
+    //         score -= payor.overdue_loans * 20;
+    //         score += (payor.total_loans > 0) ? (payor.completed_loans / payor.total_loans) * 100 : 0;
+    //         return score;
+    //     }
+
+    //     // Prepare chart data from SORTED payors
+    //     const payorNames = sortedPayors.map(p => {
+    //         if (!p.full_name) return '';
+    //         return p.full_name.split(' ').map(word =>
+    //             word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    //         ).join(' ');
+    //     });
+
+    //     // Performance scores for the chart
+    //     const performanceScores = sortedPayors.map(p =>
+    //         p.performance_score || calculateScore(p)
+    //     );
+
+    //     // Create horizontal bar chart (already in your code, just need to update data source)
+    //     function createHorizontalBarChart() {
+    //         if (goodPayorsChart) {
+    //             goodPayorsChart.destroy();
+    //         }
+
+    //         goodPayorsChart = new Chart(goodPayorsCtx, {
+    //             type: 'bar',
+    //             data: {
+    //                 labels: payorNames,
+    //                 datasets: [{
+    //                     label: 'Performance Score (Higher is Better)',
+    //                     data: performanceScores,
+    //                     backgroundColor: function (context) {
+    //                         const chart = context.chart;
+    //                         const { ctx, chartArea } = chart;
+    //                         const value = context.dataset.data[context.dataIndex];
+    //                         const rank = context.dataIndex + 1;
+
+    //                         if (!chartArea) {
+    //                             if (rank === 1) return 'rgba(255, 193, 7, 0.8)'; // Gold for 1st
+    //                             if (rank === 2) return 'rgba(192, 192, 192, 0.8)'; // Silver for 2nd
+    //                             if (rank === 3) return 'rgba(205, 127, 50, 0.8)'; // Bronze for 3rd
+    //                             if (value >= 80) return 'rgba(76, 175, 80, 0.7)';
+    //                             if (value >= 50) return 'rgba(33, 150, 243, 0.7)';
+    //                             return 'rgba(244, 67, 54, 0.7)';
+    //                         }
+
+    //                         // Right-to-left gradient
+    //                         const gradient = ctx.createLinearGradient(
+    //                             chartArea.right, 0,
+    //                             chartArea.left, 0
+    //                         );
+
+    //                         if (rank === 1) {
+    //                             gradient.addColorStop(0, 'rgba(255, 193, 7, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(255, 213, 79, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(255, 248, 200, 0.5)');
+    //                         } else if (rank === 2) {
+    //                             gradient.addColorStop(0, 'rgba(192, 192, 192, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(211, 211, 211, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(245, 245, 245, 0.5)');
+    //                         } else if (rank === 3) {
+    //                             gradient.addColorStop(0, 'rgba(205, 127, 50, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(210, 140, 70, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(255, 235, 215, 0.5)');
+    //                         } else if (value >= 80) {
+    //                             gradient.addColorStop(0, 'rgba(76, 175, 80, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(129, 199, 132, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(240, 255, 240, 0.5)');
+    //                         } else if (value >= 50) {
+    //                             gradient.addColorStop(0, 'rgba(33, 150, 243, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(100, 181, 246, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(227, 242, 253, 0.5)');
+    //                         } else {
+    //                             gradient.addColorStop(0, 'rgba(244, 67, 54, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(239, 83, 80, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(255, 235, 238, 0.5)');
+    //                         }
+
+    //                         return gradient;
+    //                     },
+    //                     borderColor: function (context) {
+    //                         const value = context.dataset.data[context.dataIndex];
+    //                         const rank = context.dataIndex + 1;
+
+    //                         if (rank === 1) return 'rgba(218, 165, 32, 1)';
+    //                         if (rank === 2) return 'rgba(169, 169, 169, 1)';
+    //                         if (rank === 3) return 'rgba(139, 90, 43, 1)';
+    //                         if (value >= 80) return 'rgba(56, 142, 60, 1)';
+    //                         if (value >= 50) return 'rgba(25, 118, 210, 1)';
+    //                         return 'rgba(198, 40, 40, 1)';
+    //                     },
+    //                     borderWidth: 2,
+    //                     borderRadius: 8,
+    //                     borderSkipped: false,
+    //                 }]
+    //             },
+    //             options: {
+    //                 indexAxis: 'y',
+    //                 responsive: true,
+    //                 maintainAspectRatio: false,
+    //                 plugins: {
+    //                     legend: {
+    //                         display: true,
+    //                         position: 'top',
+    //                         labels: {
+    //                             font: {
+    //                                 size: 12,
+    //                                 weight: 'bold'
+    //                             }
+    //                         }
+    //                     },
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Top Good Payors - Performance Score Ranking',
+    //                         font: {
+    //                             size: 16,
+    //                             weight: 'bold'
+    //                         },
+    //                         padding: {
+    //                             top: 10,
+    //                             bottom: 30
+    //                         }
+    //                     },
+    //                     tooltip: {
+    //                         callbacks: {
+    //                             title: function (context) {
+    //                                 const rank = context[0].dataIndex + 1;
+    //                                 const rankText = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+    //                                 return `${rankText} ${context[0].label}`;
+    //                             },
+    //                             label: function (context) {
+    //                                 return `Score: ${context.parsed.x.toFixed(1)}`;
+    //                             },
+    //                             afterLabel: function (context) {
+    //                                 const payor = sortedPayors[context.dataIndex];
+    //                                 const score = performanceScores[context.dataIndex];
+    //                                 const rank = context.dataIndex + 1;
+
+    //                                 return [
+    //                                     `Rank: ${rank}/${sortedPayors.length}`,
+    //                                     `Total Loans: ${payor.total_loans}`,
+    //                                     `Completed: ${payor.completed_loans} (${payor.total_loans > 0 ? Math.round((payor.completed_loans / payor.total_loans) * 100) : 0}%)`,
+    //                                     `Overdue: ${payor.overdue_loans}`,
+    //                                     `Ongoing: ${payor.ongoing_loans}`,
+    //                                     `Amount Paid: ₱${parseFloat(payor.total_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+    //                                 ];
+    //                             }
+    //                         }
+    //                     }
+    //                 },
+    //                 scales: {
+    //                     x: {
+    //                         beginAtZero: true,
+    //                         title: {
+    //                             display: true,
+    //                             text: 'Performance Score',
+    //                             font: {
+    //                                 size: 13,
+    //                                 weight: 'bold'
+    //                             }
+    //                         },
+    //                         grid: {
+    //                             color: 'rgba(0, 0, 0, 0.1)'
+    //                         }
+    //                     },
+    //                     y: {
+    //                         grid: {
+    //                             display: false
+    //                         },
+    //                         ticks: {
+    //                             padding: 15,
+    //                             font: {
+    //                                 size: 12,
+    //                                 weight: 'bold'
+    //                             },
+    //                             callback: function (value, index) {
+    //                                 const rank = index + 1;
+    //                                 const rankIcon = rank === 1 ? '🥇 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : '';
+    //                                 return rankIcon + this.getLabelForValue(value);
+    //                             }
+    //                         }
+    //                     }
+    //                 },
+    //                 animation: {
+    //                     duration: 1000,
+    //                     easing: 'easeOutQuart'
+    //                 }
+    //             }
+    //         });
+    //     }
+
+    //     // Alternative: Horizontal bar chart (better for long names)
+    //     function createHorizontalBarChart() {
+    //         if (goodPayorsChart) {
+    //             goodPayorsChart.destroy();
+    //         }
+
+    //         goodPayorsChart = new Chart(goodPayorsCtx, {
+    //             type: 'bar',
+    //             data: {
+    //                 labels: payorNames,
+    //                 datasets: [{
+    //                     label: 'Performance Score (Higher is Better)',
+    //                     data: initialGoodPayors.map(p => {
+    //                         let score = p.completed_loans * 10;
+    //                         score -= p.overdue_loans * 20;
+    //                         score += (p.total_loans > 0) ? (p.completed_loans / p.total_loans) * 100 : 0;
+    //                         return score;
+    //                     }),
+    //                     backgroundColor: function (context) {
+    //                         const chart = context.chart;
+    //                         const { ctx, chartArea } = chart;
+    //                         const value = context.dataset.data[context.dataIndex];
+
+    //                         if (!chartArea) {
+    //                             if (value >= 80) return 'rgba(76, 175, 80, 0.7)';
+    //                             if (value >= 50) return 'rgba(255, 193, 7, 0.7)';
+    //                             return 'rgba(244, 67, 54, 0.7)';
+    //                         }
+
+    //                         // Right-to-left gradient
+    //                         const gradient = ctx.createLinearGradient(
+    //                             chartArea.right, 0,   // start at the right
+    //                             chartArea.left, 0     // end at the left
+    //                         );
+
+    //                         if (value >= 80) {
+    //                             gradient.addColorStop(0, 'rgba(76, 175, 80, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(129, 199, 132, 0.7)');
+    //                             gradient.addColorStop(1, 'rgb(255, 255, 255)');
+    //                         } else if (value >= 50) {
+    //                             gradient.addColorStop(0, 'rgba(255, 193, 7, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(255, 213, 79, 0.7)');
+    //                             gradient.addColorStop(1, 'rgb(255, 255, 255)');
+    //                         } else {
+    //                             gradient.addColorStop(0, 'rgba(244, 67, 54, 0.9)');
+    //                             gradient.addColorStop(0.7, 'rgba(239, 83, 80, 0.7)');
+    //                             gradient.addColorStop(1, 'rgba(255, 255, 255, 0.99)');
+    //                         }
+
+    //                         return gradient;
+    //                     },
+    //                     borderColor: function (context) {
+    //                         const value = context.dataset.data[context.dataIndex];
+    //                         if (value >= 80) return 'rgba(56, 155, 60, 0.8)';
+    //                         if (value >= 50) return 'rgba(235, 173, 0, 0.8)';
+    //                         return 'rgba(224, 47, 34, 0.8)';
+    //                     },
+    //                     borderWidth: 1.5,
+    //                     borderRadius: 6,
+    //                     borderSkipped: false,
+    //                 }]
+    //             },
+    //             options: {
+    //                 indexAxis: 'y',
+    //                 responsive: true,
+    //                 maintainAspectRatio: false,
+    //                 plugins: {
+    //                     legend: {
+    //                         position: 'top',
+    //                     },
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Good Payors Performance Score'
+    //                     },
+    //                     tooltip: {
+    //                         callbacks: {
+    //                             afterLabel: function (context) {
+    //                                 const payor = initialGoodPayors[context.dataIndex];
+    //                                 return [
+    //                                     `Total Loans: ${payor.total_loans}`,
+    //                                     `Completed: ${payor.completed_loans} (${payor.total_loans > 0 ? Math.round((payor.completed_loans / payor.total_loans) * 100) : 0}%)`,
+    //                                     `Overdue: ${payor.overdue_loans}`,
+    //                                     `Amount Paid: ₱${parseFloat(payor.total_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+    //                                 ];
+    //                             }
+    //                         }
+    //                     }
+    //                 },
+    //                 scales: {
+    //                     x: {
+    //                         beginAtZero: true,
+    //                         grid: {
+    //                             color: 'rgba(0, 0, 0, 0.05)'
+    //                         },
+    //                         border: {
+    //                             display: false // ✅ removes the line under bars
+    //                         },
+    //                         title: {
+    //                             display: true,
+    //                             text: 'Performance Score'
+    //                         }
+    //                     }
+    //                     ,
+    //                     y: {
+    //                         grid: {
+    //                             display: false // Removes vertical grid lines
+    //                         },
+    //                         ticks: {
+    //                             padding: 10 // Adds spacing between labels and bars
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         });
+    //     }
+    //     // Initialize with horizontal bar chart
+    //     createHorizontalBarChart();
+    // });
+
     $(document).ready(function () {
         const goodPayorsCtx = document.getElementById('goodPayorsChart').getContext('2d');
         let goodPayorsChart;
@@ -870,7 +1198,6 @@
             if (goodPayorsChart) {
                 goodPayorsChart.destroy();
             }
-
             goodPayorsChart = new Chart(goodPayorsCtx, {
                 type: 'bar',
                 data: {
@@ -1038,121 +1365,6 @@
             });
         }
 
-        // Alternative: Horizontal bar chart (better for long names)
-        function createHorizontalBarChart() {
-            if (goodPayorsChart) {
-                goodPayorsChart.destroy();
-            }
-
-            goodPayorsChart = new Chart(goodPayorsCtx, {
-                type: 'bar',
-                data: {
-                    labels: payorNames,
-                    datasets: [{
-                        label: 'Performance Score (Higher is Better)',
-                        data: initialGoodPayors.map(p => {
-                            let score = p.completed_loans * 10;
-                            score -= p.overdue_loans * 20;
-                            score += (p.total_loans > 0) ? (p.completed_loans / p.total_loans) * 100 : 0;
-                            return score;
-                        }),
-                        backgroundColor: function (context) {
-                            const chart = context.chart;
-                            const { ctx, chartArea } = chart;
-                            const value = context.dataset.data[context.dataIndex];
-
-                            if (!chartArea) {
-                                if (value >= 80) return 'rgba(76, 175, 80, 0.7)';
-                                if (value >= 50) return 'rgba(255, 193, 7, 0.7)';
-                                return 'rgba(244, 67, 54, 0.7)';
-                            }
-
-                            // Right-to-left gradient
-                            const gradient = ctx.createLinearGradient(
-                                chartArea.right, 0,   // start at the right
-                                chartArea.left, 0     // end at the left
-                            );
-
-                            if (value >= 80) {
-                                gradient.addColorStop(0, 'rgba(76, 175, 80, 0.9)');
-                                gradient.addColorStop(0.7, 'rgba(129, 199, 132, 0.7)');
-                                gradient.addColorStop(1, 'rgb(255, 255, 255)');
-                            } else if (value >= 50) {
-                                gradient.addColorStop(0, 'rgba(255, 193, 7, 0.9)');
-                                gradient.addColorStop(0.7, 'rgba(255, 213, 79, 0.7)');
-                                gradient.addColorStop(1, 'rgb(255, 255, 255)');
-                            } else {
-                                gradient.addColorStop(0, 'rgba(244, 67, 54, 0.9)');
-                                gradient.addColorStop(0.7, 'rgba(239, 83, 80, 0.7)');
-                                gradient.addColorStop(1, 'rgba(255, 255, 255, 0.99)');
-                            }
-
-                            return gradient;
-                        },
-                        borderColor: function (context) {
-                            const value = context.dataset.data[context.dataIndex];
-                            if (value >= 80) return 'rgba(56, 155, 60, 0.8)';
-                            if (value >= 50) return 'rgba(235, 173, 0, 0.8)';
-                            return 'rgba(224, 47, 34, 0.8)';
-                        },
-                        borderWidth: 1.5,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Good Payors Performance Score'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                afterLabel: function (context) {
-                                    const payor = initialGoodPayors[context.dataIndex];
-                                    return [
-                                        `Total Loans: ${payor.total_loans}`,
-                                        `Completed: ${payor.completed_loans} (${payor.total_loans > 0 ? Math.round((payor.completed_loans / payor.total_loans) * 100) : 0}%)`,
-                                        `Overdue: ${payor.overdue_loans}`,
-                                        `Amount Paid: ₱${parseFloat(payor.total_paid || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
-                                    ];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            },
-                            border: {
-                                display: false // ✅ removes the line under bars
-                            },
-                            title: {
-                                display: true,
-                                text: 'Performance Score'
-                            }
-                        }
-                        ,
-                        y: {
-                            grid: {
-                                display: false // Removes vertical grid lines
-                            },
-                            ticks: {
-                                padding: 10 // Adds spacing between labels and bars
-                            }
-                        }
-                    }
-                }
-            });
-        }
         // Initialize with horizontal bar chart
         createHorizontalBarChart();
     });

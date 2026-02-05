@@ -37,7 +37,7 @@
             <div class="order">
                 <div class="row">
                     <div class="col-2">
-                        <button class="btn btn-outline-primary" onclick="openModal('addPullOut')">
+                        <button class="btn btn-primary" onclick="openModal('addPullOut')">
                             <i class="fas fa-list me-1"></i> Add New
                         </button>
                     </div>
@@ -72,7 +72,7 @@
                         </div>
                         <div class="total-box">
                             <div class="total-label">
-                                <i class="fas fa-cash-register me-1"></i> Pull Out Capital
+                                <i class="bx bx-wallet me-1"></i> Pull Out Capital
                             </div>
                             <div class="total-value" id="totalPullOutCapital">₱0.00</div>
                         </div>
