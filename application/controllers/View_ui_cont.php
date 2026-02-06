@@ -632,7 +632,9 @@ class View_ui_cont extends CI_Controller
             $year = date('Y');
         }
 
-        $this->db->select("MONTH(a.start_date) as month, SUM(a.capital_amt) as total")
+        $this->db->select(
+            "MONTH(a.start_date) as month, SUM(a.capital_amt) as total"
+        )
             ->from('tbl_loan as a')
             ->join('tbl_client as b', 'b.id = a.cl_id', 'left')
             ->where('b.status !=', '1')

@@ -887,6 +887,118 @@ class Monitoring_cont extends CI_Controller
         }
     }
 
+    public function get_monthly_report()
+    {
+        $selectedDate = $this->input->post('date');
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Column widths
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+
+        $loanData = $this->get_report($selectedDate);
+        $expensesData = $this->get_expenses_report($selectedDate);
+
+        $formattedDate = date('F Y', strtotime($selectedDate));
+
+        $data = [
+            [$formattedDate],
+            ["Collection", "Release", "Interest", "Expenses"],
+            ["", "", "", ""]
+
+        ];
+
+        $rowNumber = 1;
+        foreach ($data as $row) {
+            $col = 'A';
+            foreach ($row as $cell) {
+                $sheet->setCellValue($col . $rowNumber, $cell);
+                $col++;
+            }
+            $rowNumber++;
+        }
+
+        $excelRow = 3;
+
+        $sheet->setCellValue('A' . $excelRow, (float) $loanData['total_payment']);
+        $sheet->getStyle('A' . $excelRow)->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A' . $excelRow)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        $sheet->setCellValue('B' . $excelRow, (float) $loanData['total_capital_amt']);
+        $sheet->getStyle('B' . $excelRow)->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('B' . $excelRow)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        $calculation = (float) $loanData['total_amt'] -
+            (float) $loanData['total_capital_amt'] -
+            (float) $loanData['total_added_amt'];
+
+        $sheet->setCellValue('C' . $excelRow, $calculation);
+        $sheet->getStyle('C' . $excelRow)->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('C' . $excelRow)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        $sheet->setCellValue('D' . $excelRow, (float) $expensesData['total_expenses']);
+        $sheet->getStyle('D' . $excelRow)->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('D' . $excelRow)
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+        $sheet->mergeCells('A1:D1');
+        $sheet->getStyle('A1:D1' . $excelRow)->getAlignment()
+            ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        $sheet->getStyle('A1:D3')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+        $totalRows = ['A2', 'B2', 'C2', 'D2'];
+        foreach ($totalRows as $cell) {
+            $sheet->getStyle($cell)->getFont()->setBold(true);
+        }
+
+        $dangerCells = ['A3', 'B3', 'C3', 'D3'];
+
+        foreach ($dangerCells as $cell) {
+            $sheet->getStyle($cell)->getFont()
+                ->setBold(true)
+                ->getColor()->setARGB(Color::COLOR_RED);
+        }
+
+        $saveFolder = "C:/laragon/www/MONTHLY_REPORT";
+        if (!is_dir($saveFolder))
+            mkdir($saveFolder, 0777, true);
+
+        $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
+
+        if (file_exists($filePath)) {
+            unlink($filePath); // Delete the existing file
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filePath);
+
+        if ($writer) {
+            echo json_encode([
+                'status' => 'success'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+        }
+    }
+
     private function get_loan_released($selectedDate)
     {
         $this->db->select('
@@ -903,6 +1015,56 @@ class Monitoring_cont extends CI_Controller
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    private function get_report($selectedDate)
+    {
+        $startMonth = date('Y-m-01', strtotime($selectedDate));
+        $endMonth = date('Y-m-t', strtotime($selectedDate));
+
+        $this->db->select('
+            SUM(a.capital_amt) as total_capital_amt,
+            SUM(a.added_amt) as total_added_amt,
+            SUM(a.total_amt) as total_amt,
+            SUM(IFNULL(p.total_payment,0)) as total_payment
+        ');
+
+        $this->db->from('tbl_loan as a');
+
+        $this->db->join("
+        (
+                SELECT loan_id, SUM(amt) as total_payment
+                FROM tbl_payment
+                GROUP BY loan_id
+            ) as p
+        ", "p.loan_id = a.id", "left");
+
+        $this->db->join('tbl_client as c', 'c.id = a.cl_id');
+
+        $this->db->where('a.start_date >=', $startMonth);
+        $this->db->where('a.start_date <=', $endMonth);
+        $this->db->where('c.status !=', '1');
+
+        return $this->db->get()->row_array();
+    }
+
+    private function get_expenses_report($selectedDate)
+    {
+        $startMonth = date('Y-m-01', strtotime($selectedDate));
+        $endMonth = date('Y-m-t', strtotime($selectedDate));
+
+        $this->db->select('
+            SUM(amt) as total_expenses
+        ');
+
+        $this->db->from('tbl_expenses');
+
+        $this->db->where('date_added >=', $startMonth);
+        $this->db->where('date_added <=', $endMonth);
+        $this->db->where('status !=', '1');
+
+        return $this->db->get()->row_array();
+    }
+
 
     // public function get_bulk_payment()
     // {

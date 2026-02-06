@@ -1350,7 +1350,7 @@
                         y: {
                             grid: {
                                 display: false
-                            },  
+                            },
                             ticks: {
                                 padding: 15,
                                 font: {

@@ -65,15 +65,18 @@
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
                             <i class="fas fa-user-plus me-1"></i> Add New
                         </button>
-                        <button class="btn btn-success" id="generate_excel">
-                            <i class="fas fa-download me-1"></i> Print
+                        <button class="btn btn-success" id="generate_daily">
+                            <i class="fas fa-download me-1"></i> Daily Report
+                        </button>
+                        <button class="btn btn-warning" id="generate_monthly">
+                            <i class="fas fa-download me-1"></i> Monthly Report
                         </button>
                         <button class="btn btn-info" id="bulk_payment">
                             <i class="fas fa-credit-card me-1"></i> Bulk Payment
                         </button>
 
                         <input type="date"
-                            style="width: 140px; display: inline-block; height: 34px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-info)"
+                            style="width: 140px; display: inline-block; height: 34px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-secondary)"
                             class="form-control" id="selected_date" name="selected_date" value="<?= date('Y-m-d') ?>">
                     </div>
 
@@ -1655,7 +1658,7 @@
         });
     });
 
-    $(document).on('click', '#generate_excel', function () {
+    $(document).on('click', '#generate_daily', function () {
         // const today = new Date();
         // const yyyy = today.getFullYear();
         // const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -1697,6 +1700,32 @@
 
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
+            type: 'POST',
+            data: { date: selectedDate },
+            success: function (response) {
+                // Swal.close();
+                Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+            },
+            error: function () {
+                Swal.fire('Error', 'Something went wrong.', 'error');
+            }
+        });
+        //     }
+        // });
+    });
+
+    $(document).on('click', '#generate_monthly', function () {
+        const selectedDate = $('#selected_date').val();
+
+        if (!selectedDate) {
+            Swal.fire('Error', 'Please select a valid date.', 'error');
+            return;
+        }
+
+        console.log(selectedDate);
+
+        $.ajax({
+            url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
             type: 'POST',
             data: { date: selectedDate },
             success: function (response) {
