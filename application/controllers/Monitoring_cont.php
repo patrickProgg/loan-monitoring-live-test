@@ -1604,23 +1604,38 @@ class Monitoring_cont extends CI_Controller
 
         if ($payments && is_array($payments)) {
             foreach ($payments as $payment) {
-                // Validate required fields
+
                 if (empty($payment['client_id']) || empty($payment['loan_id']) || empty($payment['amount'])) {
                     $error_count++;
                     continue;
                 }
 
-                // Prepare payment data
                 $payment_data = array(
                     'loan_id' => $payment['loan_id'],
                     'payment_for' => $date,
                     'amt' => $payment['amount'],
                 );
 
-                if ($this->db->insert('tbl_payment', $payment_data)) {
-                    $success_count++;
+                $this->db->where('loan_id', $payment['loan_id']);
+                $this->db->where('payment_for', $date);
+                $existing = $this->db->get('tbl_payment')->row();
+
+                if ($existing) {
+                    $this->db->where('loan_id', $payment['loan_id']);
+                    $this->db->where('payment_for', $date);
+
+                    if ($this->db->update('tbl_payment', $payment_data)) {
+                        $success_count++;
+                    } else {
+                        $error_count++;
+                    }
+
                 } else {
-                    $error_count++;
+                    if ($this->db->insert('tbl_payment', $payment_data)) {
+                        $success_count++;
+                    } else {
+                        $error_count++;
+                    }
                 }
             }
         }

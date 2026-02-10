@@ -181,6 +181,7 @@
             font-size: 13px;
             text-align: left;
             padding-left: 5px;
+            color: var(--dark);
             /* background: silver; */
             font-weight: bold;
             background: #f8f9fa;

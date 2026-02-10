@@ -67,7 +67,7 @@
                         <button class="btn btn-success" id="generate_daily">
                             <i class="fas fa-download me-1"></i> Daily Report
                         </button>
-                        <button class="btn btn-dark" id="generate_weekly">
+                        <button class="btn btn-secondary" id="generate_weekly">
                             <i class="fas fa-download me-1"></i> Weekly Report
                         </button>
                         <button class="btn btn-warning" id="generate_monthly">
@@ -395,14 +395,14 @@
                         </div>
 
                         <div class="table-data">
-                            <div class="order pt-0 pb-0" style="max-height: 400px; overflow-y: auto;">
+                            <div class="order pt-0 pb-0" style="max-height: 400px; overflow-y: auto; color:">
                                 <table id="payment_table" class="table pt-0 pb-0 mt-0 mb-0 table-bordered">
                                     <thead class="sticky-top">
                                         <tr>
-                                            <th class="text-center" style="width:10%; color:#000;">NO.#</th>
-                                            <th class="text-center" style="width:30%; color:#000;">DAY</th>
-                                            <th class="text-center" style="width:30%; color:#000;">PAYMENT</th>
-                                            <th class="text-center" style="width:30%; color:#000;">ACTION</th>
+                                            <th class="text-center" style="width:10%; color:var(--dark);">NO.#</th>
+                                            <th class="text-center" style="width:30%; color:var(--dark);">DAY</th>
+                                            <th class="text-center" style="width:30%; color:var(--dark);">PAYMENT</th>
+                                            <th class="text-center" style="width:30%; color:var(--dark);">ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -1151,10 +1151,19 @@
             let input = $(this);
             let payment = input.val().trim();
             let loan_id = $('#header_loan_id').val();
-            console.log(running_bal);
-            console.log(payment);
+            // console.log(running_bal);
+            // console.log(payment);
 
-            if (payment > running_bal) {
+            // if (payment > running_bal) {
+            //     Swal.fire('Invalid', 'Payment must not exceed running balance', 'warning');
+            //     return;
+            // }
+
+            let correctedRunningBal = running_bal < 0 ? 0 : running_bal;
+
+            console.log('Corrected running balance:', correctedRunningBal);
+
+            if (payment > correctedRunningBal) {
                 Swal.fire('Invalid', 'Payment must not exceed running balance', 'warning');
                 return;
             }
@@ -2319,9 +2328,9 @@
         thead.empty();
 
         // Create table headers
-        thead.append('<th style="width:15%; color:#000; font-size:13px" class="text-center">ACC NO</th>');
-        thead.append('<th style="width:70%; color:#000; font-size:13px">FULL NAME</th>');
-        thead.append('<th style="width:15%; color:#000; font-size:13px" class="text-center">AMOUNT</th>');
+        thead.append('<th style="width:15%; color:var(--dark); font-size:13px" class="text-center">ACC NO</th>');
+        thead.append('<th style="width:70%; color:var(--dark); font-size:13px">FULL NAME</th>');
+        thead.append('<th style="width:15%; color:var(--dark); font-size:13px" class="text-center">AMOUNT</th>');
 
         // Check if we have data
         if (!response.data || response.data.length === 0) {

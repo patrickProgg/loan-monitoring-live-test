@@ -232,9 +232,9 @@
                                 <table id="payment_table" class="table pt-0 pb-0 mt-0 mb-0 table-bordered">
                                     <thead class="sticky-top">
                                         <tr>
-                                            <th class="text-center" style="width:10%; color:#000;">NO.#</th>
-                                            <th class="text-center" style="width:30%; color:#000;">DAY</th>
-                                            <th class="text-center" style="width:30%; color:#000;">PAYMENT</th>
+                                            <th class="text-center" style="width:10%; color:var(--dark);">NO.#</th>
+                                            <th class="text-center" style="width:30%; color:var(--dark);">DAY</th>
+                                            <th class="text-center" style="width:30%; color:var(--dark);">PAYMENT</th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -718,22 +718,22 @@
                     let current = new Date(start);
                     let totalPayment = 0;
 
-                    if (status !== "ongoing") {
-                        // Only check for no payments when status is not ongoing
-                        const paymentKeys = Object.keys(paymentMap);
+                    // if (status !== "ongoing") {
+                    // Only check for no payments when status is not ongoing
+                    const paymentKeys = Object.keys(paymentMap);
 
-                        if (paymentKeys.length === 0) {
-                            tableBody = '<tr><td colspan="4" class="text-center">No data available</td></tr>';
-                        } else {
-                            let rowIndex = 0;
-                            while (current <= due) {
-                                let dateStr = current.toISOString().split('T')[0];
-                                let paymentAmt = parseFloat(paymentMap[dateStr]) || 0;
-                                let formattedAmt = paymentAmt !== 0 ? paymentAmt.toLocaleString('en-US') : '';
+                    if (paymentKeys.length === 0) {
+                        tableBody = '<tr><td colspan="4" class="text-center">No data available</td></tr>';
+                    } else {
+                        let rowIndex = 0;
+                        while (current <= due) {
+                            let dateStr = current.toISOString().split('T')[0];
+                            let paymentAmt = parseFloat(paymentMap[dateStr]) || 0;
+                            let formattedAmt = paymentAmt !== 0 ? paymentAmt.toLocaleString('en-US') : '';
 
-                                totalPayment += paymentAmt;
+                            totalPayment += paymentAmt;
 
-                                tableBody += `
+                            tableBody += `
                                     <tr>
                                         <td class="text-center">${rowIndex + 1}</td>
                                         <td class="text-center">${current.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
@@ -746,11 +746,11 @@
                                     </tr>
                                 `;
 
-                                current.setDate(current.getDate() + 1);
-                                rowIndex++;
-                            }
+                            current.setDate(current.getDate() + 1);
+                            rowIndex++;
                         }
                     }
+                    // }
 
                     updateTotals(response, loanId, totalPayment, firstStatus);
 
