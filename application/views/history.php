@@ -53,27 +53,27 @@
 <section id="content">
     <main>
         <div class="table-data mb-5">
-            <div class="order">
+            <div class="order pt-2" style="background-color:transparent">
                 <div class="row">
 
                     <div class="btn-tab-container mb-4 text-center">
-                        <button class="btn btn-outline-primary btn-tab active" data-bs-target="#client1">Client</button>
-                        <button class="btn btn-outline-primary btn-tab" data-bs-target="#client2">Pull Out</button>
-                        <button class="btn btn-outline-primary btn-tab" data-bs-target="#pullout">Expenses</button>
+                        <button class="btn btn-outline-primary btn-tab active" data-bs-target="#client">Client</button>
+                        <button class="btn btn-outline-primary btn-tab" data-bs-target="#pull_out">Pull Out</button>
+                        <button class="btn btn-outline-primary btn-tab" data-bs-target="#expenses">Expenses</button>
                     </div>
 
                     <div class="tab-content">
-                        <div class="tab-pane fade show active" id="client1">
+                        <div class="tab-pane fade show active" id="client">
                             <table id="client_table" class="table table-hover" style="width:100%">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th style="width:100px; text-align:center">ACC #</th>
+                                        <th style="width:100px; text-align:center">ACC NO</th>
                                         <th>FULL NAME</th>
                                         <th>ADDRESS</th>
-                                        <th>CONTACT NO.</th>
+                                        <th>CONTACT NO</th>
                                         <th style="width:30px">COUNT</th>
                                         <th>TOTAL LOAN</th>
-                                        <th style="width:110px">DATE</th>
+                                        <th style="width:110px">DATE ADDED</th>
                                         <th style="width:150px; text-align:center">ACTION</th>
                                     </tr>
                                 </thead>
@@ -81,19 +81,19 @@
                             </table>
                         </div>
 
-                        <div class="tab-pane fade" id="client2">
+                        <div class="tab-pane fade" id="pull_out">
 
                             <table id="pull_out_table" class="table table-hover mb-0" style="width:100%">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th style="width: 5%; vertical-align: middle; text-align:center;">NO. #</th>
+                                        <th style="width: 5%; vertical-align: middle; text-align:center;">NO</th>
                                         <th style="width: 10%; vertical-align: middle;">DATE</th>
                                         <th style="width: 12%; vertical-align: middle;">PROCESSING FEE</th>
                                         <th style="width: 12%; vertical-align: middle;">TICKET AMT</th>
-                                        <th style="width: 12%; vertical-align: middle;">PULL OUT <br>SHARING PROFIT</th>
+                                        <th style="width: 12%; vertical-align: middle;">SHARING PROFIT</th>
                                         <th style="width: 12%; vertical-align: middle;">PULL OUT 2%</th>
                                         <th style="width: 12%; vertical-align: middle;">PULL OUT CAPITAL</th>
-                                        <th style="width: 12%; vertical-align: middle;">TOTAL AMT <br>PULL OUT</th>
+                                        <th style="width: 12%; vertical-align: middle;">TOTAL AMT</th>
                                         <th style="width: 20%; vertical-align: middle; text-align: center;">ACTION</th>
                                     </tr>
                                 </thead>
@@ -101,11 +101,11 @@
                             </table>
                         </div>
 
-                        <div class="tab-pane fade" id="pullout">
+                        <div class="tab-pane fade" id="expenses">
                             <table id="expenses_table" class="table table-hover" style="width:100%">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th style="width: 10%; text-align:center">NO. #</th>
+                                        <th style="width: 10%; text-align:center">NO</th>
                                         <th style="width: 20%">DATE ADDED</th>
                                         <th tyle="width: 30%">EXPENSE DESCRIPTION</th>
                                         <th style="width: 20%">AMOUNT</th>

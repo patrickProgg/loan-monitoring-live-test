@@ -57,8 +57,8 @@
 
 <section id="content">
     <main>
-        <div class="table-data mb-5">
-            <div class="order">
+        <div class="table-data">
+            <div class="order pt-2" style="background-color:transparent">
                 <div class="row align-items-end mb-3">
                     <div class="col-auto me-3">
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLoaner">
@@ -96,10 +96,10 @@
                             <th style="width:100px; text-align:center">ACC NO</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
-                            <th>CONTACT NO.</th>
+                            <th style="width:220px">CONTACT NO</th>
                             <th style="width:30px">COUNT</th>
-                            <th>TOTAL LOAN</th>
-                            <th style="width:110px">DATE</th>
+                            <th style="width:100px">TOTAL LOAN</th>
+                            <th style="width:110px">DATE ADDED</th>
                             <th style="width:150px; text-align:center">ACTION</th>
                         </tr>
                     </thead>
@@ -748,14 +748,6 @@
             $('#add_client').trigger('click');
         }
     });
-
-    // $('#full_name, #address, #edit_full_name, #edit_address').on('input', function () {
-    //     let value = $(this).val().toLowerCase();
-    //     let formatted = value.replace(/\b\w/g, function (char) {
-    //         return char.toUpperCase();
-    //     });
-    //     $(this).val(formatted);
-    // });
 
     function calculateTotal() {
         let capital = parseFloat($('#capital_amt').val()) || 0;
@@ -2328,9 +2320,9 @@
         thead.empty();
 
         // Create table headers
-        thead.append('<th style="width:15%; color:var(--dark); font-size:13px" class="text-center">ACC NO</th>');
-        thead.append('<th style="width:70%; color:var(--dark); font-size:13px">FULL NAME</th>');
-        thead.append('<th style="width:15%; color:var(--dark); font-size:13px" class="text-center">AMOUNT</th>');
+        thead.append('<th style="width:20%; color:var(--dark); background-color:var(--light-grey); font-size:13px" class="text-center  align-middle">ACC NO</th>');
+        thead.append('<th style="width:65%; color:var(--dark); background-color:var(--light-grey); font-size:13px" class="align-middle">FULL NAME</th>');
+        thead.append('<th style="width:15%; color:var(--dark); background-color:var(--light-grey); font-size:13px; height:40px" class="text-center align-middle">AMOUNT</th>');
 
         // Check if we have data
         if (!response.data || response.data.length === 0) {

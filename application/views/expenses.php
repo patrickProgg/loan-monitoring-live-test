@@ -4,11 +4,11 @@
         border-radius: 12px;
         padding: 12px 16px;
         border: 1px solid var(--light-blue);
-        min-height: 58px;
+        height: 58px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 170px;
+        width: 138px;
     }
 
     .total-label {
@@ -40,8 +40,8 @@
 </style>
 <section id="content">
     <main>
-        <div class="table-data mb-5">
-            <div class="order">
+        <div class="table-data">
+            <div class="order pt-2" style="background-color:transparent">
                 <div class="row">
                     <div class="col-2 d-flex flex-column align-items-start gap-2">
                         <button class="btn btn-primary" onclick="openModal('addExpenses')">
@@ -59,7 +59,7 @@
                     <table id="expenses_table" class="table table-hover" style="width:100%">
                         <thead class="table-secondary">
                             <tr>
-                                <th style="width: 10%; text-align:center">NO. #</th>
+                                <th style="width: 10%; text-align:center">NO</th>
                                 <th style="width: 20%">DATE ADDED</th>
                                 <th tyle="width: 30%">EXPENSE DESCRIPTION</th>
                                 <th style="width: 20%">AMOUNT</th>
@@ -82,39 +82,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <form id="expensesForm">
+                    <form id="expenses_form">
                         <div class="modal-body">
-                            <!-- <div id="expenseRows">
-                                <div class="row g-2 expense-row mb-2 align-items-end">
-                                    <div class="col-7">
-                                        <label>Type</label>
-                                        <select class="form-control expense-type" id="expenseType">
-                                            <option value="">Select type</option>
-                                            <option value="gas">Gas</option>
-                                            <option value="meal">Meal</option>
-                                            <option value="motor_shop">Motor Shop</option>
-                                            <option value="ca">Cash Advance</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                        <input
-                                            type="text"
-                                            class="form-control mt-2 d-none"
-                                            id="otherExpense"
-                                            placeholder="Enter other type"
-                                        />
-                                    </div>
-                                    <div class="col-4">
-                                        <label>Amount</label>
-                                        <input type="number" class="form-control expense-amount" />
-                                    </div>
-                                    <div class="col-1">
-                                        <button type="button" class="btn btn-sm btn-outline-primary add-row-btn mb-1">
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
-                            </div> -->
-
                             <div id="expenseRows">
                                 <div class="row g-2 expense-row mb-2 align-items-end">
                                     <div class="col-7">
@@ -365,21 +334,6 @@
         }
     });
 
-
-    const expenseType = document.getElementById('expenseType');
-    const otherExpense = document.getElementById('otherExpense');
-
-    expenseType.addEventListener('change', function () {
-        if (this.value === 'other') {
-            otherExpense.classList.remove('d-none');
-            otherExpense.required = true;
-        } else {
-            otherExpense.classList.add('d-none');
-            otherExpense.required = false;
-            otherExpense.value = '';
-        }
-    });
-
     function openModal(action, row) {
         currentAction = action;
 
@@ -436,7 +390,7 @@
         $('#addExpenses').modal('show');
     };
 
-    $('#expensesForm').on('keypress', function (e) {
+    $('#expenses_form').on('keypress', function (e) {
         if (e.which === 13) {
             e.preventDefault();
             handleFormSubmit(currentAction, currentId);
@@ -574,6 +528,7 @@
                             timer: 500,
                             showConfirmButton: false
                         }).then(() => {
+                            document.getElementById('expenses_form').reset();
                             expenses_table.ajax.reload();
                             $('#addExpenses').modal('hide');
                         });

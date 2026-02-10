@@ -184,7 +184,7 @@
             color: var(--dark);
             /* background: silver; */
             font-weight: bold;
-            background: #f8f9fa;
+            background: var(--light-grey);
             padding-right: 0;
         }
 
@@ -243,7 +243,6 @@
             /* padding: 10px; */
             margin-left: 0 !important;
             /* background-image: url('https://www.transparenttextures.com/patterns/clean-gray-paper.png'); */
-
             padding-top: 40px;
             overflow: hidden;
         }
@@ -333,7 +332,7 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm px-0" style="height: 50px; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), url('<?php echo base_url("assets/images/blue.png"); ?>'); width: 100%; position:
         fixed; top: 0; width: 100%; z-index: 1050; padding:0">
-        <a class="navbar-brand d-flex align-items-center" style="margin-left:120px;" href="<?= base_url(); ?>dashboard"
+        <a class="navbar-brand d-flex align-items-center" style="margin-left:129px;" href="<?= base_url(); ?>dashboard"
             style="height: 100%;">
             <img src="<?= base_url(); ?>assets/images/loan1.png" alt="Logo" style="height: 30px;">
         </a>

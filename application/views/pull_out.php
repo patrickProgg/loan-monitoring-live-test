@@ -4,7 +4,7 @@
         border-radius: 12px;
         padding: 12px 16px;
         border: 1px solid var(--light-blue);
-        min-height: 58px;
+        height: 58px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -33,8 +33,8 @@
 </style>
 <section id="content">
     <main>
-        <div class="table-data mb-5">
-            <div class="order">
+        <div class="table-data">
+            <div class="order pt-2" style="background-color:transparent">
                 <div class="row">
                     <div class="col-2">
                         <button class="btn btn-primary" onclick="openModal('addPullOut')">
@@ -89,14 +89,14 @@
                     <table id="pull_out_table" class="table table-hover mb-0" style="width:100%">
                         <thead class="table-secondary">
                             <tr>
-                                <th style="width: 5%; vertical-align: middle; text-align:center;">NO. #</th>
+                                <th style="width: 5%; vertical-align: middle; text-align:center;">NO</th>
                                 <th style="width: 10%; vertical-align: middle;">DATE</th>
                                 <th style="width: 12%; vertical-align: middle;">PROCESSING FEE</th>
                                 <th style="width: 12%; vertical-align: middle;">TICKET AMT</th>
-                                <th style="width: 12%; vertical-align: middle;">PULL OUT <br>SHARING PROFIT</th>
+                                <th style="width: 12%; vertical-align: middle;">SHARING PROFIT</th>
                                 <th style="width: 12%; vertical-align: middle;">PULL OUT 2%</th>
                                 <th style="width: 12%; vertical-align: middle;">PULL OUT CAPITAL</th>
-                                <th style="width: 12%; vertical-align: middle;">TOTAL AMT <br>PULL OUT</th>
+                                <th style="width: 12%; vertical-align: middle;">TOTAL AMT</th>
                                 <th style="width: 20%; vertical-align: middle; text-align: center;">ACTION</th>
 
                             </tr>
@@ -118,7 +118,7 @@
 
                     <div class="modal-body">
                         <div class="container">
-                            <form id="client_form">
+                            <form id="pull_out_form">
                                 <div class="mb-3 row align-items-center">
                                     <div class="col-md-4 position-relative">
                                         <label class="form-label">Processing Fee</label>
@@ -385,7 +385,7 @@
         $('#addPullOut').modal('show');
     }
 
-    $('#client_form').on('keypress', function (e) {
+    $('#pull_out_form').on('keypress', function (e) {
         if (e.which === 13) {
             e.preventDefault();
             handleFormSubmit(currentAction, currentId);
@@ -450,6 +450,7 @@
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => {
+                            document.getElementById('pull_out_form').reset();
                             pull_out_table.ajax.reload();
                             $('#addPullOut').modal('hide');
                         });
@@ -464,7 +465,7 @@
     }
 
     document.getElementById('closeModalBtn').addEventListener('click', function () {
-        document.getElementById('client_form').reset();
+        document.getElementById('pull_out_form').reset();
     });
 
 </script>

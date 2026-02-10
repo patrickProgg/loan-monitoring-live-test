@@ -162,7 +162,7 @@
 
 <?php extract($data ?? [], EXTR_SKIP); ?>
 
-<div class="row px-3" style="padding-top:10px">
+<div class="row px-3 pt-3" style="padding-top:10px">
     <ul class="box-info">
 
         <a href="<?= base_url(); ?>client" style="text-decoration: none; color: inherit;">
@@ -497,7 +497,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12 px-3 pb-5">
+    <div class="col-md-12 px-3">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
