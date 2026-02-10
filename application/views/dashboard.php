@@ -198,25 +198,26 @@
         </li>
         <!-- </a> -->
 
-        <!-- <a href="<?= base_url(); ?>receiving" style="text-decoration: none; color: inherit;"> -->
-        <li style="border-bottom: 2px solid rgba(153, 102, 255, 1);">
-            <i class='bx bx-log-out' style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
-            <span class="text">
-                <h3>₱<?= number_format($total_pull_out, 2) ?></h3>
-                <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
-            </span>
-        </li>
-        <!-- </a> -->
+        <a href="<?= base_url(); ?>pull_out" style="text-decoration: none; color: inherit;">
+            <li style="border-bottom: 2px solid rgba(153, 102, 255, 1);">
+                <i class='bx bx-log-out'
+                    style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
+                <span class="text">
+                    <h3>₱<?= number_format($total_pull_out, 2) ?></h3>
+                    <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
+                </span>
+            </li>
+        </a>
 
-        <!-- <a href="<?= base_url(); ?>releasing" style="text-decoration: none; color: inherit;"> -->
-        <li style="border-bottom: 2px solid rgba(54, 162, 235, 1); ">
-            <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
-            <span class="text">
-                <h3>₱<?= number_format($total_expenses, 2) ?></h3>
-                <p style="color:rgba(54, 162, 235, 1)">Total Expenses</p>
-            </span>
-        </li>
-        <!-- </a> -->
+        <a href="<?= base_url(); ?>expenses" style="text-decoration: none; color: inherit;">
+            <li style="border-bottom: 2px solid rgba(54, 162, 235, 1); ">
+                <i class='bx bxs-flame' style="background: rgba(54, 162, 235, 0.2); color: rgba(54, 162, 235, 1);"></i>
+                <span class="text">
+                    <h3>₱<?= number_format($total_expenses, 2) ?></h3>
+                    <p style="color:rgba(54, 162, 235, 1)">Total Expenses</p>
+                </span>
+            </li>
+        </a>
     </ul>
 </div>
 

@@ -35,9 +35,10 @@ class Monitoring_cont extends CI_Controller
             0 => 'a.acc_no',
             1 => 'a.full_name',
             2 => 'a.address',
-            3 => 'a.date_added',
-            4 => 'contact_no',
-            5 => 'loan_count'
+            3 => 'contact_no',
+            4 => 'loan_count',
+            5 => 'total_loan_amount',
+            6 => 'a.date_added'
         ];
 
         $orderColumn = $columns[$orderColumnIndex];
@@ -484,7 +485,7 @@ class Monitoring_cont extends CI_Controller
         }
     }
 
-    public function cash_count()
+    public function get_daily_report()
     {
         $selectedDate = $this->input->post('date');
 
@@ -501,7 +502,7 @@ class Monitoring_cont extends CI_Controller
         $sheet->getColumnDimension('G')->setWidth(17);
         $sheet->getColumnDimension('H')->setWidth(15);
 
-        $loanData = $this->get_loan_released($selectedDate);
+        $loanData = $this->get_daily_data($selectedDate);
 
         $formattedDate = date('F j, Y', strtotime($selectedDate));
         $excelDateHeader = Date::PHPToExcel(strtotime($selectedDate));
@@ -832,7 +833,7 @@ class Monitoring_cont extends CI_Controller
         $sheet->setCellValue('D42', '=SUM(D37:D' . $lastRow . ')');
 
         // $sheet->setCellValue('D43', '=SUM(D18,D33,D42)');
-        $sheet->setCellValue('D43', '=SUM(D18,D33)-D42');
+        $sheet->setCellValue('D43', '=D18-D33-D42');
 
         $denominationValues = [1000, 500, 200, 100, 50, 20, 10, 5, 1, 0.25];
 
@@ -855,14 +856,6 @@ class Monitoring_cont extends CI_Controller
         $sheet->getStyle('H18')->getNumberFormat()
             ->setFormatCode('#,##0.00');
 
-
-        // // Output Excel
-        // $writer = new Xlsx($spreadsheet);
-        // header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        // header('Content-Disposition: attachment; filename="DAILY_REPORT_' . $excelDateHeader . '.xlsx"');
-
-        // $writer->save('php://output');
-
         $saveFolder = "C:/laragon/www/DAILY_REPORT";
         if (!is_dir($saveFolder))
             mkdir($saveFolder, 0777, true);
@@ -870,7 +863,14 @@ class Monitoring_cont extends CI_Controller
         $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
 
         if (file_exists($filePath)) {
-            unlink($filePath); // Delete the existing file
+            // unlink($filePath); // Delete the existing file
+            $response = [
+                'status' => 'warning',
+                'message' => 'Daily report for ' . $formattedDate . ' has already been generated.',
+            ];
+
+            echo json_encode($response);
+            return;
         }
 
         $writer = new Xlsx($spreadsheet);
@@ -900,8 +900,8 @@ class Monitoring_cont extends CI_Controller
         $sheet->getColumnDimension('C')->setWidth(15);
         $sheet->getColumnDimension('D')->setWidth(15);
 
-        $loanData = $this->get_report($selectedDate);
-        $expensesData = $this->get_expenses_report($selectedDate);
+        $loanData = $this->get_monthly_data($selectedDate);
+        $expensesData = $this->get_monthly_expenses($selectedDate);
 
         $formattedDate = date('F Y', strtotime($selectedDate));
 
@@ -982,7 +982,14 @@ class Monitoring_cont extends CI_Controller
         $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
 
         if (file_exists($filePath)) {
-            unlink($filePath); // Delete the existing file
+            // unlink($filePath); // Delete the existing file
+            $response = [
+                'status' => 'warning',
+                'message' => 'Monthly report for ' . $formattedDate . ' has already been generated.',
+            ];
+
+            echo json_encode($response);
+            return;
         }
 
         $writer = new Xlsx($spreadsheet);
@@ -999,7 +1006,239 @@ class Monitoring_cont extends CI_Controller
         }
     }
 
-    private function get_loan_released($selectedDate)
+    public function formatWeekRange($selectedDate)
+    {
+        // Get Monday and Sunday of the week
+        $monday = date('Y-m-d', strtotime('monday this week', strtotime($selectedDate)));
+        $saturday = date('Y-m-d', strtotime('saturday this week', strtotime($selectedDate)));
+
+        // Format the range
+        $startMonth = date('M', strtotime($monday));
+        $endMonth = date('M', strtotime($saturday));
+        $startDay = date('j', strtotime($monday));
+        $endDay = date('j', strtotime($saturday));
+        $startYear = date('Y', strtotime($monday));
+        $endYear = date('Y', strtotime($saturday));
+
+        if ($startMonth === $endMonth && $startYear === $endYear) {
+            // Same month and year: "Feb 9 - 14, 2026"
+            return "$startMonth $startDay - $endDay, $startYear";
+        } else if ($startYear === $endYear) {
+            // Different months, same year: "Feb 28 - Mar 5, 2026"
+            return "$startMonth $startDay - $endMonth $endDay, $startYear";
+        } else {
+            // Different years: "Dec 28, 2026 - Jan 3, 2027"
+            return "$startMonth $startDay, $startYear - $endMonth $endDay, $endYear";
+        }
+    }
+    public function get_weekly_report()
+    {
+        $selectedDate = $this->input->post('date');
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Column widths
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(18);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(17);
+        $sheet->getColumnDimension('H')->setWidth(15);
+
+        $loanData = $this->get_weekly_data($selectedDate);
+        $totalAmount = $loanData['total_amt'];
+
+        $weekRange = $this->formatWeekRange($selectedDate);
+
+        $data = [
+            [$weekRange],
+            ["Payment", "", "", $totalAmount],
+            ["Excess", "", "", ""],
+            ["PAYMENT", "", "", ""],
+            ["TOTAL COLLECTION", "", "", ""],
+            ["Onhand Last Week", "", "", ""],
+            ["", "", "", ""],
+            ["Total Cash", "", "", ""],
+            ["Release", "", "", ""],
+            ["Operation Exp", "", "", ""],
+            ["Withdrawal", "", "", ""],
+            ["SALARY", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["TOTAL DEDUCTIONS", "", "", ""],
+            ["", "", "", ""],
+            ["NET CASH ONHAND", "", "", ""],
+            ["", "", "", ""],
+            ["Capital", "10 % Profit Sharing", "Ticket", "Amount"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["TOTAL PULLOUT", "", "", ""],
+            ["ENDING CASH ONHAND", "", "", ""],
+        ];
+
+        // Write data to sheet
+        $rowNumber = 1;
+        foreach ($data as $row) {
+            $col = 'A';
+            foreach ($row as $cell) {
+                $sheet->setCellValue($col . $rowNumber, $cell);
+                $col++;
+            }
+            $rowNumber++;
+        }
+
+        // Apply number formatting to ALL number cells
+        $numberCells = [
+            'D1',
+            'D2',
+            'D3',
+            'D4',
+            'D5',
+            'D6',
+            'D7',
+            'D8',
+            'D9',
+            'D10',
+            'D11',
+            'D12',
+            'D13',
+            'D14',
+            'D15',
+            'D16',
+            'D17',
+            'D18',
+            'D19',
+            'D20',
+            'D21',
+            'D22',
+            'D23',
+            'D24',
+            'D25',
+            'D26',
+            'D27'
+        ];
+
+        foreach ($numberCells as $cell) {
+            $sheet->getStyle($cell)->getNumberFormat()
+                ->setFormatCode('#,##0.00');
+            $sheet->getStyle($cell)->getAlignment()
+                ->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        }
+
+        // Merge cells
+        $sheet->mergeCells('A1:D1');
+        for ($row = 2; $row <= 16; $row++) {
+            $sheet->mergeCells('A' . $row . ':C' . $row);
+        }
+        $sheet->mergeCells('A17:D17');
+        $sheet->mergeCells('A18:C18');
+        $sheet->mergeCells('A26:C26');
+        $sheet->mergeCells('A27:C27');
+
+        // Apply center alignment
+        $sheet->getStyle('A1:C19')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A20:D25')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A26:D27')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+        // Style for title row
+        $sheet->getStyle('A1')->getFont()->setBold(true);
+        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('6ECF50');
+
+        $sheet->getStyle('A5:D5')->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('FF66CC');
+
+        $dangerCells = [
+            'A16',
+            'D16'
+        ];
+
+        foreach ($dangerCells as $cell) {
+            $sheet->getStyle($cell)->getFont()
+                ->setBold(true)
+                ->getColor()->setARGB(Color::COLOR_RED);
+        }
+
+        $totalRows = ['A2', 'D2', 'A5', 'A6', 'D5', 'A8', 'D8', 'A18', 'D18', 'A20', 'B20', 'C20', 'D20', 'A26', 'A27', 'D26', 'D27'];
+        foreach ($totalRows as $cell) {
+            $sheet->getStyle($cell)->getFont()->setBold(true);
+        }
+
+        // Borders - UPDATED ROW NUMBERS
+        $sheet->getStyle('A1:D15')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('D16:D16')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('D18:D18')->getBorders()->getBottom()->setBorderStyle(Border::BORDER_THIN);
+        // $sheet->getStyle('D1:D15')->getBorders()->getLeft()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A20:D25')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A26:D26')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A27:D27')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+
+
+        $lastRow = 4; // Row just before D5
+        $sheet->setCellValue('D5', '=SUM(D2:D' . $lastRow . ')');
+
+        $sheet->setCellValue('D8', '=SUM(D5,D6)');
+
+        $lastRow = 15; // Row just before D16
+        $sheet->setCellValue('D16', '=SUM(D9:D' . $lastRow . ')');
+
+        $sheet->setCellValue('D18', '=SUM(D15,D16)');
+
+        $sheet->setCellValue('D18', '=D8-D16');
+
+        $sheet->setCellValue('D21', '=SUM(A21,B21,C21)');
+        $sheet->setCellValue('D22', '=SUM(A22,B22,C22)');
+        $sheet->setCellValue('D23', '=SUM(A23,B23,C23)');
+        $sheet->setCellValue('D24', '=SUM(A24,B24,C24)');
+        $sheet->setCellValue('D25', '=SUM(A25,B25,C25)');
+
+        $lastRow = 25; // Row just before D26
+        $sheet->setCellValue('D26', '=SUM(D21:D' . $lastRow . ')');
+
+        $sheet->setCellValue('D27', '=D18-D26');
+
+        $saveFolder = "C:/laragon/www/WEEKLY_REPORT";
+        if (!is_dir($saveFolder))
+            mkdir($saveFolder, 0777, true);
+
+        $filePath = $saveFolder . "/" . $weekRange . ".xlsx";
+
+        if (file_exists($filePath)) {
+            $response = [
+                'status' => 'warning',
+                'message' => 'Weekly report for ' . $weekRange . ' has already been generated.',
+            ];
+
+            echo json_encode($response);
+            return;
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($filePath);
+
+        if ($writer) {
+            echo json_encode([
+                'status' => 'success'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+        }
+    }
+    private function get_daily_data($selectedDate)
     {
         $this->db->select('
             a.total_amt,
@@ -1015,8 +1254,27 @@ class Monitoring_cont extends CI_Controller
         $query = $this->db->get();
         return $query->result_array();
     }
+    private function get_weekly_data($selectedDate)
+    {
+        $monday = date('Y-m-d', strtotime('monday this week', strtotime($selectedDate)));
+        $saturday = date('Y-m-d', strtotime('saturday this week', strtotime($selectedDate)));
 
-    private function get_report($selectedDate)
+        $this->db->select('
+           sum(a.amt) as total_amt
+        ');
+
+        $this->db->from('tbl_payment as a');
+        $this->db->join('tbl_loan as b', 'b.id = a.loan_id');
+        $this->db->join('tbl_client as c', 'c.id = b.cl_id');
+        $this->db->where('c.status !=', '1');
+        $this->db->where("a.payment_for >=", $monday);
+        $this->db->where("a.payment_for <=", $saturday);
+
+        $query = $this->db->get();
+        return $query->row_array();
+    }
+
+    private function get_monthly_data($selectedDate)
     {
         $startMonth = date('Y-m-01', strtotime($selectedDate));
         $endMonth = date('Y-m-t', strtotime($selectedDate));
@@ -1047,7 +1305,7 @@ class Monitoring_cont extends CI_Controller
         return $this->db->get()->row_array();
     }
 
-    private function get_expenses_report($selectedDate)
+    private function get_monthly_expenses($selectedDate)
     {
         $startMonth = date('Y-m-01', strtotime($selectedDate));
         $endMonth = date('Y-m-t', strtotime($selectedDate));
@@ -1064,388 +1322,314 @@ class Monitoring_cont extends CI_Controller
 
         return $this->db->get()->row_array();
     }
+    //     public function get_bulk_payment()
+//     {
+//         $date = $this->input->post('date');
 
+    //         // First, get all loans starting on the selected date
+//         $this->db->select('a.id as loan_id, a.start_date, a.due_date, a.total_amt, b.id as client_id, b.full_name, b.acc_no');
+//         $this->db->from('tbl_loan as a');
+//         $this->db->join('tbl_client as b', 'b.id = a.cl_id');
+//         $this->db->where('a.start_date', $date);
+//         $this->db->where('a.status', 'ongoing');
+//         $this->db->where('b.status !=', '1');
+//         $loans_query = $this->db->get();
+//         $loans = $loans_query->result_array();
 
-    // public function get_bulk_payment()
-    // {
-    //     $date = $this->input->post('date');
+    //         $clients = [];
+//         $all_dates = [];
 
-    //     $this->db->select('
-    //     a.start_date,
-    //     a.due_date,
-    //     b.full_name,
-    //     b.id as client_id,
-    //     a.id as loan_id
-    // ');
+    //         foreach ($loans as $loan) {
+//             $client_id = $loan['client_id'];
+//             $loan_id = $loan['loan_id'];
+//             $total_loan_amount = $loan['total_amt'];
+//             $start_date = $loan['start_date'];
+//             $due_date = $loan['due_date'];
 
-    //     $this->db->from('tbl_loan as a');
-    //     $this->db->join('tbl_client as b', 'b.id = a.cl_id');
-    //     $this->db->where('a.start_date', $date);
-    //     $this->db->where('a.status', 'ongoing');
-    //     $this->db->where('b.status !=', '1');
+    //             // Initialize client if not exists
+//             if (!isset($clients[$client_id])) {
+//                 $clients[$client_id] = [
+//                     'acc_no' => $loan['acc_no'],
+//                     'full_name' => $loan['full_name'],
+//                     'start_date' => $start_date,
+//                     'due_date' => $due_date,
+//                     'loan_id' => $loan_id,
+//                     'client_id' => $client_id,
+//                     'total_loan_amount' => floatval($total_loan_amount),
+//                     'total_paid' => 0,
+//                     'running_balance' => floatval($total_loan_amount),
+//                     'payments' => []
+//                 ];
 
-    //     $query = $this->db->get();
-    //     $loans = $query->result_array();
+    //                 // Generate date range (start_date +1 to due_date)
+//                 $start = new DateTime($start_date);
+//                 $start->modify('+1 day');
+//                 $due = new DateTime($due_date);
 
-    //     // Process each loan to get payment details for each date
-    //     $result = [];
-    //     foreach ($loans as $loan) {
-    //         // Generate dates from start_date+1 to due_date
-    //         $start_date = new DateTime($loan['start_date']);
-    //         $due_date = new DateTime($loan['due_date']);
+    //                 $current_date = clone $start;
+//                 while ($current_date <= $due) {
+//                     $date_str = $current_date->format('Y-m-d');
+//                     $clients[$client_id]['payments'][$date_str] = 0;
+//                     $all_dates[$date_str] = $date_str;
+//                     $current_date->modify('+1 day');
+//                 }
+//             }
 
-    //         // Skip the start_date (we want start_date+1)
-    //         $start_date->modify('+1 day');
+    //             // Get payments for this loan WITHIN the date range (start_date+1 to due_date)
+//             $this->db->select('payment_for, amt');
+//             $this->db->from('tbl_payment');
+//             $this->db->where('loan_id', $loan_id);
 
-    //         // Create client entry if not exists
-    //         if (!isset($result[$loan['client_id']])) {
-    //             $result[$loan['client_id']] = [
-    //                 'full_name' => $loan['full_name'],
-    //                 'payments' => []
-    //             ];
-    //         }
+    //             // Add date range condition: payment_for BETWEEN start_date+1 AND due_date
+//             $range_start = date('Y-m-d', strtotime($start_date . ' +1 day'));
+//             $this->db->where("payment_for >=", $range_start);
+//             $this->db->where("payment_for <=", $due_date);
 
-    //         // Get payments for this loan
-    //         $this->db->select('payment_for, amt');
-    //         $this->db->from('tbl_payment');
-    //         $this->db->where('loan_id', $loan['loan_id']);
-    //         $payment_query = $this->db->get();
-    //         $payments = $payment_query->result_array();
+    //             $payments_query = $this->db->get();
+//             $payments = $payments_query->result_array();
 
-    //         // Organize payments by date
-    //         $payment_by_date = [];
-    //         foreach ($payments as $payment) {
-    //             $payment_by_date[$payment['payment_for']] = $payment['amt'];
-    //         }
+    //             // Add payments to client's payment array
+//             foreach ($payments as $payment) {
+//                 $payment_date = $payment['payment_for'];
+//                 $amount = floatval($payment['amt']);
 
-    //         // Create date range
-    //         $date_range = [];
-    //         $current_date = clone $start_date;
+    //                 if ($payment_date && $amount !== null && isset($clients[$client_id]['payments'][$payment_date])) {
+//                     $clients[$client_id]['payments'][$payment_date] += $amount;
+//                     $clients[$client_id]['total_paid'] += $amount;
+//                     $clients[$client_id]['running_balance'] -= $amount;
+//                 }
+//             }
+//         }
+// +
+//         // Sort dates
+//         ksort($all_dates);
 
-    //         while ($current_date <= $due_date) {
-    //             $date_str = $current_date->format('Y-m-d');
-    //             $date_range[$date_str] = isset($payment_by_date[$date_str]) ? $payment_by_date[$date_str] : 0;
-    //             $current_date->modify('+1 day');
-    //         }
+    //         // Prepare response
+//         $response = [
+//             'data' => array_values($clients),
+//             'date_columns' => array_values($all_dates)
+//         ];
 
-    //         $result[$loan['client_id']]['payments'] = array_merge(
-    //             $result[$loan['client_id']]['payments'],
-    //             $date_range
-    //         );
-    //     }
+    //         echo json_encode($response);
+//     }
 
-    //     // Convert to simple array and add date columns
-    //     $final_result = [
-    //         'data' => array_values($result),
-    //         'date_columns' => []
-    //     ];
-
-    //     // Get all unique dates from all clients
-    //     $all_dates = [];
-    //     foreach ($result as $client) {
-    //         $all_dates = array_unique(array_merge($all_dates, array_keys($client['payments'])));
-    //     }
-    //     sort($all_dates);
-
-    //     $final_result['date_columns'] = $all_dates;
-
-    //     echo json_encode($final_result);
-    // }
-
-    // public function get_bulk_payment()
-    // {
-    //     $date = $this->input->post('date');
-
-    //     // First, get all loans starting on the selected date
-    //     $this->db->select('a.id as loan_id, a.start_date, a.due_date, b.id as client_id, b.full_name');
-    //     $this->db->from('tbl_loan as a');
-    //     $this->db->join('tbl_client as b', 'b.id = a.cl_id');
-    //     $this->db->where('a.start_date', $date);
-    //     $this->db->where('a.status', 'ongoing');
-    //     $this->db->where('b.status !=', '1');
-    //     $loans_query = $this->db->get();
-    //     $loans = $loans_query->result_array();
-
-    //     $clients = [];
-    //     $all_dates = [];
-
-    //     foreach ($loans as $loan) {
-    //         $client_id = $loan['client_id'];
-    //         $loan_id = $loan['loan_id'];
-
-    //         // Initialize client if not exists
-    //         if (!isset($clients[$client_id])) {
-    //             $clients[$client_id] = [
-    //                 'full_name' => $loan['full_name'],
-    //                 'start_date' => $loan['start_date'],
-    //                 'due_date' => $loan['due_date'],
-    //                 'loan_id' => $loan_id, // ADD THIS LINE
-    //                 'client_id' => $client_id, // Also add client_id to be safe
-    //                 'payments' => []
-    //             ];
-
-    //             // Generate date range
-    //             $start = new DateTime($loan['start_date']);
-    //             $start->modify('+1 day');
-    //             $due = new DateTime($loan['due_date']);
-
-    //             $current_date = clone $start;
-    //             while ($current_date <= $due) {
-    //                 $date_str = $current_date->format('Y-m-d');
-    //                 $clients[$client_id]['payments'][$date_str] = 0;
-    //                 $all_dates[$date_str] = $date_str;
-    //                 $current_date->modify('+1 day');
-    //             }
-    //         }
-
-    //         // Get payments for this loan
-    //         $this->db->select('payment_for, amt');
-    //         $this->db->from('tbl_payment');
-    //         $this->db->where('loan_id', $loan_id);
-    //         $payments_query = $this->db->get();
-    //         $payments = $payments_query->result_array();
-
-    //         // Add payments to client's payment array
-    //         foreach ($payments as $payment) {
-    //             $payment_date = $payment['payment_for'];
-    //             $amount = $payment['amt'];
-
-    //             if ($payment_date && $amount !== null && isset($clients[$client_id]['payments'][$payment_date])) {
-    //                 $clients[$client_id]['payments'][$payment_date] += floatval($amount);
-    //             }
-    //         }
-    //     }
-
-    //     // Sort dates
-    //     ksort($all_dates);
-
-    //     // Prepare response
-    //     $response = [
-    //         'data' => array_values($clients),
-    //         'date_columns' => array_values($all_dates)
-    //     ];
-
-    //     echo json_encode($response);
-    // }
     public function get_bulk_payment()
     {
         $date = $this->input->post('date');
 
-        // First, get all loans starting on the selected date
-        $this->db->select('a.id as loan_id, a.start_date, a.due_date, a.total_amt, b.id as client_id, b.full_name');
+        // First, get all clients with loans where selected date is between start_date and due_date
+        $this->db->select('
+        a.id as loan_id,
+        a.start_date,
+        a.due_date,
+        b.id as client_id,
+        b.full_name,
+        b.acc_no
+    ');
         $this->db->from('tbl_loan as a');
         $this->db->join('tbl_client as b', 'b.id = a.cl_id');
-        $this->db->where('a.start_date', $date);
+        $this->db->where("'$date' BETWEEN a.start_date AND a.due_date");
         $this->db->where('a.status', 'ongoing');
         $this->db->where('b.status !=', '1');
-        $loans_query = $this->db->get();
-        $loans = $loans_query->result_array();
+        $this->db->order_by('b.acc_no', 'ASC');
 
-        $clients = [];
-        $all_dates = [];
+        $query = $this->db->get();
+        $clients = $query->result_array();
 
-        foreach ($loans as $loan) {
-            $client_id = $loan['client_id'];
-            $loan_id = $loan['loan_id'];
-            $total_loan_amount = $loan['total_amt'];
-            $start_date = $loan['start_date'];
-            $due_date = $loan['due_date'];
+        // Now check for existing payments for each client on the selected date
+        foreach ($clients as &$client) {
+            $loan_id = $client['loan_id'];
 
-            // Initialize client if not exists
-            if (!isset($clients[$client_id])) {
-                $clients[$client_id] = [
-                    'full_name' => $loan['full_name'],
-                    'start_date' => $start_date,
-                    'due_date' => $due_date,
-                    'loan_id' => $loan_id,
-                    'client_id' => $client_id,
-                    'total_loan_amount' => floatval($total_loan_amount),
-                    'total_paid' => 0,
-                    'running_balance' => floatval($total_loan_amount),
-                    'payments' => []
-                ];
-
-                // Generate date range (start_date +1 to due_date)
-                $start = new DateTime($start_date);
-                $start->modify('+1 day');
-                $due = new DateTime($due_date);
-
-                $current_date = clone $start;
-                while ($current_date <= $due) {
-                    $date_str = $current_date->format('Y-m-d');
-                    $clients[$client_id]['payments'][$date_str] = 0;
-                    $all_dates[$date_str] = $date_str;
-                    $current_date->modify('+1 day');
-                }
-            }
-
-            // Get payments for this loan WITHIN the date range (start_date+1 to due_date)
-            $this->db->select('payment_for, amt');
+            $this->db->select('amt');
             $this->db->from('tbl_payment');
             $this->db->where('loan_id', $loan_id);
+            $this->db->where('payment_for', $date);
+            $payment_query = $this->db->get();
 
-            // Add date range condition: payment_for BETWEEN start_date+1 AND due_date
-            $range_start = date('Y-m-d', strtotime($start_date . ' +1 day'));
-            $this->db->where("payment_for >=", $range_start);
-            $this->db->where("payment_for <=", $due_date);
-
-            $payments_query = $this->db->get();
-            $payments = $payments_query->result_array();
-
-            // Add payments to client's payment array
-            foreach ($payments as $payment) {
-                $payment_date = $payment['payment_for'];
-                $amount = floatval($payment['amt']);
-
-                if ($payment_date && $amount !== null && isset($clients[$client_id]['payments'][$payment_date])) {
-                    $clients[$client_id]['payments'][$payment_date] += $amount;
-                    $clients[$client_id]['total_paid'] += $amount;
-                    $clients[$client_id]['running_balance'] -= $amount;
-                }
+            if ($payment_query->num_rows() > 0) {
+                $payment = $payment_query->row();
+                $client['amt'] = floatval($payment->amt);
+            } else {
+                $client['amt'] = 0;
             }
         }
 
-        // Sort dates
-        ksort($all_dates);
-
         // Prepare response
         $response = [
-            'data' => array_values($clients),
-            'date_columns' => array_values($all_dates)
+            'data' => $clients
         ];
 
         echo json_encode($response);
     }
 
+    // public function save_bulk_payments()
+    // {
+    //     // Get JSON data
+    //     $json_data = file_get_contents('php://input');
+    //     $data = json_decode($json_data, true);
+
+    //     $selected_date = $data['selected_date'] ?? null;
+    //     $payments = $data['payments'] ?? [];
+    //     $updated_balances = $data['updated_balances'] ?? []; // Get updated balances from frontend
+
+    //     if (empty($selected_date) || empty($payments)) {
+    //         echo json_encode(['success' => false, 'message' => 'No data to save.']);
+    //         return;
+    //     }
+
+    //     $success_count = 0;
+    //     $error_count = 0;
+    //     $completed_loans = [];
+    //     $errors = [];
+
+    //     // Start transaction for data consistency
+    //     $this->db->trans_start();
+
+    //     foreach ($payments as $payment) {
+    //         $client_id = $payment['client_id'] ?? null;
+    //         $loan_id = $payment['loan_id'] ?? null;
+    //         $date = $payment['date'] ?? null;
+    //         $amount = $payment['amount'] ?? 0;
+
+    //         if (!$client_id || !$loan_id || !$date || $amount <= 0) {
+    //             $error_count++;
+    //             continue;
+    //         }
+
+    //         // Check if payment already exists for this date and loan
+    //         $this->db->where('loan_id', $loan_id);
+    //         $this->db->where('payment_for', $date);
+    //         $existing = $this->db->get('tbl_payment')->row();
+
+    //         if ($existing) {
+    //             // Update existing payment
+    //             $this->db->where('id', $existing->id);
+    //             $update_data = [
+    //                 'amt' => $amount
+    //             ];
+
+    //             if ($this->db->update('tbl_payment', $update_data)) {
+    //                 $success_count++;
+    //             } else {
+    //                 $error_count++;
+    //                 $errors[] = "Failed to update payment for client $client_id on $date";
+    //             }
+    //         } else {
+    //             // Insert new payment
+    //             $insert_data = [
+    //                 'loan_id' => $loan_id,
+    //                 'payment_for' => $date,
+    //                 'amt' => $amount
+    //             ];
+
+    //             if ($this->db->insert('tbl_payment', $insert_data)) {
+    //                 $success_count++;
+    //             } else {
+    //                 $error_count++;
+    //                 $errors[] = "Failed to insert payment for client $client_id on $date";
+    //             }
+    //         }
+    //     }
+
+    //     // Process updated balances to mark loans as completed if balance is 0
+    //     foreach ($updated_balances as $balance) {
+    //         $loan_id = $balance['loan_id'] ?? null;
+    //         $running_balance = $balance['running_balance'] ?? null;
+
+    //         if ($loan_id && $running_balance !== null) {
+
+    //             // Check if running balance is 0 or less (fully paid)
+    //             if ($running_balance <= 0) {
+    //                 // Get the last payment date for this loan
+    //                 $this->db->select('MAX(payment_for) as last_payment_date');
+    //                 $this->db->from('tbl_payment');
+    //                 $this->db->where('loan_id', $loan_id);
+    //                 $last_payment_query = $this->db->get();
+    //                 $last_payment = $last_payment_query->row();
+
+    //                 $complete_date = $last_payment->last_payment_date ?? date('Y-m-d');
+
+    //                 // Update loan status to 'completed'
+    //                 $this->db->where('id', $loan_id);
+    //                 $loan_update = $this->db->update('tbl_loan', [
+    //                     'status' => 'completed',
+    //                     'complete_date' => $complete_date
+    //                 ]);
+
+    //                 if ($loan_update) {
+    //                     $completed_loans[] = [
+    //                         'loan_id' => $loan_id,
+    //                         'complete_date' => $complete_date
+    //                     ];
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     $this->db->trans_complete();
+
+    //     if ($this->db->trans_status() === FALSE) {
+    //         $this->db->trans_rollback();
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' => 'Transaction failed. No payments were saved.'
+    //         ]);
+    //     } else {
+    //         $response = [
+    //             'success' => true,
+    //             'message' => "Successfully saved $success_count payments. Failed: $error_count",
+    //             'saved_count' => $success_count,
+    //             'failed_count' => $error_count,
+    //             'errors' => $errors
+    //         ];
+
+    //         // Add completed loans info if any
+    //         if (!empty($completed_loans)) {
+    //             $response['completed_loans'] = $completed_loans;
+    //             $response['completed_count'] = count($completed_loans);
+    //             $response['message'] .= " " . count($completed_loans) . " loan(s) marked as completed.";
+    //         }
+
+    //         echo json_encode($response);
+    //     }
+    // }
+
     public function save_bulk_payments()
     {
-        // Get JSON data
-        $json_data = file_get_contents('php://input');
-        $data = json_decode($json_data, true);
-
-        $selected_date = $data['selected_date'] ?? null;
-        $payments = $data['payments'] ?? [];
-        $updated_balances = $data['updated_balances'] ?? []; // Get updated balances from frontend
-
-        if (empty($selected_date) || empty($payments)) {
-            echo json_encode(['success' => false, 'message' => 'No data to save.']);
-            return;
-        }
+        $date = $this->input->post('date');
+        $payments = $this->input->post('payments');
 
         $success_count = 0;
         $error_count = 0;
-        $completed_loans = [];
-        $errors = [];
 
-        // Start transaction for data consistency
-        $this->db->trans_start();
-
-        foreach ($payments as $payment) {
-            $client_id = $payment['client_id'] ?? null;
-            $loan_id = $payment['loan_id'] ?? null;
-            $date = $payment['date'] ?? null;
-            $amount = $payment['amount'] ?? 0;
-
-            if (!$client_id || !$loan_id || !$date || $amount <= 0) {
-                $error_count++;
-                continue;
-            }
-
-            // Check if payment already exists for this date and loan
-            $this->db->where('loan_id', $loan_id);
-            $this->db->where('payment_for', $date);
-            $existing = $this->db->get('tbl_payment')->row();
-
-            if ($existing) {
-                // Update existing payment
-                $this->db->where('id', $existing->id);
-                $update_data = [
-                    'amt' => $amount
-                ];
-
-                if ($this->db->update('tbl_payment', $update_data)) {
-                    $success_count++;
-                } else {
+        if ($payments && is_array($payments)) {
+            foreach ($payments as $payment) {
+                // Validate required fields
+                if (empty($payment['client_id']) || empty($payment['loan_id']) || empty($payment['amount'])) {
                     $error_count++;
-                    $errors[] = "Failed to update payment for client $client_id on $date";
+                    continue;
                 }
-            } else {
-                // Insert new payment
-                $insert_data = [
-                    'loan_id' => $loan_id,
+
+                // Prepare payment data
+                $payment_data = array(
+                    'loan_id' => $payment['loan_id'],
                     'payment_for' => $date,
-                    'amt' => $amount
-                ];
+                    'amt' => $payment['amount'],
+                );
 
-                if ($this->db->insert('tbl_payment', $insert_data)) {
+                if ($this->db->insert('tbl_payment', $payment_data)) {
                     $success_count++;
                 } else {
                     $error_count++;
-                    $errors[] = "Failed to insert payment for client $client_id on $date";
                 }
             }
         }
 
-        // Process updated balances to mark loans as completed if balance is 0
-        foreach ($updated_balances as $balance) {
-            $loan_id = $balance['loan_id'] ?? null;
-            $running_balance = $balance['running_balance'] ?? null;
+        $response = array(
+            'success' => true,
+            'message' => "Successfully saved $success_count payment(s). " . ($error_count > 0 ? "$error_count payment(s) failed." : "")
+        );
 
-            if ($loan_id && $running_balance !== null) {
-
-                // Check if running balance is 0 or less (fully paid)
-                if ($running_balance <= 0) {
-                    // Get the last payment date for this loan
-                    $this->db->select('MAX(payment_for) as last_payment_date');
-                    $this->db->from('tbl_payment');
-                    $this->db->where('loan_id', $loan_id);
-                    $last_payment_query = $this->db->get();
-                    $last_payment = $last_payment_query->row();
-
-                    $complete_date = $last_payment->last_payment_date ?? date('Y-m-d');
-
-                    // Update loan status to 'completed'
-                    $this->db->where('id', $loan_id);
-                    $loan_update = $this->db->update('tbl_loan', [
-                        'status' => 'completed',
-                        'complete_date' => $complete_date
-                    ]);
-
-                    if ($loan_update) {
-                        $completed_loans[] = [
-                            'loan_id' => $loan_id,
-                            'complete_date' => $complete_date
-                        ];
-                    }
-                }
-            }
-        }
-
-        $this->db->trans_complete();
-
-        if ($this->db->trans_status() === FALSE) {
-            $this->db->trans_rollback();
-            echo json_encode([
-                'success' => false,
-                'message' => 'Transaction failed. No payments were saved.'
-            ]);
-        } else {
-            $response = [
-                'success' => true,
-                'message' => "Successfully saved $success_count payments. Failed: $error_count",
-                'saved_count' => $success_count,
-                'failed_count' => $error_count,
-                'errors' => $errors
-            ];
-
-            // Add completed loans info if any
-            if (!empty($completed_loans)) {
-                $response['completed_loans'] = $completed_loans;
-                $response['completed_count'] = count($completed_loans);
-                $response['message'] .= " " . count($completed_loans) . " loan(s) marked as completed.";
-            }
-
-            echo json_encode($response);
-        }
+        echo json_encode($response);
     }
 }

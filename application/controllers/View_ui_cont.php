@@ -38,7 +38,7 @@ class View_ui_cont extends CI_Controller
             ->from('tbl_loan')
             ->join('tbl_client', 'tbl_loan.cl_id = tbl_client.id')
             ->join($subquery, 'p.loan_id = tbl_loan.id', 'left')
-            ->where('tbl_client.status !=', '1')
+            // ->where('tbl_client.status !=', '1')
             ->get()
             ->row()
             ->total_amt ?: 0;
@@ -47,7 +47,7 @@ class View_ui_cont extends CI_Controller
             ->select_sum('tbl_payment.amt')
             ->join('tbl_loan', 'tbl_loan.id = tbl_payment.loan_id')
             ->join('tbl_client', 'tbl_client.id = tbl_loan.cl_id')
-            ->where('tbl_client.status !=', '1')
+            // ->where('tbl_client.status !=', '1')
             ->where("tbl_payment.payment_for BETWEEN DATE_ADD(tbl_loan.start_date, INTERVAL 1 DAY) AND tbl_loan.due_date", NULL, FALSE)
             ->get('tbl_payment')
             ->row()
@@ -132,20 +132,11 @@ class View_ui_cont extends CI_Controller
             $end_date = $selected_date;
         }
 
-        // Query with table aliases
-        // $this->db->select_sum('p.amt', 'total_payments')
-        //     ->from('tbl_payment p')
-        //     ->join('tbl_loan l', 'l.id = p.loan_id', 'left')
-        //     ->join('tbl_client c', 'c.id = l.cl_id', 'left')
-        //     ->where('c.status !=', '1')
-        //     ->where('DATE(p.payment_for) >=', $start_date)
-        //     ->where('DATE(p.payment_for) <=', $end_date);
-
         $this->db->select_sum('p.amt', 'total_payments')
             ->from('tbl_payment p')
             ->join('tbl_loan l', 'l.id = p.loan_id', 'left')
             ->join('tbl_client c', 'c.id = l.cl_id', 'left')
-            ->where('c.status !=', '1')
+            // ->where('c.status !=', '1')
             ->where('DATE(p.payment_for) >=', $start_date)
             ->where('DATE(p.payment_for) <=', $end_date)
             ->where("p.payment_for BETWEEN DATE_ADD(l.start_date, INTERVAL 1 DAY) AND l.due_date", NULL, FALSE);
@@ -168,7 +159,7 @@ class View_ui_cont extends CI_Controller
             ->from('tbl_payment as a')
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
-            ->where('c.status !=', '1')
+            // ->where('c.status !=', '1')
             ->where('YEAR(a.payment_for)', $current_year)
             ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->group_by('MONTH(a.payment_for)')
@@ -192,7 +183,7 @@ class View_ui_cont extends CI_Controller
             ->from('tbl_payment as a')
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
-            ->where('c.status !=', '1')
+            // ->where('c.status !=', '1')
             ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->where('YEAR(a.payment_for)', $current_year);
 
@@ -283,73 +274,19 @@ class View_ui_cont extends CI_Controller
 
 
         // ========== LOAN STATISTICS WITH CLIENT FILTER ==========
-        // Get loan counts by status with client filter (exclude inactive clients where status != 1)
-        $data['active_loans'] = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'ongoing')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        $data['overdue_loans'] = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'overdue')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        $data['completed_loans'] = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'completed')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        // Get total overdue amount with client filter
-        $this->db->select_sum('l.total_amt')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'overdue')
-            ->where('c.status !=', '1');
-        $overdue_query = $this->db->get();
-        $data['overdue_amount'] = $overdue_query->row()->total_amt ?: 0;
-
-        // Get total ongoing loans amount with client filter
-        $this->db->select_sum('l.total_amt')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'ongoing')
-            ->where('c.status !=', '1');
-        $ongoing_query = $this->db->get();
-        $data['ongoing_amount'] = $ongoing_query->row()->total_amt ?: 0;
-
-        // Get total completed loans amount with client filter
-        $this->db->select_sum('l.total_amt')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'completed')
-            ->where('c.status !=', '1');
-        $completed_query = $this->db->get();
-        $data['completed_amount'] = $completed_query->row()->total_amt ?: 0;
-
         // Get loan status data for chart with client filter
         $loan_status_data = $this->db
             ->select('l.status, COUNT(*) as count, SUM(l.total_amt) as total')
             ->from('tbl_loan l')
             ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('c.status !=', '1')
+            // ->where('c.status !=', '1')
             ->group_by('l.status')
             ->get()
             ->result_array();
 
         $data['loan_status_counts'] = [];
-        $data['loan_status_totals'] = [];
         foreach ($loan_status_data as $row) {
             $data['loan_status_counts'][$row['status']] = $row['count'];
-            $data['loan_status_totals'][$row['status']] = $row['total'];
         }
 
         // ========== END LOAN STATISTICS ==========
@@ -371,7 +308,7 @@ class View_ui_cont extends CI_Controller
             ->from('tbl_payment as a')
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
-            ->where('c.status !=', '1')
+            // ->where('c.status !=', '1')
             ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->where('YEAR(a.payment_for)', $year)
             ->group_by('MONTH(a.payment_for)')
@@ -394,7 +331,7 @@ class View_ui_cont extends CI_Controller
             ->from('tbl_payment as a')
             ->join('tbl_loan as b', 'b.id = a.loan_id', 'left')
             ->join('tbl_client as c', 'c.id = b.cl_id', 'left')
-            ->where('c.status !=', '1')
+            // ->where('c.status !=', '1')
             ->where("a.payment_for BETWEEN DATE_ADD(b.start_date, INTERVAL 1 DAY) AND b.due_date", NULL, FALSE)
             ->where('YEAR(a.payment_for)', $year);
         $year_total_query = $this->db->get();
@@ -447,70 +384,6 @@ class View_ui_cont extends CI_Controller
         }
 
         echo json_encode($year_list);
-    }
-
-    // NEW: Get loan statistics WITH CLIENT FILTER
-    public function get_loan_stats()
-    {
-        // Get loan counts by status with client filter
-        $active_loans = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'ongoing')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        $overdue_loans = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'overdue')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        $completed_loans = $this->db
-            ->select('l.*')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'completed')
-            ->where('c.status !=', '1')
-            ->count_all_results();
-
-        // Get loan amounts by status with client filter
-        $this->db->select_sum('l.total_amt')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'overdue')
-            ->where('c.status !=', '1');
-        $overdue_query = $this->db->get();
-        $overdue_amount = $overdue_query->row()->total_amt ?: 0;
-
-        $this->db->select_sum('l.total_amt')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'ongoing')
-            ->where('c.status !=', '1');
-        $ongoing_query = $this->db->get();
-        $ongoing_amount = $ongoing_query->row()->total_amt ?: 0;
-
-        $this->db->select_sum('l.total_amt')
-            ->from('tbl_loan l')
-            ->join('tbl_client c', 'l.cl_id = c.id')
-            ->where('l.status', 'completed')
-            ->where('c.status !=', '1');
-        $completed_query = $this->db->get();
-        $completed_amount = $completed_query->row()->total_amt ?: 0;
-
-        echo json_encode([
-            'success' => true,
-            'active_loans' => $active_loans,
-            'overdue_loans' => $overdue_loans,
-            'completed_loans' => $completed_loans,
-            'overdue_amount' => $overdue_amount,
-            'ongoing_amount' => $ongoing_amount,
-            'completed_amount' => $completed_amount
-        ]);
     }
 
     // NEW: AJAX endpoint to get pull out data by year
@@ -637,7 +510,7 @@ class View_ui_cont extends CI_Controller
         )
             ->from('tbl_loan as a')
             ->join('tbl_client as b', 'b.id = a.cl_id', 'left')
-            ->where('b.status !=', '1')
+            // ->where('b.status !=', '1')
             ->where('YEAR(a.start_date)', $year)
             ->group_by('MONTH(a.start_date)')
             ->order_by('MONTH(a.start_date)');
@@ -657,7 +530,7 @@ class View_ui_cont extends CI_Controller
         $this->db->select_sum('a.capital_amt')
             ->from('tbl_loan as a')
             ->join('tbl_client as b', 'b.id = a.cl_id', 'left')
-            ->where('b.status !=', '1')
+            // ->where('b.status !=', '1')
             ->where('YEAR(a.start_date)', $year);
         $year_total_query = $this->db->get();
         $year_total = $year_total_query->row()->capital_amt ?: 0;

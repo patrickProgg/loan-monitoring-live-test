@@ -22,9 +22,9 @@ class Expenses_cont extends CI_Controller
 
         $columns = [
             0 => 'id',
-            1 => 'type',
-            2 => 'amt',
-            3 => 'date_added'
+            1 => 'date_added',
+            2 => 'type',
+            3 => 'amt'
         ];
 
         $orderColumn = $columns[$orderColumnIndex];

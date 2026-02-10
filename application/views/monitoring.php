@@ -39,7 +39,6 @@
     #bulk_payment_table th,
     #bulk_payment_table td {
         white-space: nowrap;
-        /* padding: 8px 5px; */
         font-size: 0.9rem;
     }
 
@@ -68,6 +67,9 @@
                         <button class="btn btn-success" id="generate_daily">
                             <i class="fas fa-download me-1"></i> Daily Report
                         </button>
+                        <button class="btn btn-dark" id="generate_weekly">
+                            <i class="fas fa-download me-1"></i> Weekly Report
+                        </button>
                         <button class="btn btn-warning" id="generate_monthly">
                             <i class="fas fa-download me-1"></i> Monthly Report
                         </button>
@@ -91,7 +93,7 @@
                 <table id="client_table" class="table table-hover" style="width:100%">
                     <thead class="table-secondary">
                         <tr>
-                            <th style="width:100px; text-align:center">ACC #</th>
+                            <th style="width:100px; text-align:center">ACC NO</th>
                             <th>FULL NAME</th>
                             <th>ADDRESS</th>
                             <th>CONTACT NO.</th>
@@ -349,7 +351,6 @@
                                                 Total Amt : ₱ <span id="header_total_amt" style="font-weight: bold;"
                                                     class="text-primary"></span>
                                             </label>
-
                                         </div>
                                         <div class="mb-2">
                                             <label class="form-label">
@@ -524,7 +525,7 @@
 
         <!-- BULK PAYMENT -->
         <div class="modal fade" id="bulk_payment_modal" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog" style="max-width:100%; margin-top: 10px; margin-right:10px;  margin-left:10px">
+            <div class="modal-dialog" style="width:600px; margin-top: 10px;">
                 <div class="modal-content">
 
                     <div class="modal-header bg-light border-bottom">
@@ -535,7 +536,7 @@
 
                     <div class="modal-body">
 
-                        <div class="table-responsive" style="overflow-x: auto; display: block;">
+                        <div class="table-responsive" style="max-height: 580px; overflow-y: auto">
                             <table id="bulk_payment_table" class="table table-sm">
                                 <thead>
                                     <tr>
@@ -1699,19 +1700,51 @@
         // });
 
         $.ajax({
-            url: '<?php echo site_url('Monitoring_cont/cash_count'); ?>',
+            url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
             type: 'POST',
+            dataType: 'json',
             data: { date: selectedDate },
             success: function (response) {
-                // Swal.close();
-                Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+                console.log(response);
+                if (response.status === "warning") {
+                    Swal.fire('Warning!', response.message, 'warning');
+                } else {
+                    Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+                }
             },
             error: function () {
                 Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });
-        //     }
-        // });
+    });
+
+    $(document).on('click', '#generate_weekly', function () {
+        const selectedDate = $('#selected_date').val();
+
+        if (!selectedDate) {
+            Swal.fire('Error', 'Please select a valid date.', 'error');
+            return;
+        }
+
+        console.log(selectedDate);
+
+        $.ajax({
+            url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
+            type: 'POST',
+            dataType: 'json',
+            data: { date: selectedDate },
+            success: function (response) {
+                console.log(response);
+                if (response.status === "warning") {
+                    Swal.fire('Warning!', response.message, 'warning');
+                } else {
+                    Swal.fire('Saved!', 'Weekly report has been saved.', 'success');
+                }
+            },
+            error: function () {
+                Swal.fire('Error', 'Something went wrong.', 'error');
+            }
+        });
     });
 
     $(document).on('click', '#generate_monthly', function () {
@@ -1727,17 +1760,20 @@
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
             type: 'POST',
+            dataType: 'json',
             data: { date: selectedDate },
             success: function (response) {
-                // Swal.close();
-                Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+                console.log(response);
+                if (response.status === "warning") {
+                    Swal.fire('Warning!', response.message, 'warning');
+                } else {
+                    Swal.fire('Saved!', 'Monthly report has been saved.', 'success');
+                }
             },
             error: function () {
                 Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });
-        //     }
-        // });
     });
 
     let bulkPaymentData = {
@@ -1746,6 +1782,510 @@
     };
 
     // Update the original bulk payment click handler to store the date
+    // $(document).on('click', '#bulk_payment', function () {
+    //     const date = $('#selected_date').val();
+    //     bulkPaymentData.selected_date = date;
+
+    //     console.log(date);
+    //     $('#bulk_date').text(formatDate(date));
+
+    //     $.ajax({
+    //         url: '<?php echo site_url('Monitoring_cont/get_bulk_payment'); ?>',
+    //         type: 'POST',
+    //         dataType: 'json',
+    //         data: { date: date },
+    //         success: function (response) {
+    //             console.log(response);
+    //             populateBulkPaymentTable(response);
+    //             $('#bulk_payment_modal').modal('show');
+    //         },
+    //         error: function () {
+    //             Swal.fire('Error', 'Something went wrong.', 'error');
+    //         }
+    //     });
+    // });
+
+    // function populateBulkPaymentTable(response) {
+    //     const table = $('#bulk_payment_table');
+    //     const tbody = table.find('tbody');
+    //     const thead = table.find('thead tr');
+    //     const tfoot = table.find('tfoot');
+
+    //     // Clear existing content
+    //     tbody.empty();
+    //     thead.empty();
+    //     tfoot.empty();
+
+    //     // Check if we have data
+    //     if (!response.date_columns || response.date_columns.length === 0) {
+    //         showNoDataMessage(tbody, 2);
+    //         return;
+    //     }
+
+    //     // Create table headers (with balance column)
+    //     createTableHeaders(thead, response.date_columns);
+
+    //     // Create table rows
+    //     if (response.data && response.data.length > 0) {
+    //         response.data.forEach(client => {
+    //             const row = $('<tr></tr>');
+    //             const clientId = client.id || client.client_id;
+    //             const loanId = client.loan_id;
+
+    //             row.data('client-data', {
+    //                 originalBalance: parseFloat(client.running_balance || 0),
+    //                 totalPaid: parseFloat(client.total_paid || 0),
+    //                 totalLoan: parseFloat(client.total_loan_amount || 0)
+    //             });
+
+    //             // Add client name
+    //             row.append(`<td>${client.full_name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase())
+    //                 }</td>`);
+
+    //             // Add running balance column
+    //             const runningBalance = parseFloat(client.running_balance || 0).toFixed(2);
+    //             const balanceClass = client.running_balance > 0 ? 'text-danger font-weight-bold' : 'text-success font-weight-bold';
+    //             row.append(`<td class="text-center ${balanceClass} running-balance-cell" 
+    //                     data-original-balance="${runningBalance}">
+    //                     ${runningBalance}
+    //                 </td>`);
+
+    //             let rowTotal = 0;
+
+    //             // Add payment amounts for each date
+    //             response.date_columns.forEach(date => {
+    //                 const amount = client.payments && client.payments[date] ? client.payments[date] : 0;
+    //                 const numAmount = parseFloat(amount);
+    //                 rowTotal += numAmount;
+
+    //                 // Create cell - input field only if amount is 0
+    //                 if (numAmount === 0) {
+    //                     // Empty cell - make it editable
+    //                     row.append(`
+    //                     <td class="text-center editable-cell" data-amount="0">
+    //                         <input type="number" 
+    //                             class="form-control form-control-sm bulk-payment-input text-center" 
+    //                             value="" 
+    //                             placeholder="" 
+    //                             data-client-id="${clientId}" 
+    //                             data-loan-id="${loanId}" 
+    //                             data-date="${date}"
+    //                             data-original-amount="0"
+    //                             step="0.01" 
+    //                             min="0" 
+    //                             style="width: 60px; height:margin: 0 auto; padding: 2px 5px; 
+    //                                     border: none; border-bottom: 1px solid #ccc; 
+    //                                     border-radius: 0; background: transparent;">
+    //                     </td>
+    //                 `);
+    //                 } else {
+    //                     // Existing amount - show as plain text with data attributes
+    //                     const formattedAmount = numAmount.toFixed(2);
+    //                     row.append(`
+    //                     <td class="text-center text-success font-weight-bold" 
+    //                         title="${date} - Amount: ${formattedAmount}"
+    //                         data-amount="${numAmount}"
+    //                         data-client-id="${clientId}" 
+    //                         data-loan-id="${loanId}" 
+    //                         data-date="${date}">
+    //                         ${formattedAmount}
+    //                     </td>
+    //                 `);
+    //                 }
+    //             });
+
+    //             // Add total column
+    //             row.append(`<td class="text-center font-weight-bold row-total">${rowTotal.toFixed(2)}</td>`);
+
+    //             tbody.append(row);
+    //         });
+
+    //         // Now create the footer for column totals
+    //         createFooterTotals(response);
+
+    //         // Initialize all totals
+    //         calculateAllTotals();
+
+    //     } else {
+    //         showNoDataMessage(tbody, response.date_columns.length + 3); // +3 for name, balance, and total columns
+    //     }
+    // }
+
+    // // Create headers function (you should already have this)
+    // function createTableHeaders(thead, dateColumns) {
+    //     thead.append('<th style="width:20%; color:#000; font-size:13px">FULL NAME</th>');
+
+    //     thead.append('<th style="width:10%; color:#000; font-size:13px" class="text-center">RUNNING BAL.</th>');
+
+    //     let previousDate = null;
+    //     dateColumns.forEach(date => {
+    //         const formattedDate = formatSmartDate(date, previousDate);
+    //         previousDate = date;
+    //         thead.append(`<th class="text-center" style="color:#000;  font-size:13px" title="${date}">${formattedDate}</th>`);
+    //     });
+
+    //     thead.append('<th class="text-center" style="color:#000; width:15%; font-size:13px">TOTAL</th>');
+    // }
+
+    // // Add this function to create footer totals
+    // function createFooterTotals(response) {
+    //     const tfoot = $('#bulk_payment_table tfoot');
+    //     tfoot.empty();
+
+    //     if (!response.data || response.data.length === 0) {
+    //         return;
+    //     }
+
+    //     const footerRow = $('<tr class="font-weight-bold"></tr>');
+
+    //     // Add TOTAL label
+    //     footerRow.append('<td>TOTAL</td>');
+
+    //     // Calculate running balance total from response data
+    //     let runningBalanceTotal = 0;
+    //     let columnTotals = new Array(response.date_columns.length).fill(0);
+    //     let grandTotal = 0;
+
+    //     response.data.forEach(client => {
+    //         // Add client's running balance
+    //         runningBalanceTotal += parseFloat(client.running_balance || 0);
+
+    //         let clientTotal = 0;
+    //         response.date_columns.forEach((date, index) => {
+    //             const amount = client.payments && client.payments[date] ? client.payments[date] : 0;
+    //             columnTotals[index] += parseFloat(amount);
+    //             clientTotal += parseFloat(amount);
+    //         });
+    //         grandTotal += clientTotal;
+    //     });
+
+    //     // Add running balance total cell
+    //     footerRow.append(`<td class="text-center">${runningBalanceTotal.toFixed(2)}</td>`);
+
+    //     // Add column totals to footer
+    //     columnTotals.forEach(total => {
+    //         footerRow.append(`<td class="text-center">${total.toFixed(2)}</td>`);
+    //     });
+
+    //     // Add grand total
+    //     footerRow.append(`<td class="text-center">${grandTotal.toFixed(2)}</td>`);
+
+    //     tfoot.append(footerRow);
+    // }
+
+    // // Helper function to calculate all totals
+    // function calculateAllTotals() {
+    //     const table = $('#bulk_payment_table');
+    //     const tbody = table.find('tbody');
+
+    //     let runningBalanceTotal = 0;
+    //     let rowTotalsSum = 0;
+
+    //     // Calculate all row totals
+    //     tbody.find('tr').each(function () {
+    //         const row = $(this);
+    //         let rowTotal = 0;
+
+    //         // Get all date cells (skip: name(1), balance(2), total(last))
+    //         const dateCells = row.find('td').slice(2, -1);
+
+    //         dateCells.each(function () {
+    //             const cell = $(this);
+    //             const input = cell.find('.bulk-payment-input');
+
+    //             if (input.length > 0) {
+    //                 rowTotal += parseFloat(input.val()) || 0;
+    //             } else {
+    //                 // Get amount from data attribute or text
+    //                 const amount = parseFloat(cell.data('amount')) || parseFloat(cell.text().trim()) || 0;
+    //                 rowTotal += amount;
+    //             }
+    //         });
+
+    //         row.find('.row-total').text(rowTotal.toFixed(2));
+    //         rowTotalsSum += rowTotal;
+
+    //         // Calculate running balance for this row
+    //         const runningBalanceCell = row.find('.running-balance-cell');
+    //         const runningBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
+    //         runningBalanceTotal += runningBalance;
+    //     });
+
+    //     // Update the running balance total in footer
+    //     updateRunningBalanceTotal(runningBalanceTotal);
+
+    //     // Calculate column totals
+    //     updateColumnTotals();
+    // }
+
+    // // New function to update running balance total
+    // function updateRunningBalanceTotal(total) {
+    //     const table = $('#bulk_payment_table');
+    //     const footerRow = table.find('tfoot tr');
+
+    //     if (footerRow.length > 0) {
+    //         // Update the second cell (index 1) which is for running balance total
+    //         footerRow.find('td:nth-child(2)').text(total.toFixed(2));
+    //     }
+    // }
+
+    // function updateColumnTotals() {
+    //     const table = $('#bulk_payment_table');
+    //     const columns = table.find('thead tr th').length - 3; // Minus name, balance, and total columns
+
+    //     // Calculate running balance total from all rows
+    //     let runningBalanceTotal = 0;
+    //     table.find('tbody tr').each(function () {
+    //         const runningBalanceCell = $(this).find('.running-balance-cell');
+    //         const runningBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
+    //         runningBalanceTotal += runningBalance;
+    //     });
+
+    //     // Update running balance total in footer
+    //     table.find('tfoot tr td:nth-child(2)').text(runningBalanceTotal.toFixed(2));
+
+    //     // Update each date column total
+    //     for (let i = 0; i < columns; i++) {
+    //         let columnTotal = 0;
+    //         const cells = table.find(`tbody tr td:nth-child(${i + 3})`); // +3 because: 1=name, 2=balance, 3=first date column
+
+    //         cells.each(function () {
+    //             const cell = $(this);
+    //             const input = cell.find('.bulk-payment-input');
+
+    //             if (input.length > 0) {
+    //                 columnTotal += parseFloat(input.val()) || 0;
+    //             } else {
+    //                 columnTotal += parseFloat(cell.data('amount')) || parseFloat(cell.text().trim()) || 0;
+    //             }
+    //         });
+
+    //         table.find(`tfoot tr td:nth-child(${i + 3})`).text(columnTotal.toFixed(2));
+    //     }
+
+    //     updateGrandTotal();
+    // }
+
+    // function updateGrandTotal() {
+    //     const table = $('#bulk_payment_table');
+    //     let grandTotal = 0;
+
+    //     table.find('tbody tr .row-total').each(function () {
+    //         grandTotal += parseFloat($(this).text()) || 0;
+    //     });
+
+    //     table.find('tfoot tr td:last-child').text(grandTotal.toFixed(2));
+    // }
+
+    // $(document).on('input', '.bulk-payment-input', function () {
+    //     const row = $(this).closest('tr');
+    //     const input = $(this);
+    //     const cell = input.closest('td');
+    //     const clientId = input.data('client-id');
+    //     const date = input.data('date');
+
+    //     // Update the data-amount attribute when input changes
+    //     const newValue = parseFloat(input.val()) || 0;
+    //     const oldValue = parseFloat(cell.data('amount')) || 0;
+    //     cell.data('amount', newValue);
+
+    //     // Calculate the change in payment amount
+    //     const amountChange = newValue - oldValue;
+
+    //     // Update row total
+    //     let rowTotal = 0;
+    //     const dateCells = row.find('td').slice(2, -1);
+
+    //     dateCells.each(function () {
+    //         const dateCell = $(this);
+    //         const dateInput = dateCell.find('.bulk-payment-input');
+
+    //         if (dateInput.length > 0) {
+    //             rowTotal += parseFloat(dateInput.val()) || 0;
+    //         } else {
+    //             rowTotal += parseFloat(dateCell.data('amount')) || parseFloat(dateCell.text().trim()) || 0;
+    //         }
+    //     });
+
+    //     row.find('.row-total').text(rowTotal.toFixed(2));
+
+    //     // UPDATE RUNNING BALANCE
+    //     updateRunningBalance(row, amountChange);
+
+    //     // Update column totals
+    //     updateColumnTotals();
+    // });
+
+    // function updateRunningBalance(row, amountChange) {
+    //     const runningBalanceCell = row.find('.running-balance-cell');
+    //     const currentBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
+
+    //     // Calculate new balance (subtract the payment increase)
+    //     const newBalance = currentBalance - amountChange;
+
+    //     // Update the display
+    //     runningBalanceCell.text(newBalance.toFixed(2));
+
+    //     // Update the color based on balance
+    //     if (newBalance > 0) {
+    //         runningBalanceCell.removeClass('text-success').addClass('text-danger font-weight-bold');
+    //     } else {
+    //         runningBalanceCell.removeClass('text-danger').addClass('text-success font-weight-bold');
+    //     }
+
+    //     // Update the data attribute
+    //     runningBalanceCell.data('current-balance', newBalance);
+    // }
+
+    // // Save button click handler
+    // $(document).on('click', '#save_bulk_payments', function () {
+    //     saveBulkPayments();
+    // });
+
+    // function saveBulkPayments() {
+    //     const payments = [];
+    //     const updatedBalances = [];
+    //     const table = $('#bulk_payment_table');
+
+    //     // Collect payments and balances first
+    //     table.find('tbody tr').each(function () {
+    //         const row = $(this);
+    //         const runningBalanceCell = row.find('.running-balance-cell');
+    //         const runningBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
+    //         const firstInput = row.find('.bulk-payment-input').first();
+    //         const clientId = firstInput.data('client-id');
+    //         const loanId = firstInput.data('loan-id');
+
+    //         if (clientId) {
+    //             updatedBalances.push({
+    //                 client_id: clientId,
+    //                 loan_id: loanId,
+    //                 running_balance: runningBalance
+    //             });
+    //         }
+
+    //         row.find('.bulk-payment-input').each(function () {
+    //             const input = $(this);
+    //             const value = parseFloat(input.val()) || 0;
+
+    //             if (value > 0) {
+    //                 payments.push({
+    //                     client_id: input.data('client-id'),
+    //                     loan_id: input.data('loan-id'),
+    //                     date: input.data('date'),
+    //                     amount: value
+    //                 });
+    //             }
+    //         });
+    //     });
+
+    //     console.log(updatedBalances);
+
+    //     if (payments.length === 0) {
+    //         Swal.fire({
+    //             icon: 'warning',
+    //             title: 'No Payments',
+    //             text: 'No payments to save. Please enter some amounts first.'
+    //         });
+    //         return;
+    //     }
+
+    //     // Calculate total amount
+    //     const totalAmount = payments.reduce((sum, payment) => sum + payment.amount, 0);
+    //     const numberOfPayments = payments.length;
+    //     const numberOfClients = new Set(payments.map(p => p.client_id)).size;
+
+    //     // Show confirmation dialog
+    //     Swal.fire({
+    //         title: 'Confirm Save',
+    //         html: `
+    //         <div class="text-left">
+    //             <p>You are about to save:</p>
+    //             <ul>
+    //                 <li><strong>${numberOfPayments}</strong> payment(s)</li>
+    //                 <li><strong>${numberOfClients}</strong> client(s)</li>
+    //                 <li><strong>₱${totalAmount.toFixed(2)}</strong> total amount</li>
+    //             </ul>
+    //             <p>Are you sure you want to proceed?</p>
+    //         </div>
+    //     `,
+    //         icon: 'question',
+    //         showCancelButton: true,
+    //         confirmButtonColor: '#3085d6',
+    //         cancelButtonColor: '#d33',
+    //         confirmButtonText: 'Yes, save payments!',
+    //         cancelButtonText: 'Cancel'
+    //     }).then((result) => {
+    //         if (result.isConfirmed) {
+    //             proceedWithSave(payments, updatedBalances, totalAmount);
+    //         }
+    //     });
+    // }
+
+    // function proceedWithSave(payments, updatedBalances, totalAmount) {
+    //     // Show loading
+    //     const saveButton = $('#save_bulk_payments');
+    //     const originalText = saveButton.html();
+    //     saveButton.html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+    //     saveButton.prop('disabled', true);
+
+    //     // Prepare data
+    //     const data = {
+    //         selected_date: bulkPaymentData.selected_date,
+    //         payments: payments,
+    //         updated_balances: updatedBalances
+    //     };
+
+    //     // Send to server
+    //     $.ajax({
+    //         url: '<?php echo site_url('Monitoring_cont/save_bulk_payments'); ?>',
+    //         type: 'POST',
+    //         dataType: 'json',
+    //         data: JSON.stringify(data),
+    //         contentType: 'application/json',
+    //         success: function (response) {
+    //             console.log('Save response:', response);
+
+    //             if (response.success) {
+    //                 Swal.fire({
+    //                     icon: 'success',
+    //                     title: 'Saved Successfully!',
+    //                     html: `
+    //                     <div class="text-left">
+    //                         <p>${response.message}</p>
+    //                         <ul>
+    //                             <li><strong>${response.saved_count || payments.length}</strong> payments saved</li>
+    //                             <li><strong>₱${totalAmount.toFixed(2)}</strong> total amount</li>
+    //                             ${response.failed_count ? `<li><strong>${response.failed_count}</strong> failed</li>` : ''}
+    //                         </ul>
+    //                     </div>
+    //                 `,
+    //                     timer: 1000,
+    //                     timerProgressBar: true,
+    //                     showConfirmButton: false
+    //                 }).then(() => {
+    //                     $('#bulk_payment_modal').modal('hide');
+    //                     client_table.ajax.reload();
+
+    //                 });
+    //             } else {
+    //                 Swal.fire('Error', response.message || 'Failed to save payments.', 'error');
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error('Save error:', error);
+    //             console.error('Status:', status);
+    //             console.error('Response:', xhr.responseText);
+    //             Swal.fire('Error', 'Something went wrong while saving payments.', 'error');
+    //         },
+    //         complete: function () {
+    //             // Restore button
+    //             saveButton.html(originalText);
+    //             saveButton.prop('disabled', false);
+    //         }
+    //     });
+    // }
+
     $(document).on('click', '#bulk_payment', function () {
         const date = $('#selected_date').val();
         bulkPaymentData.selected_date = date;
@@ -1760,7 +2300,7 @@
             data: { date: date },
             success: function (response) {
                 console.log(response);
-                populateBulkPaymentTable(response);
+                populateBulkPaymentTable(response, date);
                 $('#bulk_payment_modal').modal('show');
             },
             error: function () {
@@ -1769,276 +2309,63 @@
         });
     });
 
-    function populateBulkPaymentTable(response) {
+    function populateBulkPaymentTable(response, date) {
         const table = $('#bulk_payment_table');
         const tbody = table.find('tbody');
         const thead = table.find('thead tr');
-        const tfoot = table.find('tfoot');
 
         // Clear existing content
         tbody.empty();
         thead.empty();
-        tfoot.empty();
+
+        // Create table headers
+        thead.append('<th style="width:15%; color:#000; font-size:13px" class="text-center">ACC NO</th>');
+        thead.append('<th style="width:70%; color:#000; font-size:13px">FULL NAME</th>');
+        thead.append('<th style="width:15%; color:#000; font-size:13px" class="text-center">AMOUNT</th>');
 
         // Check if we have data
-        if (!response.date_columns || response.date_columns.length === 0) {
-            showNoDataMessage(tbody, 2);
+        if (!response.data || response.data.length === 0) {
+            tbody.append(`
+            <tr>
+                <td colspan="3" class="text-center">No clients found for the selected date</td>
+            </tr>
+        `);
             return;
         }
-
-        // Create table headers (with balance column)
-        createTableHeaders(thead, response.date_columns);
 
         // Create table rows
-        if (response.data && response.data.length > 0) {
-            response.data.forEach(client => {
-                const row = $('<tr></tr>');
-                const clientId = client.id || client.client_id;
-                const loanId = client.loan_id;
-
-                row.data('client-data', {
-                    originalBalance: parseFloat(client.running_balance || 0),
-                    totalPaid: parseFloat(client.total_paid || 0),
-                    totalLoan: parseFloat(client.total_loan_amount || 0)
-                });
-
-                // Add client name
-                row.append(`<td>${client.full_name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase())
-                    }</td>`);
-
-                // Add running balance column
-                const runningBalance = parseFloat(client.running_balance || 0).toFixed(2);
-                const balanceClass = client.running_balance > 0 ? 'text-danger font-weight-bold' : 'text-success font-weight-bold';
-                row.append(`<td class="text-center ${balanceClass} running-balance-cell" 
-                        data-original-balance="${runningBalance}">
-                        ${runningBalance}
-                    </td>`);
-
-                let rowTotal = 0;
-
-                // Add payment amounts for each date
-                response.date_columns.forEach(date => {
-                    const amount = client.payments && client.payments[date] ? client.payments[date] : 0;
-                    const numAmount = parseFloat(amount);
-                    rowTotal += numAmount;
-
-                    // Create cell - input field only if amount is 0
-                    if (numAmount === 0) {
-                        // Empty cell - make it editable
-                        row.append(`
-                        <td class="text-center editable-cell" data-amount="0">
-                            <input type="number" 
-                                class="form-control form-control-sm bulk-payment-input text-center" 
-                                value="" 
-                                placeholder="" 
-                                data-client-id="${clientId}" 
-                                data-loan-id="${loanId}" 
-                                data-date="${date}"
-                                data-original-amount="0"
-                                step="0.01" 
-                                min="0" 
-                                style="width: 60px; height:margin: 0 auto; padding: 2px 5px; 
-                                        border: none; border-bottom: 1px solid #ccc; 
-                                        border-radius: 0; background: transparent;">
-                        </td>
-                    `);
-                    } else {
-                        // Existing amount - show as plain text with data attributes
-                        const formattedAmount = numAmount.toFixed(2);
-                        row.append(`
-                        <td class="text-center text-success font-weight-bold" 
-                            title="${date} - Amount: ${formattedAmount}"
-                            data-amount="${numAmount}"
-                            data-client-id="${clientId}" 
-                            data-loan-id="${loanId}" 
-                            data-date="${date}">
-                            ${formattedAmount}
-                        </td>
-                    `);
-                    }
-                });
-
-                // Add total column
-                row.append(`<td class="text-center font-weight-bold row-total">${rowTotal.toFixed(2)}</td>`);
-
-                tbody.append(row);
-            });
-
-            // Now create the footer for column totals
-            createFooterTotals(response);
-
-            // Initialize all totals
-            calculateAllTotals();
-
-        } else {
-            showNoDataMessage(tbody, response.date_columns.length + 3); // +3 for name, balance, and total columns
-        }
-    }
-
-    // Create headers function (you should already have this)
-    function createTableHeaders(thead, dateColumns) {
-        thead.append('<th style="width:20%; color:#000; font-size:13px">FULL NAME</th>');
-
-        thead.append('<th style="width:10%; color:#000; font-size:13px" class="text-center">RUNNING BAL.</th>');
-
-        let previousDate = null;
-        dateColumns.forEach(date => {
-            const formattedDate = formatSmartDate(date, previousDate);
-            previousDate = date;
-            thead.append(`<th class="text-center" style="color:#000;  font-size:13px" title="${date}">${formattedDate}</th>`);
-        });
-
-        thead.append('<th class="text-center" style="color:#000; width:15%; font-size:13px">TOTAL</th>');
-    }
-
-    // Add this function to create footer totals
-    function createFooterTotals(response) {
-        const tfoot = $('#bulk_payment_table tfoot');
-        tfoot.empty();
-
-        if (!response.data || response.data.length === 0) {
-            return;
-        }
-
-        const footerRow = $('<tr class="font-weight-bold"></tr>');
-
-        // Add TOTAL label
-        footerRow.append('<td>TOTAL</td>');
-
-        // Calculate running balance total from response data
-        let runningBalanceTotal = 0;
-        let columnTotals = new Array(response.date_columns.length).fill(0);
-        let grandTotal = 0;
-
         response.data.forEach(client => {
-            // Add client's running balance
-            runningBalanceTotal += parseFloat(client.running_balance || 0);
+            const row = $('<tr></tr>');
 
-            let clientTotal = 0;
-            response.date_columns.forEach((date, index) => {
-                const amount = client.payments && client.payments[date] ? client.payments[date] : 0;
-                columnTotals[index] += parseFloat(amount);
-                clientTotal += parseFloat(amount);
-            });
-            grandTotal += clientTotal;
+            // Add account number
+            row.append(`<td class="text-center">${client.acc_no || 'N/A'}</td>`);
+
+            // Add client name (proper case)
+            const formattedName = client.full_name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+            row.append(`<td>${formattedName}</td>`);
+
+            // Add BLANK amount column for input
+            const hasPayment = client.amt && client.amt > 0;
+            const inputValue = hasPayment ? client.amt : '';
+
+            row.append(`
+                <td class="text-center">
+                    <input ${hasPayment ? 'type="text"' : 'type="number"'} 
+                        class="form-control form-control-sm bulk-payment-input text-center ${hasPayment ? 'bg-light text-success font-weight-bold' : ''}"   
+                        value="${inputValue}" 
+                        data-client-id="${client.client_id}" 
+                        data-loan-id="${client.loan_id}" 
+                        data-date="${date}"
+                        ${hasPayment ? 'readonly' : ''}
+                        ${hasPayment ? 'title="Payment already recorded"' : ''}
+                        step="0.01" 
+                        min="0" 
+                        style="width: 100px; margin: 0 auto;">
+                </td>
+            `);
+
+            tbody.append(row);
         });
-
-        // Add running balance total cell
-        footerRow.append(`<td class="text-center">${runningBalanceTotal.toFixed(2)}</td>`);
-
-        // Add column totals to footer
-        columnTotals.forEach(total => {
-            footerRow.append(`<td class="text-center">${total.toFixed(2)}</td>`);
-        });
-
-        // Add grand total
-        footerRow.append(`<td class="text-center">${grandTotal.toFixed(2)}</td>`);
-
-        tfoot.append(footerRow);
-    }
-
-    // Helper function to calculate all totals
-    function calculateAllTotals() {
-        const table = $('#bulk_payment_table');
-        const tbody = table.find('tbody');
-
-        let runningBalanceTotal = 0;
-        let rowTotalsSum = 0;
-
-        // Calculate all row totals
-        tbody.find('tr').each(function () {
-            const row = $(this);
-            let rowTotal = 0;
-
-            // Get all date cells (skip: name(1), balance(2), total(last))
-            const dateCells = row.find('td').slice(2, -1);
-
-            dateCells.each(function () {
-                const cell = $(this);
-                const input = cell.find('.bulk-payment-input');
-
-                if (input.length > 0) {
-                    rowTotal += parseFloat(input.val()) || 0;
-                } else {
-                    // Get amount from data attribute or text
-                    const amount = parseFloat(cell.data('amount')) || parseFloat(cell.text().trim()) || 0;
-                    rowTotal += amount;
-                }
-            });
-
-            row.find('.row-total').text(rowTotal.toFixed(2));
-            rowTotalsSum += rowTotal;
-
-            // Calculate running balance for this row
-            const runningBalanceCell = row.find('.running-balance-cell');
-            const runningBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
-            runningBalanceTotal += runningBalance;
-        });
-
-        // Update the running balance total in footer
-        updateRunningBalanceTotal(runningBalanceTotal);
-
-        // Calculate column totals
-        updateColumnTotals();
-    }
-
-    // New function to update running balance total
-    function updateRunningBalanceTotal(total) {
-        const table = $('#bulk_payment_table');
-        const footerRow = table.find('tfoot tr');
-
-        if (footerRow.length > 0) {
-            // Update the second cell (index 1) which is for running balance total
-            footerRow.find('td:nth-child(2)').text(total.toFixed(2));
-        }
-    }
-
-    function updateColumnTotals() {
-        const table = $('#bulk_payment_table');
-        const columns = table.find('thead tr th').length - 3; // Minus name, balance, and total columns
-
-        // Calculate running balance total from all rows
-        let runningBalanceTotal = 0;
-        table.find('tbody tr').each(function () {
-            const runningBalanceCell = $(this).find('.running-balance-cell');
-            const runningBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
-            runningBalanceTotal += runningBalance;
-        });
-
-        // Update running balance total in footer
-        table.find('tfoot tr td:nth-child(2)').text(runningBalanceTotal.toFixed(2));
-
-        // Update each date column total
-        for (let i = 0; i < columns; i++) {
-            let columnTotal = 0;
-            const cells = table.find(`tbody tr td:nth-child(${i + 3})`); // +3 because: 1=name, 2=balance, 3=first date column
-
-            cells.each(function () {
-                const cell = $(this);
-                const input = cell.find('.bulk-payment-input');
-
-                if (input.length > 0) {
-                    columnTotal += parseFloat(input.val()) || 0;
-                } else {
-                    columnTotal += parseFloat(cell.data('amount')) || parseFloat(cell.text().trim()) || 0;
-                }
-            });
-
-            table.find(`tfoot tr td:nth-child(${i + 3})`).text(columnTotal.toFixed(2));
-        }
-
-        updateGrandTotal();
-    }
-
-    function updateGrandTotal() {
-        const table = $('#bulk_payment_table');
-        let grandTotal = 0;
-
-        table.find('tbody tr .row-total').each(function () {
-            grandTotal += parseFloat($(this).text()) || 0;
-        });
-
-        table.find('tfoot tr td:last-child').text(grandTotal.toFixed(2));
     }
 
     // Helper function for showing no data message
@@ -2046,6 +2373,103 @@
         const row = $(`<tr><td colspan="${colSpan}" class="text-center">No data found</td></tr>`);
         tbody.append(row);
     }
+
+    $(document).on('click', '#save_bulk_payments', function () {
+        const date = bulkPaymentData.selected_date;
+        const payments = [];
+
+        // Collect all payment inputs that are NOT readonly
+        $('.bulk-payment-input').each(function () {
+            const input = $(this);
+
+            // Skip readonly inputs (existing payments)
+            if (input.prop('readonly')) {
+                return true; // continue to next iteration
+            }
+
+            const amount = parseFloat(input.val()) || 0;
+
+            // Only include if amount is greater than 0
+            if (amount > 0) {
+                payments.push({
+                    client_id: input.data('client-id'),
+                    loan_id: input.data('loan-id'),
+                    payment_date: input.data('date'), // The selected date
+                    amount: amount
+                });
+            }
+        });
+
+        if (payments.length === 0) {
+            Swal.fire('Warning', 'No payments to save. Please enter amounts.', 'warning');
+            return;
+        }
+
+        // Calculate total amount
+        const totalAmount = payments.reduce((sum, payment) => sum + payment.amount, 0);
+
+        // Show confirmation SweetAlert
+        Swal.fire({
+            title: 'Confirm Bulk Payment',
+            html: `
+                <div style="text-align: center;">
+                    <p>Are you sure you want to save <strong>${payments.length}</strong> payment(s)?</p>
+                    <p><strong>Total Amount:</strong> ₱${totalAmount.toFixed(2)}</p>
+                    <p><strong>Payment Date:</strong> ${formatDate(date)}</p>
+                    <p>This action cannot be undone.</p>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, save payments!',
+            cancelButtonText: 'Cancel',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: '<?php echo site_url('Monitoring_cont/save_bulk_payments'); ?>',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            date: date,
+                            payments: payments
+                        },
+                        success: function (response) {
+                            resolve(response);
+                        },
+                        error: function () {
+                            Swal.showValidationMessage('Something went wrong while saving.');
+                            resolve(false);
+                        }
+                    });
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.value.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    html: `
+                        <div style="text-align: center;">
+                            <p>${result.value.message}</p>
+                            <p><strong>Payments saved:</strong> ${payments.length}</p>
+                            <p><strong>Total amount:</strong> ₱${totalAmount.toFixed(2)}</p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    $('#bulk_payment_modal').modal('hide');
+                    client_table.ajax.reload();
+                });
+            } else {
+                Swal.fire('Error', result.value.message || 'Failed to save payments', 'error');
+            }
+        });
+    });
+
 
     function formatSmartDate(dateString, previousDate = null) {
         const date = new Date(dateString);
@@ -2094,215 +2518,6 @@
         });
     }
 
-    $(document).on('input', '.bulk-payment-input', function () {
-        const row = $(this).closest('tr');
-        const input = $(this);
-        const cell = input.closest('td');
-        const clientId = input.data('client-id');
-        const date = input.data('date');
-
-        // Update the data-amount attribute when input changes
-        const newValue = parseFloat(input.val()) || 0;
-        const oldValue = parseFloat(cell.data('amount')) || 0;
-        cell.data('amount', newValue);
-
-        // Calculate the change in payment amount
-        const amountChange = newValue - oldValue;
-
-        // Update row total
-        let rowTotal = 0;
-        const dateCells = row.find('td').slice(2, -1);
-
-        dateCells.each(function () {
-            const dateCell = $(this);
-            const dateInput = dateCell.find('.bulk-payment-input');
-
-            if (dateInput.length > 0) {
-                rowTotal += parseFloat(dateInput.val()) || 0;
-            } else {
-                rowTotal += parseFloat(dateCell.data('amount')) || parseFloat(dateCell.text().trim()) || 0;
-            }
-        });
-
-        row.find('.row-total').text(rowTotal.toFixed(2));
-
-        // UPDATE RUNNING BALANCE
-        updateRunningBalance(row, amountChange);
-
-        // Update column totals
-        updateColumnTotals();
-    });
-
-    function updateRunningBalance(row, amountChange) {
-        const runningBalanceCell = row.find('.running-balance-cell');
-        const currentBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
-
-        // Calculate new balance (subtract the payment increase)
-        const newBalance = currentBalance - amountChange;
-
-        // Update the display
-        runningBalanceCell.text(newBalance.toFixed(2));
-
-        // Update the color based on balance
-        if (newBalance > 0) {
-            runningBalanceCell.removeClass('text-success').addClass('text-danger font-weight-bold');
-        } else {
-            runningBalanceCell.removeClass('text-danger').addClass('text-success font-weight-bold');
-        }
-
-        // Update the data attribute
-        runningBalanceCell.data('current-balance', newBalance);
-    }
-
-    // Save button click handler
-    $(document).on('click', '#save_bulk_payments', function () {
-        saveBulkPayments();
-    });
-
-    function saveBulkPayments() {
-        const payments = [];
-        const updatedBalances = [];
-        const table = $('#bulk_payment_table');
-
-        // Collect payments and balances first
-        table.find('tbody tr').each(function () {
-            const row = $(this);
-            const runningBalanceCell = row.find('.running-balance-cell');
-            const runningBalance = parseFloat(runningBalanceCell.text().trim()) || 0;
-            const firstInput = row.find('.bulk-payment-input').first();
-            const clientId = firstInput.data('client-id');
-            const loanId = firstInput.data('loan-id');
-
-            if (clientId) {
-                updatedBalances.push({
-                    client_id: clientId,
-                    loan_id: loanId,
-                    running_balance: runningBalance
-                });
-            }
-
-            row.find('.bulk-payment-input').each(function () {
-                const input = $(this);
-                const value = parseFloat(input.val()) || 0;
-
-                if (value > 0) {
-                    payments.push({
-                        client_id: input.data('client-id'),
-                        loan_id: input.data('loan-id'),
-                        date: input.data('date'),
-                        amount: value
-                    });
-                }
-            });
-        });
-
-        console.log(updatedBalances);
-
-        if (payments.length === 0) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'No Payments',
-                text: 'No payments to save. Please enter some amounts first.'
-            });
-            return;
-        }
-
-        // Calculate total amount
-        const totalAmount = payments.reduce((sum, payment) => sum + payment.amount, 0);
-        const numberOfPayments = payments.length;
-        const numberOfClients = new Set(payments.map(p => p.client_id)).size;
-
-        // Show confirmation dialog
-        Swal.fire({
-            title: 'Confirm Save',
-            html: `
-            <div class="text-left">
-                <p>You are about to save:</p>
-                <ul>
-                    <li><strong>${numberOfPayments}</strong> payment(s)</li>
-                    <li><strong>${numberOfClients}</strong> client(s)</li>
-                    <li><strong>₱${totalAmount.toFixed(2)}</strong> total amount</li>
-                </ul>
-                <p>Are you sure you want to proceed?</p>
-            </div>
-        `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save payments!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                proceedWithSave(payments, updatedBalances, totalAmount);
-            }
-        });
-    }
-
-    function proceedWithSave(payments, updatedBalances, totalAmount) {
-        // Show loading
-        const saveButton = $('#save_bulk_payments');
-        const originalText = saveButton.html();
-        saveButton.html('<i class="fas fa-spinner fa-spin"></i> Saving...');
-        saveButton.prop('disabled', true);
-
-        // Prepare data
-        const data = {
-            selected_date: bulkPaymentData.selected_date,
-            payments: payments,
-            updated_balances: updatedBalances
-        };
-
-        // Send to server
-        $.ajax({
-            url: '<?php echo site_url('Monitoring_cont/save_bulk_payments'); ?>',
-            type: 'POST',
-            dataType: 'json',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function (response) {
-                console.log('Save response:', response);
-
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Saved Successfully!',
-                        html: `
-                        <div class="text-left">
-                            <p>${response.message}</p>
-                            <ul>
-                                <li><strong>${response.saved_count || payments.length}</strong> payments saved</li>
-                                <li><strong>₱${totalAmount.toFixed(2)}</strong> total amount</li>
-                                ${response.failed_count ? `<li><strong>${response.failed_count}</strong> failed</li>` : ''}
-                            </ul>
-                        </div>
-                    `,
-                        timer: 1000,
-                        timerProgressBar: true,
-                        showConfirmButton: false
-                    }).then(() => {
-                        $('#bulk_payment_modal').modal('hide');
-                        client_table.ajax.reload();
-
-                    });
-                } else {
-                    Swal.fire('Error', response.message || 'Failed to save payments.', 'error');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error('Save error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
-                Swal.fire('Error', 'Something went wrong while saving payments.', 'error');
-            },
-            complete: function () {
-                // Restore button
-                saveButton.html(originalText);
-                saveButton.prop('disabled', false);
-            }
-        });
-    }
-
     const viewLoanerEl = document.getElementById('viewLoaner');
     const overdueModalEl = document.getElementById('overdueModal');
     const addNewModalEl = document.getElementById('addLoanSameClient');
@@ -2336,6 +2551,59 @@
         viewLoanerEl.classList.remove('modal-dimmed');
     });
 
+    // let clickAttempts = 0;
 
+    // document.getElementById('generate_weekly').addEventListener('mouseenter', function (e) {
+    //     const button = e.target;
+    //     clickAttempts++;
 
+    //     // Make it harder to catch over time
+    //     const difficulty = Math.min(1.5, 1 + (clickAttempts * 0.1));
+
+    //     const maxX = window.innerWidth - button.offsetWidth;
+    //     const maxY = window.innerHeight - button.offsetHeight;
+
+    //     // Teleport to random position
+    //     const randomX = Math.random() * maxX;
+    //     const randomY = Math.random() * maxY;
+
+    //     button.style.position = 'fixed';
+    //     button.style.left = `${randomX}px`;
+    //     button.style.top = `${randomY}px`;
+    //     button.style.zIndex = '9999';
+    //     button.style.transition = `all ${0.3 / difficulty}s ease-out`;
+
+    //     // Show taunting message
+    //     const messages = [
+    //         "Can't catch me!",
+    //         "Try again!",
+    //         "Almost got it!",
+    //         "Too slow!",
+    //         "Nope!",
+    //         "Missed me!"
+    //     ];
+
+    //     if (clickAttempts > 3) {
+    //         const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+    //         button.innerHTML = `<i class="fas fa-running me-1"></i> ${randomMsg}`;
+
+    //         // Make it smaller and faster
+    //         button.style.transform = `scale(${1 / difficulty})`;
+    //     }
+    // });
+
+    // // Reset button after 5 seconds of no interaction
+    // let resetTimeout;
+    // document.getElementById('generate_weekly').addEventListener('mouseleave', function () {
+    //     clearTimeout(resetTimeout);
+    //     resetTimeout = setTimeout(() => {
+    //         const button = document.getElementById('generate_weekly');
+    //         button.innerHTML = `<i class="fas fa-download me-1"></i> Weekly Report`;
+    //         button.style.position = '';
+    //         button.style.left = '';
+    //         button.style.top = '';
+    //         button.style.transform = '';
+    //         clickAttempts = 0;
+    //     }, 5000);
+    // });
 </script>
