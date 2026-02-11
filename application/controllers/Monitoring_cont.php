@@ -896,7 +896,16 @@ class Monitoring_cont extends CI_Controller
 
         // Save to browser (downloads to user's computer)
         $writer->save('php://output');
-        exit;
+        if ($writer) {
+            echo json_encode([
+                'status' => 'success'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error'
+            ]);
+        }
+        // exit;
 
     }
 
