@@ -389,30 +389,14 @@ $config['encryption_key'] = '892a1c4865d4bb8b3936fb16ede01dee4ee1a7be0cb58f370ab
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-// $config['sess_driver'] = 'files';
-// $config['sess_cookie_name'] = 'ci_session';
-// $config['sess_samesite'] = 'Lax';
-// $config['sess_expiration'] = 7200;
-// $config['sess_save_path'] = NULL;
-// $config['sess_match_ip'] = FALSE;
-// $config['sess_time_to_update'] = 300;
-// $config['sess_regenerate_destroy'] = FALSE;
-
-
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
+$config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = APPPATH . 'session/';
+$config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
-
-$config['cookie_prefix'] = '';
-$config['cookie_domain'] = '';
-$config['cookie_path'] = '/';
-$config['cookie_secure'] = TRUE;
-$config['cookie_httponly'] = TRUE;
-$config['cookie_samesite'] = 'Lax';
 
 /*
 |--------------------------------------------------------------------------
@@ -430,14 +414,12 @@ $config['cookie_samesite'] = 'Lax';
 |       'cookie_httponly') will also affect sessions.
 |
 */
-// $config['cookie_prefix'] = '';
-// $config['cookie_domain'] = '';
-// $config['cookie_path'] = '/';
-// // $config['cookie_secure'] = FALSE;
-// $config['cookie_secure'] = TRUE;
-// // $config['cookie_httponly'] = FALSE;
-// $config['cookie_httponly'] = TRUE;
-// $config['cookie_samesite'] = 'Lax';
+$config['cookie_prefix'] = '';
+$config['cookie_domain'] = '';
+$config['cookie_path'] = '/';
+$config['cookie_secure'] = FALSE;
+$config['cookie_httponly'] = FALSE;
+$config['cookie_samesite'] = 'Lax';
 
 /*
 |--------------------------------------------------------------------------
