@@ -1,4 +1,13 @@
+php_value session.save_path "/tmp"
+php_value session.cookie_secure On
+php_value session.cookie_httponly On
+php_value session.use_only_cookies 1
+php_value session.gc_maxlifetime 7200
+
+php_flag display_errors off
+php_value error_reporting -1
+
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?/$1 [L] 
+RewriteRule ^(.*)$ index.php?/$1 [L]
