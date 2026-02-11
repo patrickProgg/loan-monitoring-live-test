@@ -29,23 +29,44 @@ class Monitoring_cont extends CI_Controller
         // var_dump($user_id);
         // var_dump($username);
         // exit;
+        $allowedOrigins = [
+            'https://loan-monitoring.alwaysdata.net',
+            'https://www.loan-monitoring.alwaysdata.net'
+        ];
 
-        header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+
+        // Allow requests from your domain
+        if (in_array($origin, $allowedOrigins)) {
+            $this->output->set_header('Access-Control-Allow-Origin: ' . $origin);
+        } else {
+            // For debugging, allow all origins temporarily
+            $this->output->set_header('Access-Control-Allow-Origin: *');
+        }
+
+        $this->output->set_header('Access-Control-Allow-Credentials: true');
+        $this->output->set_header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        $this->output->set_header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN');
 
         // Handle preflight OPTIONS request
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            http_response_code(200);
+            $this->output->set_status_header(200);
             exit();
         }
 
+        // Now check session
         $user_id = $this->session->userdata('user_id');
         $username = $this->session->userdata('username');
 
-        var_dump($user_id);
-        var_dump($username);
+        // Debug output
+        echo "<pre>";
+        echo "=== SESSION CHECK ===\n";
+        echo "Origin: " . $origin . "\n";
+        echo "Session ID: " . session_id() . "\n";
+        echo "Cookie Header: " . ($_SERVER['HTTP_COOKIE'] ?? 'No cookies') . "\n";
+        echo "All Session Data:\n";
+        print_r($this->session->all_userdata());
+        echo "</pre>";
         exit;
 
         $start = $this->input->post('start');
