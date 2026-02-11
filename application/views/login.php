@@ -373,6 +373,7 @@
                 dataType: "json",
                 success: function (response) {
                     console.log("Login Response:", response); // Debug
+                    return;
 
                     if (response.success) {
                         // Add a small delay to ensure session is saved
