@@ -373,18 +373,19 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                        window.location.href = response.redirect;
+
+                        window.location.href = '<?php echo site_url("dashboard"); ?>';
                     } else {
                         Swal.fire("Error", response.message, "error");
                     }
                 }
 
             });
-    });
-    $(document).on("keydown", function (e) {
-        if (e.key === "Enter") {
-            $("#submit").click();
-        }
-    });
+        });
+        $(document).on("keydown", function (e) {
+            if (e.key === "Enter") {
+                $("#submit").click();
+            }
+        });
     });
 </script>
