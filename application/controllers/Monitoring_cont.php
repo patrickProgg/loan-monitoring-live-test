@@ -18,42 +18,10 @@ class Monitoring_cont extends CI_Controller
     function __construct()
     {
         parent::__construct();
-
-        header('Access-Control-Allow-Origin: https://loan-monitoring.alwaysdata.net');
-        header('Access-Control-Allow-Credentials: true');
-
-        // Debug logging
-        error_log("=== Monitoring_cont Construct ===");
-        error_log("Session ID: " . session_id());
-        error_log("Cookies: " . print_r($_COOKIE, true));
-        error_log("Logged in check: " . ($this->session->userdata('logged_in') ? 'YES' : 'NO'));
     }
 
     public function get_client()
     {
-
-        error_log("=== get_client called ===");
-
-        if (!$this->session->userdata('logged_in')) {
-            // Detailed error info
-            $error_response = [
-                'status' => 'error',
-                'message' => 'Session expired. Please login again.',
-                'redirect' => site_url('login'),
-                'debug' => [
-                    'session_id' => session_id(),
-                    'has_ci_cookie' => isset($_COOKIE['ci_session']),
-                    'ci_cookie_value' => isset($_COOKIE['ci_session']) ? $_COOKIE['ci_session'] : 'NOT SET',
-                    'all_cookies' => $_COOKIE,
-                    'session_data' => $this->session->all_userdata()
-                ]
-            ];
-
-            error_log("Session error: " . print_r($error_response, true));
-            echo json_encode($error_response);
-            return;
-        }
-
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $searchValue = trim($this->input->post('search')['value']);
