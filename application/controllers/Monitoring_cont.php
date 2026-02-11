@@ -29,42 +29,31 @@ class Monitoring_cont extends CI_Controller
         // var_dump($user_id);
         // var_dump($username);
         // exit;
-        echo "<pre>";
-        echo "=== SESSION DEBUG ===\n";
+        header('Access-Control-Allow-Origin: https://loan-monitoring.alwaysdata.net');
+        header('Access-Control-Allow-Credentials: true');
 
-        // Check current session ID
-        $currentSessionId = session_id();
-        echo "Current Session ID: " . $currentSessionId . "\n\n";
+        // Debug first
+        error_log("=== GET_CLIENT CALLED ===");
+        error_log("Session ID: " . session_id());
+        error_log("Cookies: " . print_r($_COOKIE, true));
 
-        // Check all cookies being sent
-        echo "All Cookies Received:\n";
-        foreach ($_COOKIE as $name => $value) {
-            echo "  $name = $value\n";
+        // Check if user is logged in
+        if (!$this->session->userdata('logged_in')) {
+            echo json_encode([
+                'error' => 'Not logged in',
+                'session_id' => session_id(),
+                'cookies' => $_COOKIE,
+                'session_data' => $this->session->all_userdata()
+            ]);
+            return;
         }
 
-        echo "\nCookie Header:\n";
-        echo $_SERVER['HTTP_COOKIE'] ?? 'No cookie header' . "\n";
+        // User is logged in - proceed
+        $user_id = $this->session->userdata('user_id');
+        $username = $this->session->userdata('username');
 
-        // Try to manually read session file if using file driver
-        if ($this->config->item('sess_driver') == 'files') {
-            $sessionPath = $this->config->item('sess_save_path') . '/ci_session' . $currentSessionId;
-            echo "\nSession File Path: " . $sessionPath . "\n";
-            if (file_exists($sessionPath)) {
-                echo "Session File Exists: YES\n";
-                $content = file_get_contents($sessionPath);
-                echo "Session File Content:\n";
-                print_r(unserialize($content));
-            } else {
-                echo "Session File Exists: NO\n";
-            }
-        }
-
-        // Check all userdata
-        echo "\nSession User Data:\n";
-        print_r($this->session->all_userdata());
-
-        echo "\n=== END DEBUG ===\n";
-        echo "</pre>";
+        var_dump($user_id);
+        var_dump($username);
         exit;
 
         $start = $this->input->post('start');

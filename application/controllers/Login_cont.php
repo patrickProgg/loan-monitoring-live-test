@@ -21,26 +21,48 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // 1. Get input
+        // FIRST: Destroy ALL old session data
+        $this->session->sess_destroy();
+
+        // Force delete old cookie
+        setcookie('ci_session', '', [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'domain' => '.loan-monitoring.alwaysdata.net',
+            'secure' => true,
+            'httponly' => false,
+            'samesite' => 'None'
+        ]);
+
+        // Also delete without domain for safety
+        setcookie('ci_session', '', time() - 3600, '/');
+
+        // NOW authenticate
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
-        // 2. Authenticate
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // 3. Set session data
+            // Generate NEW session ID
+            session_regenerate_id(true);
+
+            // Set session data
             $this->session->set_userdata([
                 'logged_in' => TRUE,
                 'user_id' => $user->id,
-                'username' => $user->username
+                'username' => $user->username,
+                'login_time' => time()
             ]);
 
-            // 4. Return success
+            // Return with debug info
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
-                'session_id' => session_id()
+                'debug' => [
+                    'new_session_id' => session_id(),
+                    'user_id' => $user->id
+                ]
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid login']);
@@ -84,6 +106,40 @@ class Login_cont extends CI_Controller
         echo "<br>Cookies:<br>";
         echo "<pre>";
         print_r($_COOKIE);
+        echo "</pre>";
+    }
+
+    public function cookie_check()
+    {
+        echo "<pre>";
+        echo "=== COOKIE STATUS ===\n\n";
+
+        echo "1. Current Session ID: " . session_id() . "\n\n";
+
+        echo "2. All Cookies in PHP:\n";
+        print_r($_COOKIE);
+        echo "\n";
+
+        echo "3. Raw Cookie Header:\n";
+        echo $_SERVER['HTTP_COOKIE'] ?? 'No cookie header';
+        echo "\n\n";
+
+        echo "4. Database Sessions for this user:\n";
+        $this->load->database();
+        $session_id = session_id();
+        $this->db->where('id', $session_id);
+        $session = $this->db->get('ci_sessions')->row();
+
+        if ($session) {
+            echo "   Found in database: YES\n";
+            echo "   Session data:\n";
+            $data = unserialize($session->data);
+            print_r($data);
+        } else {
+            echo "   Found in database: NO\n";
+        }
+
+        echo "\n=== END CHECK ===\n";
         echo "</pre>";
     }
 }
