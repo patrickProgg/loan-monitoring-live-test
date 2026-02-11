@@ -6,6 +6,11 @@ class Login_cont extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
+        header('Access-Control-Allow-Origin: https://loan-monitoring.alwaysdata.net');
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
     }
 
     public function login()
@@ -19,9 +24,11 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // Simple debug
-        error_log("=== AUTHENTICATE START ===");
-        error_log("POST data: " . print_r($_POST, true));
+        // FORCE cookie parameters
+        ini_set('session.cookie_domain', '.loan-monitoring.alwaysdata.net');
+        ini_set('session.cookie_secure', 1);
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.cookie_samesite', 'None');
 
         $username = $this->input->post('username');
         $password = $this->input->post('password');
@@ -29,32 +36,47 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Set session data
-            $session_data = [
+            // Set session
+            $this->session->set_userdata([
                 'logged_in' => TRUE,
                 'user_id' => $user->id,
                 'username' => $user->username,
                 'login_time' => time()
-            ];
+            ]);
 
-            $this->session->set_userdata($session_data);
+            // Manually set the cookie to ensure it's sent
+            $session_id = session_id();
+            $cookie_params = session_get_cookie_params();
 
-            // Verify it was set
-            error_log("Session set check: " . ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
-            error_log("Session ID: " . session_id());
+            setcookie(
+                $this->config->item('sess_cookie_name'),
+                $session_id,
+                [
+                    'expires' => time() + $this->config->item('sess_expiration'),
+                    'path' => $cookie_params['path'],
+                    'domain' => $this->config->item('cookie_domain'),
+                    'secure' => $this->config->item('cookie_secure'),
+                    'httponly' => $this->config->item('cookie_httponly'),
+                    'samesite' => $this->config->item('cookie_samesite')
+                ]
+            );
+
+            // Debug output
+            error_log("=== LOGIN SUCCESS ===");
+            error_log("Session ID: " . $session_id);
+            error_log("Cookie set: " . $this->config->item('sess_cookie_name') . "=" . $session_id);
 
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
-                'session_id' => session_id()
+                'session_id' => $session_id,
+                'cookie_set' => true
             ]);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid login'
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Invalid login']);
         }
     }
+
     public function logout()
     {
         $this->session->sess_destroy();

@@ -19,42 +19,38 @@ class Monitoring_cont extends CI_Controller
     {
         parent::__construct();
 
-        $this->check_login();
+        header('Access-Control-Allow-Origin: https://loan-monitoring.alwaysdata.net');
+        header('Access-Control-Allow-Credentials: true');
+
+        // Debug logging
+        error_log("=== Monitoring_cont Construct ===");
+        error_log("Session ID: " . session_id());
+        error_log("Cookies: " . print_r($_COOKIE, true));
+        error_log("Logged in check: " . ($this->session->userdata('logged_in') ? 'YES' : 'NO'));
     }
 
-    private function check_login()
-    {
-        if (!$this->session->userdata('logged_in')) {
-            if ($this->input->is_ajax_request()) {
-                header('Content-Type: application/json');
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Session expired. Please login again.',
-                    'redirect' => site_url('login')
-                ]);
-                exit;
-            } else {
-                redirect('login');
-            }
-        }
-    }
     public function get_client()
     {
 
-        echo "Session ID: " . session_id() . "<br>";
-        echo "Logged in: " . ($this->session->userdata('logged_in') ? 'Yes' : 'No') . "<br>";
-        echo "User ID: " . $this->session->userdata('user_id') . "<br>";
-        echo "Username: " . $this->session->userdata('username') . "<br>";
+        error_log("=== get_client called ===");
 
         if (!$this->session->userdata('logged_in')) {
-            // Better debugging
-            error_log("Session data: " . print_r($this->session->all_userdata(), true));
-            error_log("Cookies: " . print_r($_COOKIE, true));
+            // Detailed error info
+            $error_response = [
+                'status' => 'error',
+                'message' => 'Session expired. Please login again.',
+                'redirect' => site_url('login'),
+                'debug' => [
+                    'session_id' => session_id(),
+                    'has_ci_cookie' => isset($_COOKIE['ci_session']),
+                    'ci_cookie_value' => isset($_COOKIE['ci_session']) ? $_COOKIE['ci_session'] : 'NOT SET',
+                    'all_cookies' => $_COOKIE,
+                    'session_data' => $this->session->all_userdata()
+                ]
+            ];
 
-            echo json_encode([
-                'error' => 'Not logged in',
-                'session_data' => $this->session->all_userdata()
-            ]);
+            error_log("Session error: " . print_r($error_response, true));
+            echo json_encode($error_response);
             return;
         }
 
