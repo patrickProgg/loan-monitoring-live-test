@@ -40,33 +40,26 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
+        // Ensure session uses /tmp
+        if (session_status() === PHP_SESSION_NONE) {
+            ini_set('session.save_path', '/tmp');
+            session_start();
+        }
+
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Force session configuration
-            ini_set('session.save_path', '/tmp');
-            ini_set('session.cookie_secure', '1');
-            ini_set('session.cookie_httponly', '1');
+            // Set session data
+            $this->session->set_userdata([
+                'logged_in' => TRUE,
+                'user_id' => $user->id,
+                'username' => $user->username
+            ]);
 
-            // Restart session with proper settings
-            if (session_id()) {
-                session_write_close();
-            }
-            session_start();
-
-            // Set session data manually
-            $_SESSION['logged_in'] = TRUE;
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['username'] = $user->username;
-
-            // Also set CI session
-            $this->session->set_userdata('logged_in', TRUE);
-            $this->session->set_userdata('user_id', $user->id);
-            $this->session->set_userdata('username', $user->username);
-
+            // Force session write
             session_write_close();
 
             echo json_encode(['success' => true]);
@@ -74,7 +67,6 @@ class Login_cont extends CI_Controller
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
         }
     }
-
     public function logout()
     {
         $this->session->sess_destroy();

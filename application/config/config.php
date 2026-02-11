@@ -399,17 +399,39 @@ $config['encryption_key'] = '892a1c4865d4bb8b3936fb16ede01dee4ee1a7be0cb58f370ab
 // $config['sess_regenerate_destroy'] = FALSE;
 
 
+// $config['sess_driver'] = 'files';
+// $config['sess_cookie_name'] = 'ci_session';
+// $config['sess_expiration'] = 7200;
+// $config['sess_save_path'] = sys_get_temp_dir(); // For AlwaysData
+// $config['sess_match_ip'] = FALSE;
+// $config['sess_time_to_update'] = 300;
+// $config['sess_regenerate_destroy'] = FALSE;
+
+// // ADD THESE NEW SETTINGS to fix deprecation:
+// $config['sess_match_useragent'] = TRUE;
+// $config['sess_encrypt_cookie'] = FALSE;
+// $config['sess_use_database'] = FALSE;
+// $config['sess_table_name'] = 'ci_sessions';
+// $config['sess_valid_drivers'] = array('files', 'database');
+
+// Session Configuration
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = '/tmp';  // Must match .htaccess
+$config['sess_save_path'] = sys_get_temp_dir(); // Use system temp
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
-$config['cookie_domain'] = '';  // Leave empty for Alwaysdata
+$config['sess_match_useragent'] = TRUE;
+
+// Cookie Configuration
+$config['cookie_prefix'] = '';
+$config['cookie_domain'] = ''; // Leave empty
 $config['cookie_path'] = '/';
-$config['cookie_secure'] = TRUE;  // Must be TRUE for HTTPS
+$config['cookie_secure'] = TRUE; // TRUE for HTTPS
 $config['cookie_httponly'] = TRUE;
+$config['cookie_samesite'] = 'Lax';
+
 /*
 |--------------------------------------------------------------------------
 | Cookie Related Variables
