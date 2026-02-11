@@ -23,6 +23,9 @@ class Login_cont extends CI_Controller
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+        var_dump($username);
+        var_dump($password);
+        exit;
 
         $user = $this->authenticateUser($username, $password);
 
