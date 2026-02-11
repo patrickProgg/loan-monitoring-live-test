@@ -19,6 +19,24 @@ class Login_cont extends CI_Controller
         $this->load->view('login');
     }
 
+    // public function authenticate()
+    // {
+    //     $username = $this->input->post('username');
+    //     $password = $this->input->post('password');
+
+    //     $user = $this->authenticateUser($username, $password);
+
+    //     if ($user) {
+    //         $this->session->set_userdata('logged_in', TRUE);
+    //         $this->session->set_userdata('user_id', $user->id);
+    //         $this->session->set_userdata('username', $user->username);
+
+    //         echo json_encode(['success' => true]);
+    //     } else {
+    //         echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
+    //     }
+    // }
+
     public function authenticate()
     {
         $username = $this->input->post('username');
@@ -27,9 +45,20 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
+            // DEBUG: Before setting
+            error_log("User found: " . $user->username);
+
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
+
+            // DEBUG: After setting
+            error_log("Session logged_in: " . ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
+            error_log("Session user_id: " . $this->session->userdata('user_id'));
+            error_log("Session username: " . $this->session->userdata('username'));
+
+            // DEBUG: Get all session data
+            error_log("All session data: " . print_r($this->session->all_userdata(), true));
 
             echo json_encode(['success' => true]);
         } else {
