@@ -46,30 +46,31 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // DEBUG: Before setting session
-            echo "<pre>BEFORE SESSION SET:\n";
-            var_dump($this->session->userdata());
-            echo "</pre>";
-
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            // DEBUG: After setting session
-            echo "<pre>AFTER SESSION SET:\n";
-            var_dump($this->session->userdata());
-            echo "</pre>";
-
-            // Also check session ID
-            echo "<pre>Session ID: " . session_id() . "</pre>";
-
-            die(); // Stop here to see the output
+            // Force cookie to be sent immediately
+            $cookie_params = session_get_cookie_params();
+            setcookie(
+                $this->config->item('sess_cookie_name'),
+                session_id(),
+                [
+                    'expires' => time() + $this->config->item('sess_expiration'),
+                    'path' => $cookie_params['path'],
+                    'domain' => $cookie_params['domain'],
+                    'secure' => $cookie_params['secure'],
+                    'httponly' => $cookie_params['httponly'],
+                    'samesite' => 'Lax'
+                ]
+            );
 
             echo json_encode(['success' => true, 'redirect' => site_url('dashboard')]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
         }
     }
+
     public function logout()
     {
         $this->session->sess_destroy();

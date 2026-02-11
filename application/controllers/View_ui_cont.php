@@ -7,24 +7,17 @@ class View_ui_cont extends CI_Controller
     function __construct()
     {
         parent::__construct();
+
+        $url_session_id = $this->input->get('session_id');
+        if ($url_session_id && !$this->session->userdata('logged_in')) {
+            // Try to restore session
+            session_id($url_session_id);
+            session_start();
+        }
+
         if (!$this->session->userdata('logged_in')) {
             redirect('login');
         }
-
-        // var_dump($this->session->userdata());
-
-        // else {
-        //     redirect('dashboard');
-        // }
-        // $login = $this->session->userdata('logged_in');
-        // $user_id = $this->session->userdata('user_id');
-        // $username = $this->session->userdata('username');
-
-        // var_dump($login);
-        // var_dump($user_id);
-        // var_dump($username);
-        // exit;
-
 
     }
 
