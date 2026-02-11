@@ -368,17 +368,27 @@
 
             $.ajax({
                 type: "POST",
-                url: '<?php echo site_url('Login_cont/authenticate'); ?>',
-                data: { username: username, password: password },
+                url: 'https://loan-monitoring.alwaysdata.net/Login_cont/authenticate',
+                data: {
+                    username: username,
+                    password: password
+                },
+                xhrFields: {
+                    withCredentials: true  // KEEP THIS
+                },
+                crossDomain: true,
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
                         window.location.href = response.redirect;
                     } else {
-                        Swal.fire("Error", response.message, "error");
+                        alert(response.message);
                     }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseText);
                 }
-
             });
         });
         $(document).on("keydown", function (e) {
