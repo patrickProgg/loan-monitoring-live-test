@@ -17,16 +17,43 @@ class View_ui_cont extends CI_Controller
             return;
         }
 
-        // Check if logged in
+        // Check if this is an AJAX request
+        $is_ajax = $this->input->is_ajax_request();
+
         if (!$this->session->userdata('logged_in')) {
-            // DEBUG
-            error_log("NOT LOGGED IN - Redirecting from: " . $current);
-            error_log("Session ID: " . session_id());
-            error_log("Session data: " . print_r($this->session->userdata(), true));
+            if ($is_ajax) {
+                // Return JSON for AJAX
+                echo json_encode([
+                    'error' => 'not_logged_in',
+                    'session_data' => $this->session->userdata(),
+                    'session_id' => session_id()
+                ]);
+                exit();
+            } else {
+                // Debug output for regular requests
+                echo "<div style='background: #f0f0f0; padding: 20px; border: 1px solid red;'>";
+                echo "<h3>Session Debug - NOT LOGGED IN</h3>";
+                echo "<p><strong>URL:</strong> " . $current . "</p>";
+                echo "<p><strong>Session ID:</strong> " . session_id() . "</p>";
+                echo "<p><strong>user_id:</strong> ";
+                var_dump($this->session->userdata('user_id'));
+                echo "<p><strong>username:</strong> ";
+                var_dump($this->session->userdata('username'));
+                echo "<p><strong>All session:</strong><pre>";
+                print_r($this->session->userdata());
+                echo "</pre></p>";
+                echo "</div>";
 
-            redirect('login');
+                // Uncomment to see debug, comment redirect to test
+                // die(); // Stop here to see debug
+
+                redirect('login');
+            }
+        } else {
+            // Successfully logged in - show debug info
+            echo "<!-- DEBUG: User ID = " . $this->session->userdata('user_id') .
+                ", Username = " . $this->session->userdata('username') . " -->";
         }
-
     }
 
     public function index()
