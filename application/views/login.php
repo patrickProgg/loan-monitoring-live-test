@@ -374,7 +374,8 @@
                 success: function (response) {
                     if (response.success) {
 
-                        window.location.href = '<?php echo site_url("dashboard"); ?>';
+                        window.location.href = '<?= base_url(); ?>dashboard';
+
                     } else {
                         Swal.fire("Error", response.message, "error");
                     }
