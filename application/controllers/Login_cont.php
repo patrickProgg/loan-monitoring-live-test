@@ -26,9 +26,6 @@ class Login_cont extends CI_Controller
 
         $user = $this->authenticateUser($username, $password);
 
-        var_dump($user);
-        exit;
-
         if ($user) {
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
