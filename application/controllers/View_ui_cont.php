@@ -7,9 +7,9 @@ class View_ui_cont extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        if (!$this->session->userdata('logged_in')) {
-            redirect('login');
-        }
+        // if (!$this->session->userdata('logged_in')) {
+        //     redirect('login');
+        // }
     }
 
     public function index()
