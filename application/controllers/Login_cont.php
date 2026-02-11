@@ -26,15 +26,24 @@ class Login_cont extends CI_Controller
 
         $user = $this->authenticateUser($username, $password);
 
+        // if ($user) {
+        //     $this->session->set_userdata('logged_in', TRUE);
+        //     $this->session->set_userdata('user_id', $user->id);
+        //     $this->session->set_userdata('username', $user->username);
+
+        //     echo json_encode(['success' => true]);
+        // } else {
+        //     echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
+        // }
         if ($user) {
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
+            var_dump($this->session->userdata());
+            exit;
         }
+
     }
 
     public function logout()
