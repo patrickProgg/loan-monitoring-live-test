@@ -6,7 +6,7 @@ class Login_cont extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Login_mod');
+        // $this->load->model('Login_mod');
     }
 
     public function login()
@@ -15,7 +15,7 @@ class Login_cont extends CI_Controller
             redirect('dashboard');
         }
 
-        $this->load->view('templates/login_css');
+        // $this->load->view('templates/login_css');
         $this->load->view('login');
     }
 
@@ -30,7 +30,6 @@ class Login_cont extends CI_Controller
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
-            $this->session->set_userdata('usertpe', $user->user_type);
 
             echo json_encode(['success' => true, 'redirect' => site_url('dashboard')]);
         } else {
