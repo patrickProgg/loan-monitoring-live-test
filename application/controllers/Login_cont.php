@@ -40,29 +40,32 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // Ensure session uses /tmp
-        if (session_status() === PHP_SESSION_NONE) {
-            ini_set('session.save_path', '/tmp');
-            session_start();
-        }
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Set session data
-            $this->session->set_userdata([
-                'logged_in' => TRUE,
-                'user_id' => $user->id,
-                'username' => $user->username
-            ]);
+            // DEBUG: Before setting session
+            echo "<pre>BEFORE SESSION SET:\n";
+            var_dump($this->session->userdata());
+            echo "</pre>";
 
-            // Force session write
-            session_write_close();
+            $this->session->set_userdata('logged_in', TRUE);
+            $this->session->set_userdata('user_id', $user->id);
+            $this->session->set_userdata('username', $user->username);
 
-            echo json_encode(['success' => true]);
+            // DEBUG: After setting session
+            echo "<pre>AFTER SESSION SET:\n";
+            var_dump($this->session->userdata());
+            echo "</pre>";
+
+            // Also check session ID
+            echo "<pre>Session ID: " . session_id() . "</pre>";
+
+            die(); // Stop here to see the output
+
+            echo json_encode(['success' => true, 'redirect' => site_url('dashboard')]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
         }

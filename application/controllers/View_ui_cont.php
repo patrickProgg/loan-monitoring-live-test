@@ -9,7 +9,10 @@ class View_ui_cont extends CI_Controller
         parent::__construct();
         if (!$this->session->userdata('logged_in')) {
             redirect('login');
-        } 
+        }
+
+        // var_dump($this->session->userdata());
+
         // else {
         //     redirect('dashboard');
         // }
