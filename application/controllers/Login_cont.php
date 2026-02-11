@@ -21,45 +21,27 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // Verify CSRF token
-        if (!$this->security->csrf_verify()) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Security token invalid. Please refresh the page.'
-            ]);
-            return;
-        }
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-
-        // Input validation
-        if (empty($username) || empty($password)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Username and password are required.'
-            ]);
-            return;
-        }
 
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Regenerate session ID to prevent session fixation
-            $this->session->sess_regenerate(true);
+            // Only destroy session if you want to clear previous data
+            // Consider removing this line if not needed
+            $this->session->sess_destroy();
 
+            // Start fresh session for the new user
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
+            // Add redirect URL
             echo json_encode([
                 'success' => true,
-                'redirect' => site_url('dashboard')
+                'redirect' => site_url('dashboard') // Change to your actual dashboard URL
             ]);
         } else {
-            // Log failed attempt for security monitoring
-            log_message('info', 'Failed login attempt for username: ' . $username);
-
             echo json_encode([
                 'success' => false,
                 'message' => 'Invalid username/email or password.'

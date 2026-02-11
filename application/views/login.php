@@ -366,21 +366,10 @@
             let username = $("#username").val();
             let password = $("#password").val();
 
-            // Basic validation
-            if (!username || !password) {
-                Swal.fire("Error", "Please enter both username and password", "error");
-                return;
-            }
-
             $.ajax({
                 type: "POST",
                 url: '<?php echo site_url('Login_cont/authenticate'); ?>',
-                data: {
-                    username: username,
-                    password: password,
-                    // Add CSRF token if you have it enabled
-                    '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>'
-                },
+                data: { username: username, password: password },
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
@@ -388,10 +377,8 @@
                     } else {
                         Swal.fire("Error", response.message, "error");
                     }
-                },
-                error: function (xhr, status, error) {
-                    Swal.fire("Error", "An error occurred. Please try again.", "error");
                 }
+
             });
         });
         $(document).on("keydown", function (e) {
