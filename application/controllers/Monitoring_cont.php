@@ -22,6 +22,8 @@ class Monitoring_cont extends CI_Controller
 
     public function get_client()
     {
+        var_dump($this->session->userdata());
+
         $start = $this->input->post('start');
         $length = $this->input->post('length');
         $searchValue = trim($this->input->post('search')['value']);
