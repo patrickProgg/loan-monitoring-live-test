@@ -6,11 +6,11 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'loan-monitoring',
+	'dsn' => '',
+	'hostname' => 'mysql-loan-monitoring.alwaysdata.net',
+	'username' => 'loan-monitoring',
+	'password' => 'ackXBu_FqG8KhbU',
+	'database' => 'loan-monitoring_db',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
