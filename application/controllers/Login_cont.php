@@ -21,11 +21,8 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // FIRST: Destroy any existing session to prevent duplicates
-        $this->session->sess_destroy();
-
-        // SECOND: Regenerate session ID
-        session_regenerate_id(true);
+        // Load session library if not autoloaded
+        $this->load->library('session');
 
         $username = $this->input->post('username');
         $password = $this->input->post('password');
@@ -33,22 +30,19 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Set NEW session data
-            $session_data = [
-                'logged_in' => TRUE,
-                'user_id' => $user->id,
-                'username' => $user->username,
-                'session_start_time' => time()
-            ];
+            // Regenerate session to prevent fixation
+            $this->session->sess_regenerate(TRUE);
 
-            $this->session->set_userdata($session_data);
+            // Set session data
+            $this->session->set_userdata('logged_in', TRUE);
+            $this->session->set_userdata('user_id', $user->id);
+            $this->session->set_userdata('username', $user->username);
+            $this->session->set_userdata('login_time', time());
 
-            // Return session info for debugging
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
-                'session_id' => session_id(),
-                'debug' => 'Session created'
+                'session_id' => session_id()
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
