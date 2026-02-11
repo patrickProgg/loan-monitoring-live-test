@@ -8,15 +8,33 @@ class View_ui_cont extends CI_Controller
     {
         parent::__construct();
 
-        $url_session_id = $this->input->get('session_id');
-        if ($url_session_id && !$this->session->userdata('logged_in')) {
-            // Try to restore session
-            session_id($url_session_id);
-            session_start();
+        error_log("=== VIEW_UI CONSTRUCTOR ===");
+        error_log("Request URL: " . current_url());
+        error_log("Session ID: " . session_id());
+        error_log("Session Data: " . print_r($this->session->userdata(), true));
+        error_log("Cookie ci_session: " . (isset($_COOKIE['ci_session']) ? $_COOKIE['ci_session'] : 'NOT SET'));
+
+        // Special handling for dashboard after login
+        if (current_url() == site_url('dashboard') && $this->input->get('sid')) {
+            $sid = $this->input->get('sid');
+            error_log("Using URL session ID: " . $sid);
+
+            // Try to restore session from URL
+            if (session_id() != $sid) {
+                session_id($sid);
+            }
         }
 
+        // Check if logged in
         if (!$this->session->userdata('logged_in')) {
-            redirect('login');
+            error_log("NOT LOGGED IN - Redirecting to login");
+
+            // Don't redirect if we're already on login page
+            if (current_url() != site_url('login')) {
+                redirect('login');
+            }
+        } else {
+            error_log("LOGGED IN as: " . $this->session->userdata('username'));
         }
 
     }
