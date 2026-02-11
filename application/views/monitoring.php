@@ -1700,21 +1700,54 @@
         //     }
         // });
 
+        // $.ajax({
+        //     url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
+        //     type: 'POST',
+        //     dataType: 'json',
+        //     data: { date: selectedDate },
+        //     success: function (response) {
+        //         console.log(response);
+        //         if (response.status === "warning") {
+        //             Swal.fire('Warning!', response.message, 'warning');
+        //         } else {
+        //             Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+        //         }
+        //     },
+        //     error: function () {
+        //         Swal.fire('Error', 'Something went wrong.', 'error');
+        //     }
+        // });
+        // Change your AJAX call
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
             type: 'POST',
-            dataType: 'json',
             data: { date: selectedDate },
-            success: function (response) {
-                console.log(response);
-                if (response.status === "warning") {
-                    Swal.fire('Warning!', response.message, 'warning');
-                } else {
-                    Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+            xhrFields: {
+                responseType: 'blob' // Handle binary response
+            },
+            success: function (blob, status, xhr) {
+                // Get filename from headers
+                var filename = 'Daily_Report_' + selectedDate + '.xlsx';
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
                 }
+
+                // Create download link
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
             },
             error: function () {
-                Swal.fire('Error', 'Something went wrong.', 'error');
+                Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
     });

@@ -886,27 +886,24 @@ class Monitoring_cont extends CI_Controller
         //     ]);
         // }
 
+
         $writer = new Xlsx($spreadsheet);
 
-        // Set download headers
+        // Clear any previous output
+        if (ob_get_length())
+            ob_clean();
+
+        // Set download headers - this triggers browser's Save As dialog
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="Daily_Report_' . $formattedDate . '.xlsx"');
         header('Cache-Control: max-age=0');
         header('Pragma: no-cache');
+        header('Expires: 0');
 
-        // Save to browser (downloads to user's computer)
+        // Save directly to browser - user gets Save As dialog
         $writer->save('php://output');
-        if ($writer) {
-            echo json_encode([
-                'status' => 'success'
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error'
-            ]);
-        }
-        // exit;
-
+        // NO JSON response! This sends the Excel file directly.
+        exit;
     }
 
     public function get_monthly_report()
