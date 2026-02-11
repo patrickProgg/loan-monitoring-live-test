@@ -610,14 +610,14 @@
         ajax: {
             url: '<?php echo site_url('Monitoring_cont/get_client'); ?>',
             type: 'POST',
-            xhrFields: {
-                withCredentials: true
-            },
             data: function (d) {
                 d.start = d.start || 0;
                 d.length = d.length || 10;
                 d.startDate = startDate;
                 d.endDate = endDate;
+            },
+            xhrFields: {
+                withCredentials: true
             },
             dataType: 'json',
             error: function (xhr, status, error) {

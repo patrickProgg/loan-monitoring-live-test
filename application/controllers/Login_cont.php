@@ -21,29 +21,50 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
+        // Verify CSRF token
+        if (!$this->security->csrf_verify()) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Security token invalid. Please refresh the page.'
+            ]);
+            return;
+        }
+
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
+        // Input validation
+        if (empty($username) || empty($password)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Username and password are required.'
+            ]);
+            return;
+        }
+
         $user = $this->authenticateUser($username, $password);
 
-        // if ($user) {
-        //     $this->session->set_userdata('logged_in', TRUE);
-        //     $this->session->set_userdata('user_id', $user->id);
-        //     $this->session->set_userdata('username', $user->username);
-
-        //     echo json_encode(['success' => true]);
-        // } else {
-        //     echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
-        // }
         if ($user) {
+            // Regenerate session ID to prevent session fixation
+            $this->session->sess_regenerate(true);
+
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            var_dump($this->session->userdata());
-            exit;
-        }
+            echo json_encode([
+                'success' => true,
+                'redirect' => site_url('dashboard')
+            ]);
+        } else {
+            // Log failed attempt for security monitoring
+            log_message('info', 'Failed login attempt for username: ' . $username);
 
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid username/email or password.'
+            ]);
+        }
     }
 
     public function logout()
