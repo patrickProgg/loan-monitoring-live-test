@@ -14,8 +14,8 @@
     <link href="<?php echo base_url(); ?>assets/css/jquery.dataTables.min.css" rel="stylesheet" />
     <link href="<?php echo base_url(); ?>assets/css/material.icon.css" rel="stylesheet" />
 
-    <script src="<?php echo base_url(); ?>assets/libs/jquery/jquery.min.js"></script>
-    <script src="<?php echo base_url(); ?>assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/js/jquery.dataTables.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/plugin.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/sweetalert.js"></script>
     <script src="<?php echo base_url(); ?>assets/js/qrcode.min.js"></script>
