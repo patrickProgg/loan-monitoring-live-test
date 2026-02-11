@@ -31,8 +31,6 @@ class Login_cont extends CI_Controller
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            $this->session->sess_write();
-
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
