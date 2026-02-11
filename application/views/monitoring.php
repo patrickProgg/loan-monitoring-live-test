@@ -281,7 +281,7 @@
             <div class="modal-dialog" style="max-width:1200px; margin-top: 10px;">
                 <div class="table-data">
                     <div class="modal-content">
-                        <div class="modal-body">
+                        <div class="modal-body pb-0">
                             <div class="container">
                                 <div class="row g-3" style="font-size: 14px;">
                                     <div class="col-md-5">
@@ -1523,7 +1523,7 @@
                     const input = document.createElement('input');
                     input.type = 'number';
                     input.value = numericValue;
-                    input.style.width = '80px';
+                    input.style.width = '100px';
                     input.classList.add('form-control', 'form-control-sm', 'd-inline');
                     span.innerHTML = ''; // clear old text
                     span.appendChild(input);
