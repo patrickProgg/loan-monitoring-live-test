@@ -19,25 +19,6 @@ class Login_cont extends CI_Controller
         $this->load->view('login');
     }
 
-    // public function authenticate()
-    // {
-    //     $username = $this->input->post('username');
-    //     $password = $this->input->post('password');
-
-    //     $user = $this->authenticateUser($username, $password);
-
-    //     if ($user) {
-    //         $this->session->set_userdata('logged_in', TRUE);
-    //         $this->session->set_userdata('user_id', $user->id);
-    //         $this->session->set_userdata('username', $user->username);
-
-    //         echo json_encode(['success' => true]);
-    //     } else {
-    //         echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
-    //     }
-    // }
-
-
     public function authenticate()
     {
         $username = $this->input->post('username');
@@ -46,21 +27,11 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // SIMPLE & RELIABLE: Just set the session
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            // DEBUG: Check if session is actually set
-            error_log("Session after set - logged_in: " .
-                ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
-
-            echo json_encode([
-                'success' => true,
-                'redirect' => site_url('dashboard'),
-                'test' => 'session_should_be_set'
-            ]);
-
+            echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
         }

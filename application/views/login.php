@@ -368,32 +368,23 @@
 
             $.ajax({
                 type: "POST",
-                url: '<?php echo site_url('authenticate'); ?>', // Use route name
+                url: '<?php echo site_url('Login_cont/authenticate'); ?>',
                 data: { username: username, password: password },
                 dataType: "json",
                 success: function (response) {
-                    console.log("Login Response:", response); // Debug
-
                     if (response.success) {
-                        // Add a small delay to ensure session is saved
-                        setTimeout(function () {
-                            // Redirect WITH session ID as parameter
-                            window.location.href = response.redirect + '?sid=' + response.session_id;
-                        }, 500);
+                        window.location.href = response.redirect;
                     } else {
                         Swal.fire("Error", response.message, "error");
                     }
-                },
-                error: function (xhr) {
-                    console.log("AJAX Error:", xhr.responseText);
-                    Swal.fire("Error", "Server error occurred", "error");
                 }
+
             });
-        });
-        $(document).on("keydown", function (e) {
-            if (e.key === "Enter") {
-                $("#submit").click();
-            }
-        });
+    });
+    $(document).on("keydown", function (e) {
+        if (e.key === "Enter") {
+            $("#submit").click();
+        }
+    });
     });
 </script>

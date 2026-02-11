@@ -7,53 +7,25 @@ class View_ui_cont extends CI_Controller
     function __construct()
     {
         parent::__construct();
+        // if (!$this->session->userdata('logged_in')) {
+        //     redirect('login');
+        // }
 
-        $current = current_url();
-        $is_login_page = (strpos($current, 'login') !== false);
-        $is_authenticate = (strpos($current, 'authenticate') !== false);
+        // var_dump($this->session->userdata());
 
-        // Skip session check for login and authenticate pages
-        if ($is_login_page || $is_authenticate) {
-            return;
-        }
+        // else {
+        //     redirect('dashboard');
+        // }
+        // $login = $this->session->userdata('logged_in');
+        // $user_id = $this->session->userdata('user_id');
+        // $username = $this->session->userdata('username');
 
-        // Check if this is an AJAX request
-        $is_ajax = $this->input->is_ajax_request();
+        // var_dump($login);
+        // var_dump($user_id);
+        // var_dump($username);
+        // exit;
 
-        if (!$this->session->userdata('logged_in')) {
-            if ($is_ajax) {
-                // Return JSON for AJAX
-                echo json_encode([
-                    'error' => 'not_logged_in',
-                    'session_data' => $this->session->userdata(),
-                    'session_id' => session_id()
-                ]);
-                exit();
-            } else {
-                // Debug output for regular requests
-                echo "<div style='background: #f0f0f0; padding: 20px; border: 1px solid red;'>";
-                echo "<h3>Session Debug - NOT LOGGED IN</h3>";
-                echo "<p><strong>URL:</strong> " . $current . "</p>";
-                echo "<p><strong>Session ID:</strong> " . session_id() . "</p>";
-                echo "<p><strong>user_id:</strong> ";
-                var_dump($this->session->userdata('user_id'));
-                echo "<p><strong>username:</strong> ";
-                var_dump($this->session->userdata('username'));
-                echo "<p><strong>All session:</strong><pre>";
-                print_r($this->session->userdata());
-                echo "</pre></p>";
-                echo "</div>";
 
-                // Uncomment to see debug, comment redirect to test
-                // die(); // Stop here to see debug
-
-                redirect('login');
-            }
-        } else {
-            // Successfully logged in - show debug info
-            echo "<!-- DEBUG: User ID = " . $this->session->userdata('user_id') .
-                ", Username = " . $this->session->userdata('username') . " -->";
-        }
     }
 
     public function index()

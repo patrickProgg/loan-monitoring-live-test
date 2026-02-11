@@ -61,7 +61,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $route['default_controller'] = 'View_ui_cont';
 $route['login'] = 'Login_cont/login';
-$route['authenticate'] = 'Login_cont/authenticate';
 $route['logout'] = 'Login_cont/logout';
 $route['dashboard'] = 'View_ui_cont/dashboard';
 $route['client'] = 'View_ui_cont/monitoring';
