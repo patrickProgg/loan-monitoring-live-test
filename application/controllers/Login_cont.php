@@ -37,6 +37,7 @@ class Login_cont extends CI_Controller
     //     }
     // }
 
+
     public function authenticate()
     {
         $username = $this->input->post('username');
@@ -45,20 +46,28 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // DEBUG: Before setting
-            error_log("User found: " . $user->username);
+            // Force session configuration
+            ini_set('session.save_path', '/tmp');
+            ini_set('session.cookie_secure', '1');
+            ini_set('session.cookie_httponly', '1');
 
+            // Restart session with proper settings
+            if (session_id()) {
+                session_write_close();
+            }
+            session_start();
+
+            // Set session data manually
+            $_SESSION['logged_in'] = TRUE;
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['username'] = $user->username;
+
+            // Also set CI session
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            // DEBUG: After setting
-            error_log("Session logged_in: " . ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
-            error_log("Session user_id: " . $this->session->userdata('user_id'));
-            error_log("Session username: " . $this->session->userdata('username'));
-
-            // DEBUG: Get all session data
-            error_log("All session data: " . print_r($this->session->all_userdata(), true));
+            session_write_close();
 
             echo json_encode(['success' => true]);
         } else {
