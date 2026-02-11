@@ -398,18 +398,24 @@ $config['encryption_key'] = '892a1c4865d4bb8b3936fb16ede01dee4ee1a7be0cb58f370ab
 // $config['sess_time_to_update'] = 300;
 // $config['sess_regenerate_destroy'] = FALSE;
 
+// In config.php
+// In application/config/config.php
+
+// Session Configuration
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = APPPATH . 'session/';
+// Use alwaysData's session save path
+$config['sess_save_path'] = '/home/loan-monitoring/admin/tmp/ci_sessions';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;
 
+// Cookie Configuration
 $config['cookie_prefix'] = '';
-$config['cookie_domain'] = '';
+$config['cookie_domain'] = 'loan-monitoring.alwaysdata.net';
 $config['cookie_path'] = '/';
-$config['cookie_secure'] = TRUE;
+$config['cookie_secure'] = TRUE; // Must be TRUE for HTTPS
 $config['cookie_httponly'] = TRUE;
 $config['cookie_samesite'] = 'Lax';
 

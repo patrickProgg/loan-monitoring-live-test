@@ -19,59 +19,44 @@ class Monitoring_cont extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->library('session');
+        $this->check_login();
+    }
 
-        // Override CI's session cookie setting
-        if (empty($_COOKIE['ci_session']) && session_status() === PHP_SESSION_ACTIVE) {
-            $session_id = session_id();
-            if (!empty($session_id)) {
-                setcookie('ci_session', $session_id, [
-                    'expires' => time() + 7200,
-                    'path' => '/',
-                    'domain' => '.loan-monitoring.alwaysdata.net',
-                    'secure' => true,
-                    'httponly' => false,
-                    'samesite' => 'None'
+    private function check_login()
+    {
+        if (!$this->session->userdata('logged_in')) {
+            if ($this->input->is_ajax_request()) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Session expired. Please login again.',
+                    'redirect' => site_url('login')
                 ]);
+                exit;
+            } else {
+                redirect('login');
             }
         }
     }
-
     public function get_client()
     {
 
-        // $user_id = $this->session->userdata('user_id');
-        // $username = $this->session->userdata('username');
+        echo "Session ID: " . session_id() . "<br>";
+        echo "Logged in: " . ($this->session->userdata('logged_in') ? 'Yes' : 'No') . "<br>";
+        echo "User ID: " . $this->session->userdata('user_id') . "<br>";
+        echo "Username: " . $this->session->userdata('username') . "<br>";
 
-        // var_dump($user_id);
-        // var_dump($username);
-        // exit;
-        header('Access-Control-Allow-Origin: https://loan-monitoring.alwaysdata.net');
-        header('Access-Control-Allow-Credentials: true');
-
-        // Debug first
-        error_log("=== GET_CLIENT CALLED ===");
-        error_log("Session ID: " . session_id());
-        error_log("Cookies: " . print_r($_COOKIE, true));
-
-        // Check if user is logged in
         if (!$this->session->userdata('logged_in')) {
+            // Better debugging
+            error_log("Session data: " . print_r($this->session->all_userdata(), true));
+            error_log("Cookies: " . print_r($_COOKIE, true));
+
             echo json_encode([
                 'error' => 'Not logged in',
-                'session_id' => session_id(),
-                'cookies' => $_COOKIE,
                 'session_data' => $this->session->all_userdata()
             ]);
             return;
         }
-
-        // User is logged in - proceed
-        $user_id = $this->session->userdata('user_id');
-        $username = $this->session->userdata('username');
-
-        var_dump($user_id);
-        var_dump($username);
-        exit;
 
         $start = $this->input->post('start');
         $length = $this->input->post('length');
