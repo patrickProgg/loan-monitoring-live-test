@@ -856,35 +856,48 @@ class Monitoring_cont extends CI_Controller
         $sheet->getStyle('H18')->getNumberFormat()
             ->setFormatCode('#,##0.00');
 
-        $saveFolder = "C:/laragon/www/DAILY_REPORT";
-        if (!is_dir($saveFolder))
-            mkdir($saveFolder, 0777, true);
+        // $saveFolder = "C:/laragon/www/DAILY_REPORT";
+        // if (!is_dir($saveFolder))
+        //     mkdir($saveFolder, 0777, true);
 
-        $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
+        // $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
 
-        if (file_exists($filePath)) {
-            // unlink($filePath); // Delete the existing file
-            $response = [
-                'status' => 'warning',
-                'message' => 'Daily report for ' . $formattedDate . ' has already been generated.',
-            ];
+        // if (file_exists($filePath)) {
+        //     // unlink($filePath); // Delete the existing file
+        //     $response = [
+        //         'status' => 'warning',
+        //         'message' => 'Daily report for ' . $formattedDate . ' has already been generated.',
+        //     ];
 
-            echo json_encode($response);
-            return;
-        }
+        //     echo json_encode($response);
+        //     return;
+        // }
+
+        // $writer = new Xlsx($spreadsheet);
+        // $writer->save($filePath);
+
+        // if ($writer) {
+        //     echo json_encode([
+        //         'status' => 'success'
+        //     ]);
+        // } else {
+        //     echo json_encode([
+        //         'status' => 'error'
+        //     ]);
+        // }
 
         $writer = new Xlsx($spreadsheet);
-        $writer->save($filePath);
 
-        if ($writer) {
-            echo json_encode([
-                'status' => 'success'
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error'
-            ]);
-        }
+        // Set download headers
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Daily_Report_' . $formattedDate . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        header('Pragma: no-cache');
+
+        // Save to browser (downloads to user's computer)
+        $writer->save('php://output');
+        exit;
+
     }
 
     public function get_monthly_report()
