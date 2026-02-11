@@ -21,35 +21,24 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // FIRST: Start session if not started
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Clear old session data
-        $this->session->sess_destroy();
-
-        // Force delete old cookie
-        setcookie('ci_session', '', [
-            'expires' => time() - 3600,
-            'path' => '/',
-            'domain' => '.loan-monitoring.alwaysdata.net',
-            'secure' => true,
-            'httponly' => false,
-            'samesite' => 'None'
-        ]);
-
-        // Authenticate user
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Use CodeIgniter's session regeneration instead
-            $this->session->sess_regenerate(TRUE);
+            // FIRST: Check if session exists, if not start one
+            if (session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
 
-            // Set session data
+            // SECOND: Manually set a session ID if none exists
+            if (empty(session_id())) {
+                $new_session_id = bin2hex(random_bytes(16));
+                session_id($new_session_id);
+            }
+
+            // THIRD: Set session data BEFORE trying to regenerate
             $this->session->set_userdata([
                 'logged_in' => TRUE,
                 'user_id' => $user->id,
@@ -57,16 +46,14 @@ class Login_cont extends CI_Controller
                 'login_time' => time()
             ]);
 
-            // Get session ID AFTER setting data
-            $session_id = session_id();
+            // FOURTH: Now regenerate (optional)
+            // $this->session->sess_regenerate(TRUE);
 
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
-                'debug' => [
-                    'new_session_id' => $session_id,
-                    'user_id' => $user->id
-                ]
+                'session_id' => session_id(),
+                'user' => $user->username
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid login']);
