@@ -8,33 +8,23 @@ class View_ui_cont extends CI_Controller
     {
         parent::__construct();
 
-        error_log("=== VIEW_UI CONSTRUCTOR ===");
-        error_log("Request URL: " . current_url());
-        error_log("Session ID: " . session_id());
-        error_log("Session Data: " . print_r($this->session->userdata(), true));
-        error_log("Cookie ci_session: " . (isset($_COOKIE['ci_session']) ? $_COOKIE['ci_session'] : 'NOT SET'));
+        $current = current_url();
+        $is_login_page = (strpos($current, 'login') !== false);
+        $is_authenticate = (strpos($current, 'authenticate') !== false);
 
-        // Special handling for dashboard after login
-        if (current_url() == site_url('dashboard') && $this->input->get('sid')) {
-            $sid = $this->input->get('sid');
-            error_log("Using URL session ID: " . $sid);
-
-            // Try to restore session from URL
-            if (session_id() != $sid) {
-                session_id($sid);
-            }
+        // Skip session check for login and authenticate pages
+        if ($is_login_page || $is_authenticate) {
+            return;
         }
 
         // Check if logged in
         if (!$this->session->userdata('logged_in')) {
-            error_log("NOT LOGGED IN - Redirecting to login");
+            // DEBUG
+            error_log("NOT LOGGED IN - Redirecting from: " . $current);
+            error_log("Session ID: " . session_id());
+            error_log("Session data: " . print_r($this->session->userdata(), true));
 
-            // Don't redirect if we're already on login page
-            if (current_url() != site_url('login')) {
-                redirect('login');
-            }
-        } else {
-            error_log("LOGGED IN as: " . $this->session->userdata('username'));
+            redirect('login');
         }
 
     }

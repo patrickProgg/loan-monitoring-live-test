@@ -40,49 +40,26 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // DEBUG: Check current session state
-        error_log("=== AUTHENTICATE START ===");
-        error_log("Session ID before: " . session_id());
-        error_log("Existing session data: " . print_r($this->session->userdata(), true));
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // CLEAR any existing session first
-            $this->session->sess_destroy();
+            // SIMPLE & RELIABLE: Just set the session
+            $this->session->set_userdata('logged_in', TRUE);
+            $this->session->set_userdata('user_id', $user->id);
+            $this->session->set_userdata('username', $user->username);
 
-            // Create NEW session
-            $this->session->sess_regenerate(TRUE);
+            // DEBUG: Check if session is actually set
+            error_log("Session after set - logged_in: " .
+                ($this->session->userdata('logged_in') ? 'TRUE' : 'FALSE'));
 
-            // Set user data
-            $this->session->set_userdata([
-                'logged_in' => TRUE,
-                'user_id' => $user->id,
-                'username' => $user->username
-            ]);
-
-            // DEBUG: Verify session was saved
-            error_log("Session ID after: " . session_id());
-            error_log("New session data: " . print_r($this->session->userdata(), true));
-
-            // Check if session exists in database
-            $this->db->where('id', session_id());
-            $db_session = $this->db->get('ci_sessions')->row();
-            error_log("Session in DB: " . ($db_session ? 'YES' : 'NO'));
-
-            // Return session ID for debugging
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
-                'session_id' => session_id() // For debugging
+                'test' => 'session_should_be_set'
             ]);
-
-            // Force output
-            $this->output->_display();
-            exit();
 
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);

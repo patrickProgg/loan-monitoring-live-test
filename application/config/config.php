@@ -448,12 +448,6 @@ $config['cookie_samesite'] = 'Lax';
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix'] = '';
-$config['cookie_domain'] = '';
-$config['cookie_path'] = '/';
-$config['cookie_secure'] = FALSE;
-$config['cookie_httponly'] = FALSE;
-$config['cookie_samesite'] = 'Lax';
 
 /*
 |--------------------------------------------------------------------------
