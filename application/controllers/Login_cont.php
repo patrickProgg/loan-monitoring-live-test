@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 class Login_cont extends CI_Controller
 {
     public function __construct()
@@ -23,10 +24,7 @@ class Login_cont extends CI_Controller
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        var_dump($username);
-        var_dump($password);
-        exit;
-
+    
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
