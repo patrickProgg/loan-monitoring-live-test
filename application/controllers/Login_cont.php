@@ -18,7 +18,6 @@ class Login_cont extends CI_Controller
         // $this->load->view('templates/login_css');
         $this->load->view('login');
     }
-
     public function authenticate()
     {
         $username = $this->input->post('username');
@@ -27,33 +26,54 @@ class Login_cont extends CI_Controller
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // FIRST: Check if session exists, if not start one
-            if (session_status() !== PHP_SESSION_ACTIVE) {
-                session_start();
-            }
+            // Generate a secure session ID
+            $session_id = bin2hex(random_bytes(24));
 
-            // SECOND: Manually set a session ID if none exists
-            if (empty(session_id())) {
-                $new_session_id = bin2hex(random_bytes(16));
-                session_id($new_session_id);
-            }
+            // 1. SET THE COOKIE MANUALLY (MOST IMPORTANT!)
+            setcookie('ci_session', $session_id, [
+                'expires' => time() + 7200,
+                'path' => '/',
+                'domain' => '.loan-monitoring.alwaysdata.net',
+                'secure' => true,
+                'httponly' => false,
+                'samesite' => 'None'
+            ]);
 
-            // THIRD: Set session data BEFORE trying to regenerate
-            $this->session->set_userdata([
+            // 2. Set session ID for current request
+            session_id($session_id);
+            session_start();
+
+            // 3. Save session to database manually
+            $this->load->database();
+
+            $session_data = [
                 'logged_in' => TRUE,
                 'user_id' => $user->id,
                 'username' => $user->username,
-                'login_time' => time()
-            ]);
+                'login_time' => time(),
+                '__ci_last_regenerate' => time()
+            ];
 
-            // FOURTH: Now regenerate (optional)
-            // $this->session->sess_regenerate(TRUE);
+            $db_session = [
+                'id' => $session_id,
+                'ip_address' => $_SERVER['REMOTE_ADDR'],
+                'timestamp' => time(),
+                'data' => serialize($session_data)
+            ];
+
+            // Save to database
+            $this->db->replace('ci_sessions', $db_session);
+
+            // Also set in current session
+            $_SESSION = $session_data;
 
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
-                'session_id' => session_id(),
-                'user' => $user->username
+                'debug' => [
+                    'session_id' => $session_id,
+                    'cookie_set' => true
+                ]
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid login']);

@@ -18,6 +18,23 @@ class Monitoring_cont extends CI_Controller
     function __construct()
     {
         parent::__construct();
+
+        $this->load->library('session');
+
+        // Override CI's session cookie setting
+        if (empty($_COOKIE['ci_session']) && session_status() === PHP_SESSION_ACTIVE) {
+            $session_id = session_id();
+            if (!empty($session_id)) {
+                setcookie('ci_session', $session_id, [
+                    'expires' => time() + 7200,
+                    'path' => '/',
+                    'domain' => '.loan-monitoring.alwaysdata.net',
+                    'secure' => true,
+                    'httponly' => false,
+                    'samesite' => 'None'
+                ]);
+            }
+        }
     }
 
     public function get_client()
