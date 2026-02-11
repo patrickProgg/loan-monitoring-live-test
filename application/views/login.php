@@ -368,7 +368,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "<?= site_url('Login_cont/authenticate'); ?>",
+                url: '<?php echo site_url('Login_cont/authenticate'); ?>',
                 data: { username: username, password: password },
                 dataType: "json",
                 success: function (response) {
@@ -380,11 +380,11 @@
                 }
 
             });
-        });
-        $(document).on("keydown", function (e) {
-            if (e.key === "Enter") {
-                $("#submit").click();
-            }
-        });
+    });
+    $(document).on("keydown", function (e) {
+        if (e.key === "Enter") {
+            $("#submit").click();
+        }
+    });
     });
 </script>
