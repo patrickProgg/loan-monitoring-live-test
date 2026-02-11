@@ -21,7 +21,12 @@ class Login_cont extends CI_Controller
 
     public function authenticate()
     {
-        // FIRST: Destroy ALL old session data
+        // FIRST: Start session if not started
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Clear old session data
         $this->session->sess_destroy();
 
         // Force delete old cookie
@@ -34,18 +39,15 @@ class Login_cont extends CI_Controller
             'samesite' => 'None'
         ]);
 
-        // Also delete without domain for safety
-        setcookie('ci_session', '', time() - 3600, '/');
-
-        // NOW authenticate
+        // Authenticate user
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
-            // Generate NEW session ID
-            session_regenerate_id(true);
+            // Use CodeIgniter's session regeneration instead
+            $this->session->sess_regenerate(TRUE);
 
             // Set session data
             $this->session->set_userdata([
@@ -55,12 +57,14 @@ class Login_cont extends CI_Controller
                 'login_time' => time()
             ]);
 
-            // Return with debug info
+            // Get session ID AFTER setting data
+            $session_id = session_id();
+
             echo json_encode([
                 'success' => true,
                 'redirect' => site_url('dashboard'),
                 'debug' => [
-                    'new_session_id' => session_id(),
+                    'new_session_id' => $session_id,
                     'user_id' => $user->id
                 ]
             ]);
