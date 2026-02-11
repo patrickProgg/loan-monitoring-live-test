@@ -29,43 +29,41 @@ class Monitoring_cont extends CI_Controller
         // var_dump($user_id);
         // var_dump($username);
         // exit;
-        $allowedOrigins = [
-            'https://loan-monitoring.alwaysdata.net',
-            'https://www.loan-monitoring.alwaysdata.net'
-        ];
-
-        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
-
-        // Allow requests from your domain
-        if (in_array($origin, $allowedOrigins)) {
-            $this->output->set_header('Access-Control-Allow-Origin: ' . $origin);
-        } else {
-            // For debugging, allow all origins temporarily
-            $this->output->set_header('Access-Control-Allow-Origin: *');
-        }
-
-        $this->output->set_header('Access-Control-Allow-Credentials: true');
-        $this->output->set_header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        $this->output->set_header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN');
-
-        // Handle preflight OPTIONS request
-        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            $this->output->set_status_header(200);
-            exit();
-        }
-
-        // Now check session
-        $user_id = $this->session->userdata('user_id');
-        $username = $this->session->userdata('username');
-
-        // Debug output
         echo "<pre>";
-        echo "=== SESSION CHECK ===\n";
-        echo "Origin: " . $origin . "\n";
-        echo "Session ID: " . session_id() . "\n";
-        echo "Cookie Header: " . ($_SERVER['HTTP_COOKIE'] ?? 'No cookies') . "\n";
-        echo "All Session Data:\n";
+        echo "=== SESSION DEBUG ===\n";
+
+        // Check current session ID
+        $currentSessionId = session_id();
+        echo "Current Session ID: " . $currentSessionId . "\n\n";
+
+        // Check all cookies being sent
+        echo "All Cookies Received:\n";
+        foreach ($_COOKIE as $name => $value) {
+            echo "  $name = $value\n";
+        }
+
+        echo "\nCookie Header:\n";
+        echo $_SERVER['HTTP_COOKIE'] ?? 'No cookie header' . "\n";
+
+        // Try to manually read session file if using file driver
+        if ($this->config->item('sess_driver') == 'files') {
+            $sessionPath = $this->config->item('sess_save_path') . '/ci_session' . $currentSessionId;
+            echo "\nSession File Path: " . $sessionPath . "\n";
+            if (file_exists($sessionPath)) {
+                echo "Session File Exists: YES\n";
+                $content = file_get_contents($sessionPath);
+                echo "Session File Content:\n";
+                print_r(unserialize($content));
+            } else {
+                echo "Session File Exists: NO\n";
+            }
+        }
+
+        // Check all userdata
+        echo "\nSession User Data:\n";
         print_r($this->session->all_userdata());
+
+        echo "\n=== END DEBUG ===\n";
         echo "</pre>";
         exit;
 
