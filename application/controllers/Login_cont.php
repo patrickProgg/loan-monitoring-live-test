@@ -1,7 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+
 class Login_cont extends CI_Controller
 {
     public function __construct()
@@ -24,7 +23,7 @@ class Login_cont extends CI_Controller
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-    
+
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
@@ -32,7 +31,9 @@ class Login_cont extends CI_Controller
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            echo json_encode(['success' => true, 'redirect' => site_url('dashboard')]);
+            $this->session->sess_write();
+
+            echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
         }
