@@ -994,35 +994,53 @@ class Monitoring_cont extends CI_Controller
                 ->getColor()->setARGB(Color::COLOR_RED);
         }
 
-        $saveFolder = "C:/laragon/www/MONTHLY_REPORT";
-        if (!is_dir($saveFolder))
-            mkdir($saveFolder, 0777, true);
+        // $saveFolder = "C:/laragon/www/MONTHLY_REPORT";
+        // if (!is_dir($saveFolder))
+        //     mkdir($saveFolder, 0777, true);
 
-        $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
+        // $filePath = $saveFolder . "/" . $formattedDate . ".xlsx";
 
-        if (file_exists($filePath)) {
-            // unlink($filePath); // Delete the existing file
-            $response = [
-                'status' => 'warning',
-                'message' => 'Monthly report for ' . $formattedDate . ' has already been generated.',
-            ];
+        // if (file_exists($filePath)) {
+        //     // unlink($filePath); // Delete the existing file
+        //     $response = [
+        //         'status' => 'warning',
+        //         'message' => 'Monthly report for ' . $formattedDate . ' has already been generated.',
+        //     ];
 
-            echo json_encode($response);
-            return;
-        }
+        //     echo json_encode($response);
+        //     return;
+        // }
+
+        // $writer = new Xlsx($spreadsheet);
+        // $writer->save($filePath);
+
+        // if ($writer) {
+        //     echo json_encode([
+        //         'status' => 'success'
+        //     ]);
+        // } else {
+        //     echo json_encode([
+        //         'status' => 'error'
+        //     ]);
+        // }
 
         $writer = new Xlsx($spreadsheet);
-        $writer->save($filePath);
 
-        if ($writer) {
-            echo json_encode([
-                'status' => 'success'
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error'
-            ]);
-        }
+        // Clear any previous output
+        if (ob_get_length())
+            ob_clean();
+
+        // Set download headers - this triggers browser's Save As dialog
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Monthly_Report_' . $formattedDate . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        // Save directly to browser - user gets Save As dialog
+        $writer->save('php://output');
+        // NO JSON response! This sends the Excel file directly.
+        exit;
     }
 
     public function formatWeekRange($selectedDate)
@@ -1228,34 +1246,52 @@ class Monitoring_cont extends CI_Controller
 
         $sheet->setCellValue('D27', '=D18-D26');
 
-        $saveFolder = "C:/laragon/www/WEEKLY_REPORT";
-        if (!is_dir($saveFolder))
-            mkdir($saveFolder, 0777, true);
+        // $saveFolder = "C:/laragon/www/WEEKLY_REPORT";
+        // if (!is_dir($saveFolder))
+        //     mkdir($saveFolder, 0777, true);
 
-        $filePath = $saveFolder . "/" . $weekRange . ".xlsx";
+        // $filePath = $saveFolder . "/" . $weekRange . ".xlsx";
 
-        if (file_exists($filePath)) {
-            $response = [
-                'status' => 'warning',
-                'message' => 'Weekly report for ' . $weekRange . ' has already been generated.',
-            ];
+        // if (file_exists($filePath)) {
+        //     $response = [
+        //         'status' => 'warning',
+        //         'message' => 'Weekly report for ' . $weekRange . ' has already been generated.',
+        //     ];
 
-            echo json_encode($response);
-            return;
-        }
+        //     echo json_encode($response);
+        //     return;
+        // }
+
+        // $writer = new Xlsx($spreadsheet);
+        // $writer->save($filePath);
+
+        // if ($writer) {
+        //     echo json_encode([
+        //         'status' => 'success'
+        //     ]);
+        // } else {
+        //     echo json_encode([
+        //         'status' => 'error'
+        //     ]);
+        // }
 
         $writer = new Xlsx($spreadsheet);
-        $writer->save($filePath);
 
-        if ($writer) {
-            echo json_encode([
-                'status' => 'success'
-            ]);
-        } else {
-            echo json_encode([
-                'status' => 'error'
-            ]);
-        }
+        // Clear any previous output
+        if (ob_get_length())
+            ob_clean();
+
+        // Set download headers - this triggers browser's Save As dialog
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Weekly_Report_' . $weekRange . '.xlsx"');
+        header('Cache-Control: max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        // Save directly to browser - user gets Save As dialog
+        $writer->save('php://output');
+        // NO JSON response! This sends the Excel file directly.
+        exit;
     }
     private function get_daily_data($selectedDate)
     {
