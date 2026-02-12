@@ -369,19 +369,60 @@
             let password = $("#password").val();
 
             // ✅ Show loading swal
+            // Swal.fire({
+            //     title: '<strong>Authenticating...</strong>',
+            //     html: '<i class="fa fa-spinner fa-spin" style="font-size: 24px; color: #4caf50;"></i><br><br>Please wait while we verify your credentials.',
+            //     showConfirmButton: false,
+            //     background: 'linear-gradient(135deg, #f3f4f6, #e0f7fa)',
+            //     color: '#333',
+            //     allowOutsideClick: false,
+            //     allowEscapeKey: false,
+            //     didOpen: () => {
+            //         const swalContent = Swal.getHtmlContainer();
+            //         if (swalContent) {
+            //             swalContent.style.textAlign = 'center';
+            //         }
+            //     }
+            // });
             Swal.fire({
-                title: '<strong>Authenticating...</strong>',
-                html: '<i class="fa fa-spinner fa-spin" style="font-size: 24px; color: #4caf50;"></i><br><br>Please wait while we verify your credentials.',
+                title: '<span style="color:#00fff7; text-shadow: 0 0 10px #00fff7, 0 0 20px #00fff7;">Authenticating...</span>',
+                html: `
+        <div style="margin-top: 15px;">
+            <div class="futuristic-loader">
+                <span></span><span></span><span></span>
+            </div>
+            <p style="color:#00fff7; margin-top:10px;">Please wait while we verify your credentials</p>
+        </div>
+    `,
                 showConfirmButton: false,
-                background: 'linear-gradient(135deg, #f3f4f6, #e0f7fa)',
-                color: '#333',
+                background: '#0a0a0a',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
-                    const swalContent = Swal.getHtmlContainer();
-                    if (swalContent) {
-                        swalContent.style.textAlign = 'center';
-                    }
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+            .futuristic-loader {
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+            }
+            .futuristic-loader span {
+                width: 12px;
+                height: 12px;
+                background: #00fff7;
+                border-radius: 50%;
+                display: inline-block;
+                animation: pulse 1.2s infinite ease-in-out;
+            }
+            .futuristic-loader span:nth-child(2) { animation-delay: 0.2s; }
+            .futuristic-loader span:nth-child(3) { animation-delay: 0.4s; }
+
+            @keyframes pulse {
+                0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+                40% { transform: scale(1); opacity: 1; }
+            }
+        `;
+                    document.head.appendChild(style);
                 }
             });
 
