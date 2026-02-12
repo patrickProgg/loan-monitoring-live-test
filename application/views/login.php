@@ -370,14 +370,21 @@
 
             // ✅ Show loading swal
             Swal.fire({
-                title: 'Authenticating...',
-                html: 'Please wait...',
+                title: '<strong>Authenticating...</strong>',
+                html: '<i class="fa fa-spinner fa-spin" style="font-size: 24px; color: #4caf50;"></i><br><br>Please wait while we verify your credentials.',
+                showConfirmButton: false,
+                background: 'linear-gradient(135deg, #f3f4f6, #e0f7fa)',
+                color: '#333',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
-                    Swal.showLoading();
+                    const swalContent = Swal.getHtmlContainer();
+                    if (swalContent) {
+                        swalContent.style.textAlign = 'center';
+                    }
                 }
             });
+
 
             $.ajax({
                 type: "POST",
