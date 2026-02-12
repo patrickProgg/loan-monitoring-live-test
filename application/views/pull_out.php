@@ -392,7 +392,7 @@
         }
     });
 
-    function handleFormSubmit(action, id) {
+    ffunction handleFormSubmit(action, id) {
         const formData = {
             process_fee: parseFloat($('#process_fee').val()) || 0,
             ticket: parseFloat($('#ticket').val()) || 0,
@@ -437,12 +437,23 @@
             allowEnterKey: false
         }).then((result) => {
             if (result.isConfirmed) {
+                // Show loading Swal
+                Swal.fire({
+                    title: 'Processing...',
+                    html: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     url: url,
                     type: method,
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
+                        Swal.close(); // Close loading Swal
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
@@ -456,6 +467,7 @@
                         });
                     },
                     error: function (err) {
+                        Swal.close(); // Close loading Swal
                         console.log(err);
                         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                     }
@@ -463,6 +475,7 @@
             }
         });
     }
+
 
     document.getElementById('closeModalBtn').addEventListener('click', function () {
         document.getElementById('pull_out_form').reset();
