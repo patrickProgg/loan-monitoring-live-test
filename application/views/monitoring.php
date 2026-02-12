@@ -909,6 +909,15 @@
     function openViewModal(id, fullname, address, acc_no) {
         $('#viewLoaner').modal('show');
 
+        Swal.fire({
+            title: 'Processing...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         $('#header_id').val(id);
         $('#header_acc_no').text(acc_no);
         $('#header_name').text(fullname.replace(/\b\w/g, c => c.toUpperCase()));
@@ -979,6 +988,8 @@
                     $('#dateDropdownBtn').text(firstOption.data('formatted'));
                     $('#selected_date_id').val(firstItemId);
                     $('#header_loan_id').val(firstItemId);
+
+                    Swal.close();
 
                     triggerLoanDetails(firstItemId, firstStatus);
                 }
