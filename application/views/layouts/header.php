@@ -408,22 +408,7 @@
                         // show loading swal
                         Swal.fire({
                             title: '<strong>Logging Out...</strong>',
-                            html: `
-                                <div style="text-align: center; margin-top: 10px;">
-                                    <i class="fa fa-spinner fa-spin" style="
-                                        font-size: 30px; 
-                                        color: #00fff7; 
-                                        text-shadow: 0 0 10px #00fff7, 0 0 20px #00fff7;
-                                    "></i>
-                                    <p style="
-                                        color: #00fff7; 
-                                        margin-top: 15px; 
-                                        font-family: 'Orbitron', sans-serif;
-                                    ">
-                                        Please wait while we log you out...
-                                    </p>
-                                </div>
-                            `,
+                            html: '<i class="fa fa-spinner fa-spin" style="font-size: 24px; color: #4caf50;"></i><br><br>Please wait while we logged you out.',
                             showConfirmButton: false,
                             background: 'linear-gradient(135deg, #f3f4f6, #e0f7fa)',
                             color: '#333',
