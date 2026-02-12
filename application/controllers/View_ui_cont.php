@@ -16,7 +16,6 @@ class View_ui_cont extends CI_Controller
     public function index()
     {
         $this->dashboard();
-
     }
 
     public function dashboard()
