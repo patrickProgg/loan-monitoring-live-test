@@ -392,7 +392,7 @@
         }
     });
 
-    ffunction handleFormSubmit(action, id) {
+    function handleFormSubmit(action, id) {
         const formData = {
             process_fee: parseFloat($('#process_fee').val()) || 0,
             ticket: parseFloat($('#ticket').val()) || 0,
