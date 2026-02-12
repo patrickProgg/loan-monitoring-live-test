@@ -516,19 +516,15 @@
         }).then((result) => {
             if (result.isConfirmed) {
 
-                // 🔥 SHOW LOADING SWAL
                 Swal.fire({
                     title: 'Processing...',
-                    text: 'Please wait',
-                    icon: 'info',
+                    html: 'Please wait',
                     allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
                     didOpen: () => {
                         Swal.showLoading();
                     }
                 });
+
 
                 $.ajax({
                     url: url,

@@ -709,13 +709,23 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
+                // Show loading Swal
+                Swal.fire({
+                    title: 'Adding client...',
+                    html: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     type: "POST",
                     url: "<?= site_url('Monitoring_cont/add_client'); ?>",
                     data: $('#client_form').serialize(),
                     dataType: 'json',
                     success: function (response) {
-                        console.log(response);
+                        Swal.close(); // Close loading Swal
                         if (response.status === "success") {
                             Swal.fire({
                                 title: 'Success!',
@@ -737,8 +747,12 @@
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
-                            return;
                         }
+                    },
+                    error: function (err) {
+                        Swal.close(); // Close loading Swal
+                        console.log(err);
+                        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                     }
                 });
             }
