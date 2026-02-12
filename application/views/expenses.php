@@ -525,20 +525,21 @@
                     }
                 });
 
-
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
+                        Swal.close();
                         // Loading Swal will be auto-replaced by success/error Swal
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
                             icon: 'success',
-                            timer: 500,
-                            showConfirmButton: false
+                            timer: 800,
+                            showConfirmButton: false,
+                            imerProgressBar: true
                         }).then(() => {
                             document.getElementById('expenses_form').reset();
                             expenses_table.ajax.reload();

@@ -453,13 +453,14 @@
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
-                        Swal.close(); // Close loading Swal
+                        Swal.close(); 
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
                             icon: 'success',
-                            timer: 1000,
-                            showConfirmButton: false
+                            timer: 800,
+                            showConfirmButton: false,
+                            timerProgressBar: true
                         }).then(() => {
                             document.getElementById('pull_out_form').reset();
                             pull_out_table.ajax.reload();
@@ -467,7 +468,7 @@
                         });
                     },
                     error: function (err) {
-                        Swal.close(); // Close loading Swal
+                        Swal.close(); 
                         console.log(err);
                         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                     }
