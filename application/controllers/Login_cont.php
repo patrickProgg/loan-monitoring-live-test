@@ -26,9 +26,6 @@ class Login_cont extends CI_Controller
 
         $user = $this->authenticateUser($username, $password);
 
-        var_dump($user);
-        exit;
-
         if ($user) {
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
@@ -52,11 +49,6 @@ class Login_cont extends CI_Controller
         $query = $this->db->get('tbl_admin');
 
         $user = $query->row();
-
-        var_dump($password); // typed password
-        var_dump($user->password); // hash from DB
-        var_dump(password_verify($password, $user->password));
-        exit;
 
         if ($user && password_verify($password, $user->password)) {
             return $user;
