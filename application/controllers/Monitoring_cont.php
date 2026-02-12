@@ -115,18 +115,34 @@ class Monitoring_cont extends CI_Controller
     public function add_client()
     {
         $acc_no = $this->input->post('acc_no');
+        $full_name_input = $this->input->post('full_name');
 
-        // 🔍 Check if acc_no already exists
-        $exists = $this->db->where('acc_no', $acc_no)
+        $normalized_full_name = strtolower(str_replace([',', ' '], '', $full_name_input));
+
+        $exists = $this->db
+            ->where('acc_no', $acc_no)
+            ->or_where("REPLACE(REPLACE(LOWER(full_name), ',', ''), ' ', '') = ", $normalized_full_name)
             ->get('tbl_client')
             ->row();
 
         if ($exists) {
+            $message = '';
+
+            $db_full_name_normalized = strtolower(str_replace([',', ' '], '', $exists->full_name));
+
+            if ($exists->acc_no == $acc_no && $db_full_name_normalized == $normalized_full_name) {
+                $message = 'Account number and full name already exist.';
+            } elseif ($exists->acc_no == $acc_no) {
+                $message = 'Account number already exists.';
+            } elseif ($db_full_name_normalized == $normalized_full_name) {
+                $message = 'Client with this full name already exists.';
+            }
+
             echo json_encode([
                 'status' => 'exist',
-                'message' => 'Account number already exists.'
+                'message' => $message
             ]);
-            return; // stop execution
+            return;
         }
 
         $this->db->trans_start();

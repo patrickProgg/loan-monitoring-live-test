@@ -743,9 +743,7 @@
                                 title: 'Error!',
                                 text: response.message,
                                 icon: 'error',
-                                timer: 800,
-                                showConfirmButton: false,
-                                timerProgressBar: true
+                                showConfirmButton: true,
                             });
                         }
                     },
