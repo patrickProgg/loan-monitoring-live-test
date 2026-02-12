@@ -407,13 +407,32 @@
                     if (result.isConfirmed) {
                         // show loading swal
                         Swal.fire({
-                            title: 'Logging out...',
-                            html: 'Please wait',
+                            title: '<strong>Logging Out...</strong>',
+                            html: `
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <i class="fa fa-spinner fa-spin" style="
+                                        font-size: 30px; 
+                                        color: #00fff7; 
+                                        text-shadow: 0 0 10px #00fff7, 0 0 20px #00fff7;
+                                    "></i>
+                                    <p style="
+                                        color: #00fff7; 
+                                        margin-top: 15px; 
+                                        font-family: 'Orbitron', sans-serif;
+                                    ">
+                                        Please wait while we log you out...
+                                    </p>
+                                </div>
+                            `,
+                            background: '#0a0a0a',
+                            showConfirmButton: false,
                             allowOutsideClick: false,
+                            allowEscapeKey: false,
                             didOpen: () => {
-                                Swal.showLoading();
+                                Swal.showLoading(); // keep spinner active
                             }
                         });
+
 
                         setTimeout(() => {
                             window.location.href = logoutLink.href;
