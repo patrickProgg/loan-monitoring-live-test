@@ -392,19 +392,25 @@
             const logoutLink = document.getElementById('logout-link');
 
             logoutLink.addEventListener('click', function (e) {
-                e.preventDefault(); // prevent default link action
+                e.preventDefault(); // prevent immediate logout
 
-                // confirmation
-                const confirmLogout = confirm("Are you sure you want to logout?");
-                if (confirmLogout) {
-                    // proceed to logout
-                    window.location.href = this.href;
-                }
-                // else do nothing
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will be logged out!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33', // red button
+                    cancelButtonColor: '#3085d6', // blue button
+                    confirmButtonText: 'Yes, logout!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // redirect to logout URL
+                        window.location.href = logoutLink.href;
+                    }
+                });
             });
         });
-
-
 
     </script>
 
