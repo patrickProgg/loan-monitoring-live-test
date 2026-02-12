@@ -374,7 +374,7 @@
                 </a>
             </li>
         </ul>
-        <ul class="navbar-nav ms-auto" style="margin-right:110px;">
+        <ul class="navbar-nav ms-auto" style="margin-right:122px;">
             <li class="nav-item">
                 <a href="<?= base_url('logout') ?>" class="nav-link logout text-danger" id="logout-link">
                     <i class="bx bx-log-out"></i>
