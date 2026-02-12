@@ -321,14 +321,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MONITORING</title>
-    <link rel="icon" type="image/png" href="<?= base_url('assets/images/loan1.png'); ?>">
+    <link rel="icon" type="image/png" href="<?= base_url('assets/images/loan.png'); ?>">
 </head>
 
 <div class="container">
     <div class="login-container">
         <div class="glass-card">
 
-            <img src="<?= base_url(); ?>assets/images/loan1.png" style="width: 160px; margin-bottom: 15px;" />
+            <img src="<?= base_url(); ?>assets/images/loan.png" style="width: 160px; margin-bottom: 15px;" />
 
             <div class="mb-3 text-start">
                 <label class="form-label text-white">Username</label>
