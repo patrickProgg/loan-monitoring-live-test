@@ -1181,9 +1181,10 @@
                     $('#payment_table tbody').html(tableBody);
 
                 }
+
+                 Swal.close();
             });
 
-            Swal.close();
         };
     }
 
