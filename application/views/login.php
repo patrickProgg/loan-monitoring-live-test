@@ -368,15 +368,12 @@
             let username = $("#username").val();
             let password = $("#password").val();
 
-            // ✅ Loading Toast
+            // ✅ Show loading swal
             Swal.fire({
-                toast: true,
-                position: 'top-end',
                 title: 'Authenticating...',
                 text: 'Please wait...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                showConfirmButton: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -388,35 +385,21 @@
                 data: { username: username, password: password },
                 dataType: "json",
                 success: function (response) {
-                    Swal.close(); // close loading toast
+                    console.log(response);
 
                     if (response.success) {
+                        Swal.close(); // close loading
                         window.location.href = response.redirect;
                     } else {
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
+                        Swal.fire("Error", response.message, "error");
                     }
                 },
                 error: function () {
-                    Swal.close();
-
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Server error occurred',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
+                    Swal.fire("Error", "Server error occurred.", "error");
                 }
             });
         });
+
 
         $(document).on("keydown", function (e) {
             if (e.key === "Enter") {
