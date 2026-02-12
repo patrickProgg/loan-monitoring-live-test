@@ -515,12 +515,28 @@
             confirmButtonText: 'Yes, proceed!'
         }).then((result) => {
             if (result.isConfirmed) {
+
+                // 🔥 SHOW LOADING SWAL
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
+                        // Loading Swal will be auto-replaced by success/error Swal
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
@@ -531,6 +547,14 @@
                             document.getElementById('expenses_form').reset();
                             expenses_table.ajax.reload();
                             $('#addExpenses').modal('hide');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Something went wrong: ' + error,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
                         });
                     }
                 });
