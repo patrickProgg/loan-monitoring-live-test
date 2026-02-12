@@ -2390,6 +2390,21 @@
         const date = $('#selected_date').val();
         bulkPaymentData.selected_date = date;
 
+        if (!date) {
+            Swal.fire('Error', 'Please select a valid date.', 'error');
+            return;
+        }
+
+        // Show loading Swal
+        Swal.fire({
+            title: 'Loading...',
+            html: 'Please wait while we fetch bulk payments.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         console.log(date);
         $('#bulk_date').text(formatDate(date));
 
@@ -2399,15 +2414,18 @@
             dataType: 'json',
             data: { date: date },
             success: function (response) {
+                Swal.close(); // Close loading Swal
                 console.log(response);
                 populateBulkPaymentTable(response, date);
                 $('#bulk_payment_modal').modal('show');
             },
             error: function () {
+                Swal.close(); // Close loading Swal
                 Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });
     });
+
 
     function populateBulkPaymentTable(response, date) {
         const table = $('#bulk_payment_table');
