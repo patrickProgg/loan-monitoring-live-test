@@ -290,6 +290,7 @@
     .btn-login:hover {
         background-color: var(--bs-primary);
         box-shadow: 0 0 12px rgba(5, 93, 226, 0.6);
+        color: white;
     }
 
     .small-links a {
@@ -346,12 +347,12 @@
                 </div>
             </div>
 
-            <button class="btn btn-login w-100" id="submit">Log In</button>
+            <button class="btn btn-login w-100" id="submit">Login</button>
 
-            <div class="small-links">
+            <!-- <div class="small-links">
                 <a href="#">Forgot Password?</a>
                 <a href="#">Create Account</a>
-            </div>
+            </div> -->
         </div>
         <div class="footer-text">
             ©
