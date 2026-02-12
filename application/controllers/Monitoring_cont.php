@@ -1471,9 +1471,8 @@ class Monitoring_cont extends CI_Controller
     public function get_bulk_payment()
     {
         $date = $this->input->post('date');
-        $datePlusOne = date('Y-m-d', strtotime($date . ' +1 day'));
+        $datePlusOne = date('Y-m-d', strtotime($date . ' -1 day'));
 
-        // First, get all clients with loans where selected date is between start_date and due_date
         $this->db->select('
             a.id as loan_id,
             a.start_date,
@@ -1492,7 +1491,6 @@ class Monitoring_cont extends CI_Controller
         $query = $this->db->get();
         $clients = $query->result_array();
 
-        // Now check for existing payments for each client on the selected date
         foreach ($clients as &$client) {
             $loan_id = $client['loan_id'];
 
@@ -1510,7 +1508,6 @@ class Monitoring_cont extends CI_Controller
             }
         }
 
-        // Prepare response
         $response = [
             'data' => $clients
         ];
