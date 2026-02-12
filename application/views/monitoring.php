@@ -1027,6 +1027,8 @@
                 data: { id: loanId },
                 success: function (response) {
 
+                    Swal.close();
+
                     const loan = response[0];
 
                     const format = d => new Date(d).toLocaleDateString('en-US', {
@@ -1182,7 +1184,6 @@
 
                 }
 
-                 Swal.close();
             });
 
         };
