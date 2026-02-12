@@ -405,8 +405,19 @@
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // redirect to logout URL
-                        window.location.href = logoutLink.href;
+                        // show loading swal
+                        Swal.fire({
+                            title: 'Logging out...',
+                            html: 'Please wait',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        setTimeout(() => {
+                            window.location.href = logoutLink.href;
+                        }, 500);
                     }
                 });
             });
