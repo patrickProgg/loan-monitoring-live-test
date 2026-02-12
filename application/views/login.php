@@ -374,8 +374,8 @@
                 success: function (response) {
                     console.log(response);
                     return;
-                    if (response) {
-                        window.location.href = response;
+                    if (response.success) {
+                        window.location.href = response.redirect;
                     } else {
                         Swal.fire("Error", response.message, "error");
                     }
