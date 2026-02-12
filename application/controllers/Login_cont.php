@@ -31,11 +31,14 @@ class Login_cont extends CI_Controller
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
 
-            echo json_encode([
-                'success' => true,
-                'redirect' => 'dashboard',
-                'session' => $this->session->userdata()
-            ]);
+            // echo json_encode([
+            //     'success' => true,
+            //     'redirect' => 'dashboard',
+            //     'session' => $this->session->userdata()
+            // ]);
+
+            echo json_encode(base_url('View_ui_cont/client'));
+            exit;
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
         }
