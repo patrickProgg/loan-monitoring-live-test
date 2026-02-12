@@ -539,7 +539,7 @@
                             icon: 'success',
                             timer: 800,
                             showConfirmButton: false,
-                            imerProgressBar: true
+                            timerProgressBar: true
                         }).then(() => {
                             document.getElementById('expenses_form').reset();
                             expenses_table.ajax.reload();
