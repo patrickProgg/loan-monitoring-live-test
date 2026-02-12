@@ -55,8 +55,7 @@
         <div class="table-data mb-5">
             <div class="order pt-2" style="background-color:transparent">
                 <div class="row">
-
-                    <div class="btn-tab-container mb-4 text-center">
+                    <div class="btn-tab-container text-center">
                         <button class="btn btn-outline-primary btn-tab active" data-bs-target="#client">Client</button>
                         <button class="btn btn-outline-primary btn-tab" data-bs-target="#pull_out">Pull Out</button>
                         <button class="btn btn-outline-primary btn-tab" data-bs-target="#expenses">Expenses</button>
