@@ -780,6 +780,7 @@
     $('#capital_amt, #interest, #added_amt').on('input', calculateTotal);
 
     function openEditModal(id, acc_no, fullname, address, contact_1, contact_2, date_added) {
+        // Fill modal fields
         $('#editLoaner').modal('show');
         $('#edit_acc_no').val(acc_no);
         $('#edit_full_name').val(fullname);
@@ -788,18 +789,19 @@
         $('#edit_contact_no_2').val(contact_2);
         $('#edit_start_date').val(date_added);
 
-        $('#edit_client_form').on('keypress', function (e) {
+        // Prevent Enter from submitting
+        $('#edit_client_form').off('keypress').on('keypress', function (e) {
             if (e.which === 13) {
                 e.preventDefault();
                 $('#update_client').trigger('click');
             }
         });
 
-        $("#update_client").on('click', function (e) {
+        // Update client
+        $('#update_client').off('click').on('click', function (e) {
             e.preventDefault();
 
-            var name = $("#edit_full_name").val();
-
+            var name = $('#edit_full_name').val();
             if (!name) {
                 Swal.fire({ icon: 'error', title: 'Oops...', text: "Can't leave full name empty" });
                 return;
@@ -815,29 +817,44 @@
                 allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Loading Swal
+                    Swal.fire({
+                        title: 'Updating client...',
+                        html: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
                     $.ajax({
                         type: "POST",
                         url: "<?= site_url('Monitoring_cont/update_client'); ?>",
                         data: $('#edit_client_form').serialize() + '&id=' + id,
                         dataType: 'json',
                         success: function (response) {
+                            Swal.close();
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.message,
                                 icon: 'success',
-                                timer: 500,
+                                timer: 800,
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
                             $('#editLoaner').modal('hide');
                             client_table.ajax.reload();
+                        },
+                        error: function (err) {
+                            Swal.close();
+                            console.log(err);
+                            Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                         }
                     });
                 }
             });
         });
 
-        $("#deleteBtn").on('click', function (e) {
+        // Delete client
+        $('#deleteBtn').off('click').on('click', function (e) {
             e.preventDefault();
 
             Swal.fire({
@@ -852,28 +869,41 @@
                 allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Loading Swal
+                    Swal.fire({
+                        title: 'Deleting client...',
+                        html: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
                     $.ajax({
                         type: "POST",
                         url: "<?= site_url('Monitoring_cont/delete_id'); ?>",
                         data: { id: id },
                         dataType: 'json',
                         success: function (response) {
+                            Swal.close();
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.message,
                                 icon: 'success',
-                                timer: 500,
+                                timer: 800,
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
                             $('#editLoaner').modal('hide');
                             client_table.ajax.reload();
+                        },
+                        error: function (err) {
+                            Swal.close();
+                            console.log(err);
+                            Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                         }
                     });
                 }
             });
         });
-
     }
 
     function openViewModal(id, fullname, address, acc_no) {
@@ -1678,63 +1708,24 @@
     });
 
     $(document).on('click', '#generate_daily', function () {
-        // const today = new Date();
-        // const yyyy = today.getFullYear();
-        // const mm = String(today.getMonth() + 1).padStart(2, '0');
-        // const dd = String(today.getDate()).padStart(2, '0');
-        // const formattedDate = `${yyyy}-${mm}-${dd}`;
 
         const selectedDate = $('#selected_date').val();
-
-        // Swal.fire({
-        //     title: 'Select Date for Report',
-        //     // input: 'date',
-        //     // inputLabel: 'Date',
-        //     // inputValue: formattedDate,
-        //     // inputAttributes: {
-        //     //     style: 'display: block; margin: 0 auto; text-align: center; width: 200px;'
-        //     // },
-        //     showCancelButton: true,
-        //     confirmButtonText: 'Download',
-        //     cancelButtonText: 'Cancel'
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         const selectedDate = result.value;
 
         if (!selectedDate) {
             Swal.fire('Error', 'Please select a valid date.', 'error');
             return;
         }
 
-        // Swal.fire({
-        //     title: 'Generating Excel Report...',
-        //     html: 'Please wait while we generate your report.<br><br><div class="spinner-border text-primary" role="status"></div>',
-        //     allowOutsideClick: false,
-        //     allowEscapeKey: false,
-        //     showConfirmButton: false,
-        //     didOpen: () => {
-        //         Swal.showLoading();
-        //     }
-        // });
+        // Show loading Swal
+        Swal.fire({
+            title: 'Generating daily report...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
-        // $.ajax({
-        //     url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     data: { date: selectedDate },
-        //     success: function (response) {
-        //         console.log(response);
-        //         if (response.status === "warning") {
-        //             Swal.fire('Warning!', response.message, 'warning');
-        //         } else {
-        //             Swal.fire('Saved!', 'Daily report has been saved.', 'success');
-        //         }
-        //     },
-        //     error: function () {
-        //         Swal.fire('Error', 'Something went wrong.', 'error');
-        //     }
-        // });
-        // Change your AJAX call
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
             type: 'POST',
@@ -1743,6 +1734,8 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
+                Swal.close(); // Close loading Swal
+
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -1761,13 +1754,15 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
 
-                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
+                Swal.fire('Success!', 'Report downloaded successfully.', 'success');
             },
             error: function () {
+                Swal.close(); // Close loading Swal
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
     });
+
 
     $(document).on('click', '#generate_weekly', function () {
         const selectedDate = $('#selected_date').val();
@@ -1777,25 +1772,15 @@
             return;
         }
 
-        console.log(selectedDate);
-
-        // $.ajax({
-        //     url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     data: { date: selectedDate },
-        //     success: function (response) {
-        //         console.log(response);
-        //         if (response.status === "warning") {
-        //             Swal.fire('Warning!', response.message, 'warning');
-        //         } else {
-        //             Swal.fire('Saved!', 'Weekly report has been saved.', 'success');
-        //         }
-        //     },
-        //     error: function () {
-        //         Swal.fire('Error', 'Something went wrong.', 'error');
-        //     }
-        // });
+        // Show loading Swal
+        Swal.fire({
+            title: 'Generating weekly report...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
@@ -1805,8 +1790,10 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
+                Swal.close(); // Close loading Swal
+
                 // Get filename from headers
-                var filename = 'Daily_Report_' + selectedDate + '.xlsx';
+                var filename = 'Weekly_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
                 if (disposition && disposition.indexOf('attachment') !== -1) {
                     var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
@@ -1823,13 +1810,15 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
 
-                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
+                Swal.fire('Success!', 'Report downloaded successfully.', 'success');
             },
             error: function () {
+                Swal.close(); // Close loading Swal
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
     });
+
 
     $(document).on('click', '#generate_monthly', function () {
         const selectedDate = $('#selected_date').val();
@@ -1839,25 +1828,15 @@
             return;
         }
 
-        console.log(selectedDate);
-
-        // $.ajax({
-        //     url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     data: { date: selectedDate },
-        //     success: function (response) {
-        //         console.log(response);
-        //         if (response.status === "warning") {
-        //             Swal.fire('Warning!', response.message, 'warning');
-        //         } else {
-        //             Swal.fire('Saved!', 'Monthly report has been saved.', 'success');
-        //         }
-        //     },
-        //     error: function () {
-        //         Swal.fire('Error', 'Something went wrong.', 'error');
-        //     }
-        // });
+        // Show loading Swal
+        Swal.fire({
+            title: 'Generating report...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
@@ -1867,6 +1846,8 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
+                Swal.close(); // Close loading Swal
+
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -1885,13 +1866,15 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
 
-                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
+                Swal.fire('Success!', 'Report downloaded successfully.', 'success');
             },
             error: function () {
+                Swal.close(); // Close loading Swal
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
     });
+
 
     let bulkPaymentData = {
         selected_date: null,
