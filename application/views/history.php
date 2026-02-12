@@ -514,7 +514,6 @@
     });
 
     function recoverBtn(id, type) {
-
         Swal.fire({
             title: 'Are you sure?',
             text: "This action will recover data!",
@@ -526,6 +525,16 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
+                // Show loading Swal
+                Swal.fire({
+                    title: 'Recovering...',
+                    html: 'Please wait while data is being recovered.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     url: "<?php echo base_url('Monitoring_cont/recover_id'); ?>",
                     type: 'POST',
@@ -535,6 +544,8 @@
                     },
                     dataType: 'json',
                     success: function (res) {
+                        Swal.close(); // Close loading Swal
+
                         Swal.fire({
                             title: 'Recovered!',
                             text: res.message,
@@ -552,6 +563,7 @@
                         });
                     },
                     error: function (err) {
+                        Swal.close(); // Close loading Swal
                         console.log(err);
                         Swal.fire('Error', 'Server error. Check console.', 'error');
                     }
@@ -559,6 +571,7 @@
             }
         });
     }
+
 
     function openViewModal(id, fullname, address, acc_no) {
         $('#viewLoaner').modal('show');

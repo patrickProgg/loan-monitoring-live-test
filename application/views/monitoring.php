@@ -2395,7 +2395,6 @@
             return;
         }
 
-        // Show loading Swal
         Swal.fire({
             title: 'Loading...',
             html: 'Please wait while we fetch bulk payments.',
@@ -2414,13 +2413,13 @@
             dataType: 'json',
             data: { date: date },
             success: function (response) {
-                Swal.close(); // Close loading Swal
+                Swal.close(); 
                 console.log(response);
                 populateBulkPaymentTable(response, date);
                 $('#bulk_payment_modal').modal('show');
             },
             error: function () {
-                Swal.close(); // Close loading Swal
+                Swal.close();
                 Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });
