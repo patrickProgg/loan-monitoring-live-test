@@ -373,11 +373,10 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
-                    return;
                     if (response) {
                         window.location.href = response;
                     } else {
-                        Swal.fire("Error", "Wrong login Credentials", "error");
+                        Swal.fire("Error", response.message, "error");
                     }
                 }
 
