@@ -709,21 +709,6 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-
-                // 🔥 SHOW LOADING SWAL
-                Swal.fire({
-                    title: 'Processing...',
-                    text: 'Please wait',
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
                 $.ajax({
                     type: "POST",
                     url: "<?= site_url('Monitoring_cont/add_client'); ?>",
@@ -754,14 +739,6 @@
                             });
                             return;
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Something went wrong: ' + error,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
                     }
                 });
             }
