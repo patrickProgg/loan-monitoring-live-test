@@ -914,6 +914,8 @@
         $('#header_name').text(fullname.replace(/\b\w/g, c => c.toUpperCase()));
         $('#header_address').text(address.replace(/\b\w/g, c => c.toUpperCase()));
 
+        $('#payment_table tbody').empty();
+
         $.ajax({
             url: "<?php echo base_url('Monitoring_cont/get_start_due_date'); ?>",
             type: "POST",
@@ -2413,7 +2415,7 @@
             dataType: 'json',
             data: { date: date },
             success: function (response) {
-                Swal.close(); 
+                Swal.close();
                 console.log(response);
                 populateBulkPaymentTable(response, date);
                 $('#bulk_payment_modal').modal('show');
