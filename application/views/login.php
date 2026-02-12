@@ -364,8 +364,20 @@
 <script>
     $(function () {
         $("#submit").on('click', function () {
+
             let username = $("#username").val();
             let password = $("#password").val();
+
+            // ✅ Show loading swal
+            Swal.fire({
+                title: 'Authenticating...',
+                text: 'Please wait...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             $.ajax({
                 type: "POST",
@@ -374,15 +386,20 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
+
                     if (response.success) {
+                        Swal.close(); // close loading
                         window.location.href = response.redirect;
                     } else {
                         Swal.fire("Error", response.message, "error");
                     }
+                },
+                error: function () {
+                    Swal.fire("Error", "Server error occurred.", "error");
                 }
-
             });
         });
+
         $(document).on("keydown", function (e) {
             if (e.key === "Enter") {
                 $("#submit").click();
