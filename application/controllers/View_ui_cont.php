@@ -13,6 +13,10 @@ class View_ui_cont extends CI_Controller
     public function index()
     {
         $this->dashboard();
+
+        if (!$this->session->userdata('logged_in')) {
+            redirect('login');
+        }
     }
 
     public function dashboard()

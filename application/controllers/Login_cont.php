@@ -37,7 +37,7 @@ class Login_cont extends CI_Controller
             //     'session' => $this->session->userdata()
             // ]);
 
-            echo json_encode(base_url('dashboard'));
+            echo json_encode(base_url('default_controller'));
             exit;
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid username/email or password.']);
