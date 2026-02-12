@@ -277,7 +277,7 @@
                             ?>
 
                             <?php if ($range_type == 'day' && $selected_date == date('Y-m-d')): ?>
-                                <span class="badge badge-success ml-2">Today</span>
+                                <span class="badge badge-success ml-2 text-muted">Today</span>
                             <?php endif; ?>
                         </div>
                     </div>
