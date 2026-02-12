@@ -982,7 +982,7 @@
 
                     triggerLoanDetails(firstItemId, firstStatus);
                     Swal.fire({
-                        title: 'Processing...',
+                        title: 'Loading Data...',
                         html: 'Please wait',
                         allowOutsideClick: false,
                         didOpen: () => {
