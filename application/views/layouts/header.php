@@ -355,7 +355,7 @@
             <li class="nav-item" style="flex-shrink: 1; min-width: 0;">
                 <a class="nav-link d-flex align-items-center gap-1 <?= ($this->uri->segment(1) == 'pull_out') ? 'active-nav' : '' ?>"
                     href="<?= base_url(); ?>pull_out">
-                    <i class='bx bx-file'></i>
+                    <i class='bx bx-receipt'></i>
                     <span class="menu-label">Pull Out</span>
                 </a>
             </li>
@@ -400,7 +400,7 @@
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6', 
+                    cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Yes, logout!',
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
