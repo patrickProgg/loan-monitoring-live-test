@@ -68,7 +68,7 @@ $route['pull_out'] = 'View_ui_cont/pull_out';
 $route['expenses'] = 'View_ui_cont/expenses';
 $route['history'] = 'View_ui_cont/history';
 
-$route['(:any)'] = 'View_ui_cont/dashboard';
+// $route['(:any)'] = 'View_ui_cont/dashboard';
 
 $route['translate_uri_dashes'] = FALSE;
 

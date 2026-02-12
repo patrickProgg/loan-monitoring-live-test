@@ -372,6 +372,7 @@
                 data: { username: username, password: password },
                 dataType: "json",
                 success: function (response) {
+                    console.log(response);
                     if (response.success) {
                         window.location.href = response.redirect;
                     } else {
