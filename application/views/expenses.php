@@ -516,19 +516,20 @@
         }).then((result) => {
             if (result.isConfirmed) {
 
-                // 🔥 SHOW LOADING SWAL
-                Swal.fire({
-                    title: 'Processing...',
-                    text: 'Please wait',
-                    icon: 'info',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+                // 🔥 FIXED LOADING SWAL - Use setTimeout to ensure it shows
+                setTimeout(() => {
+                    Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                }, 50); // Small delay to ensure confirmation Swal closes
 
                 $.ajax({
                     url: url,
@@ -536,13 +537,13 @@
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
-                        // Loading Swal will be auto-replaced by success/error Swal
                         Swal.fire({
-                            title: 'Success',
+                            title: 'Success!',
                             text: res.message,
                             icon: 'success',
                             timer: 500,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            timerProgressBar: true
                         }).then(() => {
                             document.getElementById('expenses_form').reset();
                             expenses_table.ajax.reload();
