@@ -373,6 +373,7 @@
                 dataType: "json",
                 success: function (response) {
                     console.log(response);
+                    return;
                     if (response) {
                         window.location.href = response;
                     } else {
