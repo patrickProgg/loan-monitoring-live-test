@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MONITORING</title>
-    <link rel="shortcut icon" href="<?= base_url(); ?>assets/images/loan1.png" />
+    <link rel="shortcut icon" href="<?= base_url(); ?>assets/images/loan.png" />
 
     <link href="<?php echo base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="<?php echo base_url(); ?>assets/css/icons.min.css" rel="stylesheet" />
@@ -334,7 +334,7 @@
         fixed; top: 0; width: 100%; z-index: 1050; padding:0">
         <a class="navbar-brand d-flex align-items-center" style="margin-left:129px;" href="<?= base_url(); ?>dashboard"
             style="height: 100%;">
-            <img src="<?= base_url(); ?>assets/images/loan1.png" alt="Logo" style="height: 30px;">
+            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 30px;">
         </a>
 
         <ul class="navbar-nav flex-row align-items-center me-auto" style="margin: 0; padding: 0; column-gap: 12px;">

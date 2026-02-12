@@ -1378,3 +1378,20 @@
         createHorizontalBarChart();
     });
 </script>
+
+<?php if ($this->session->flashdata('welcome_toast')): ?>
+
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: "<?= $this->session->flashdata('welcome_toast'); ?>",
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            width: '400px'
+        });
+    </script>
+
+<?php endif; ?>
