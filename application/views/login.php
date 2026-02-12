@@ -371,7 +371,7 @@
             // ✅ Show loading swal
             Swal.fire({
                 title: 'Authenticating...',
-                text: 'Please wait...',
+                html: 'Please wait...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: () => {
