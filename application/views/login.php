@@ -11,7 +11,7 @@
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-        font-family: Raleway, sans-serif;
+        font-family: 'Poppins', sans-serif;
     }
 
     html,
