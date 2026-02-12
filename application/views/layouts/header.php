@@ -388,54 +388,19 @@
     <script>
         feather.replace();
 
-        function logout() {
-            Swal.fire({
-                title: 'Sign out',
-                text: "Are you sure you want to sign out?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '<?php echo base_url("User_cont/logout"); ?>',
-                        success: function () {
-                            location.reload();
-                        },
-                        error: function (jqXHR) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!'
-                            });
-                        }
-                    });
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutLink = document.getElementById('logout-link');
+
+            logoutLink.addEventListener('click', function (e) {
+                e.preventDefault(); // prevent default link action
+
+                // confirmation
+                const confirmLogout = confirm("Are you sure you want to logout?");
+                if (confirmLogout) {
+                    // proceed to logout
+                    window.location.href = this.href;
                 }
-            });
-        }
-
-        const SESSION_DURATION = 30 * 60 * 1000;
-        // const SESSION_DURATION = 2 * 1000;
-
-        function autoRefresh() {
-            Swal.fire({
-                title: 'Session Expired',
-                text: 'Your session has ended. Reloading page...',
-                icon: 'warning',
-                timer: 500,
-                showConfirmButton: false,
-                timerProgressBar: true
-            }).then(() => location.reload(true));
-        }
-
-        let sessionTimer = setTimeout(autoRefresh, SESSION_DURATION);
-
-        ['click', 'mousemove', 'keydown'].forEach(evt => {
-            document.addEventListener(evt, () => {
-                clearTimeout(sessionTimer);
-                sessionTimer = setTimeout(autoRefresh, SESSION_DURATION);
+                // else do nothing
             });
         });
 
