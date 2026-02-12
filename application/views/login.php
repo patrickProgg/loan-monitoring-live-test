@@ -368,12 +368,15 @@
             let username = $("#username").val();
             let password = $("#password").val();
 
-            // ✅ Show loading swal
+            // ✅ Loading Toast
             Swal.fire({
+                toast: true,
+                position: 'top-end',
                 title: 'Authenticating...',
                 text: 'Please wait...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
+                showConfirmButton: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -385,17 +388,32 @@
                 data: { username: username, password: password },
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
+                    Swal.close(); // close loading toast
 
                     if (response.success) {
-                        Swal.close(); // close loading
                         window.location.href = response.redirect;
                     } else {
-                        Swal.fire("Error", response.message, "error");
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     }
                 },
                 error: function () {
-                    Swal.fire("Error", "Server error occurred.", "error");
+                    Swal.close();
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Server error occurred',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                 }
             });
         });
