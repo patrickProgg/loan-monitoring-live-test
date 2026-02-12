@@ -424,12 +424,16 @@
                                     </p>
                                 </div>
                             `,
-                            background: '#0a0a0a',
                             showConfirmButton: false,
+                            background: 'linear-gradient(135deg, #f3f4f6, #e0f7fa)',
+                            color: '#333',
                             allowOutsideClick: false,
                             allowEscapeKey: false,
                             didOpen: () => {
-                                Swal.showLoading(); // keep spinner active
+                                const swalContent = Swal.getHtmlContainer();
+                                if (swalContent) {
+                                    swalContent.style.textAlign = 'center';
+                                }
                             }
                         });
 
