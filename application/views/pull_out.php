@@ -8,11 +8,11 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        width: 138px;
+        width: 130px;
     }
 
     .total-label {
-        font-size: 11px;
+        font-size: 10px;
         color: #6c757d;
         font-weight: 500;
     }
@@ -189,7 +189,7 @@
         dom:
             "<'top-bar mb-0'lf>" +
             "rt" +
-            "<'d-flex justify-content-between mt-2'<'dataTables_info'i><'dataTables_paginate'p>>",
+            "<'d-flex justify-content-between mt-0 pt-0'<'dataTables_info pt-0'i><'dataTables_paginate pt-0'p>>",
 
         columnDefs: [{ targets: '_all', orderable: true }],
         lengthMenu: [10, 25, 50, 100],
@@ -296,6 +296,8 @@
             $('.customTotals').css({
                 display: 'flex',
                 gap: '10px',
+                position: 'absolute',
+                marginLeft: '160px',
                 justifyContent: 'flex-start',
                 flexGrow: 1
             });
