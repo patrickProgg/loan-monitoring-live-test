@@ -332,12 +332,12 @@
             <img src="<?= base_url(); ?>assets/images/loan.png" style="width: 160px; margin-bottom: 15px;" />
 
             <div class="mb-3 text-start">
-                <label class="form-label text-white">Username</label>
+                <label class="form-label text-black">Username</label>
                 <input type="text" id="username" name="username" class="form-control" placeholder="Enter username">
             </div>
 
             <div class="mb-3 text-start">
-                <label class="form-label text-white">Password</label>
+                <label class="form-label text-black">Password</label>
 
                 <div class="position-relative">
                     <input type="password" id="password" name="password" class="form-control pe-5"
