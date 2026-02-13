@@ -108,7 +108,7 @@
 
                                     <div class="col-1">
                                         <button type="button"
-                                            class="btn btn-sm btn-outline-primary add-row-btn mb-1">+</button>
+                                            class="btn btn-sm btn-primary add-row-btn mb-1">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
 
                         <div class="modal-footer">
                             <button type="button" onclick="handleFormSubmit(currentAction, currentId)" id="submitBtn"
-                                name="submit" class="btn btn-outline-primary">Add</button>
+                                name="submit" class="btn btn-primary">Add</button>
                             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>
@@ -209,7 +209,7 @@
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-outline-success me-1" onclick='openModal("editExpenses", ${JSON.stringify(row)})'>
+                        <button class="btn btn-sm btn-success me-1" onclick='openModal("editExpenses", ${JSON.stringify(row)})'>
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="deleteBtn('${data}')">
@@ -576,7 +576,7 @@
                         <input type="number" class="form-control expense-amount" placeholder="Amount" />
                     </div>
                     <div class="col-1">
-                        <button type="button" class="btn btn-sm btn-outline-primary add-row-btn mb-1">+</button>
+                        <button type="button" class="btn btn-sm btn-primary add-row-btn mb-1">+</button>
                     </div>
                 </div>
             `);

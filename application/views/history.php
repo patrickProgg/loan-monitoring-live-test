@@ -343,7 +343,7 @@
                         <button class="btn btn-sm btn-danger" onclick="recoverBtn('${data}','client')">
                             <i class="fas fa-undo"></i> Recover
                         </button>
-                         <button class="btn btn-sm btn-outline-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}', '${row.acc_no}')">
+                         <button class="btn btn-sm btn-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}', '${row.acc_no}')">
                             <i class="fas fa-eye"></i> View
                         </button>
                     `;

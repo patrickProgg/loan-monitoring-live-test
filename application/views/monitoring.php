@@ -189,7 +189,7 @@
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" id="add_client" name="submit"
-                                        class="btn btn-outline-primary">Add</button>
+                                        class="btn btn-primary">Add</button>
                                     <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                         id="closeModalBtn">Close</button>
                                 </div>
@@ -263,7 +263,7 @@
                                     <button type="button" id="deleteBtn"
                                         class="btn btn-outline-danger me-2">Delete</button>
                                     <button type="button" id="update_client" name="submit"
-                                        class="btn btn-outline-primary ">Update</button>
+                                        class="btn btn-primary ">Update</button>
                                     <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                         id="closeModalBtn">Close</button>
                                 </div>
@@ -382,7 +382,7 @@
                                                 </ul>
                                             </div>
 
-                                            <button class="btn btn-sm btn-outline-success" id="editLoanDetails">
+                                            <button class="btn btn-sm btn-success" id="editLoanDetails">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
                                             <button class="btn btn-sm btn-danger" id="cancelEdit" style="display:none;">
@@ -418,7 +418,7 @@
                             </div>
 
                             <div>
-                                <button type="button" id="addNewLoan" class="btn btn-outline-primary me-1"
+                                <button type="button" id="addNewLoan" class="btn btn-primary me-1"
                                     onclick="openAddNewLoanModal()">
                                     Add New
                                 </button>
@@ -470,7 +470,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-primary" id="modalContinueBtn">Continue</button>
+                        <button type="button" class="btn btn-primary" id="modalContinueBtn">Continue</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
@@ -555,7 +555,7 @@
                         <div class="row mt-3">
                             <div class="d-flex justify-content-end">
                                 <button type="button" id="save_bulk_payments" name="submit"
-                                    class="btn btn-outline-success">Save</button>
+                                    class="btn btn-success">Save</button>
                                 <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                     id="closeModalBtn">Close</button>
                             </div>
@@ -675,10 +675,10 @@
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-outline-success me-1" onclick="openEditModal('${data}', '${row.acc_no}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
+                        <button class="btn btn-sm btn-success me-1" onclick="openEditModal('${data}', '${row.acc_no}', '${row.full_name}', '${row.address}', '${row.contact_no_1}', '${row.contact_no_2}', '${row.date_added}')">
                             <i class="fas fa-edit"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}', '${row.acc_no}')">
+                        <button class="btn btn-sm btn-primary" onclick="openViewModal('${data}', '${row.full_name}', '${row.address}', '${row.acc_no}')">
                             <i class="fas fa-eye"></i> View
                         </button>
                     `;
@@ -1098,7 +1098,7 @@
                                                 ${paymentAmt !== 0 ? 'readonly' : ''} />
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-success edit-btn" 
+                                            <button class="btn btn-sm btn-success edit-btn" 
                                                 style="${!paymentAmt ? 'display:none;' : ''}">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -1126,7 +1126,7 @@
                                                 ${paymentAmt !== 0 ? 'readonly' : ''} />
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-success edit-btn" 
+                                            <button class="btn btn-sm btn-success edit-btn" 
                                                 style="${!paymentAmt ? 'display:none;' : ''}">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -1159,7 +1159,7 @@
                                             ${paymentAmt !== 0 ? 'readonly' : ''} />
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-success edit-btn" 
+                                        <button class="btn btn-sm btn-success edit-btn" 
                                             style="${!paymentAmt ? 'display:none;' : ''}">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
@@ -1376,13 +1376,13 @@
             input.removeClass('text-success');
             input.focus();
 
-            btn.removeClass('btn-outline-success').addClass('btn-danger');
+            btn.removeClass('btn-success').addClass('btn-danger');
             btn.html('<i class="fas fa-times"></i> Cancel');
         } else {
             input.prop('readonly', true);
             if (input.val()) input.addClass('text-success');
 
-            btn.removeClass('btn-danger').addClass('btn-outline-success');
+            btn.removeClass('btn-danger').addClass('btn-success');
             btn.html('<i class="fas fa-edit"></i> Edit');
         }
     });

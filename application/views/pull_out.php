@@ -167,7 +167,7 @@
                             <div class="row">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" onclick="handleFormSubmit(currentAction, currentId)"
-                                        id="submitBtn" name="submit" class="btn btn-outline-primary">Add</button>
+                                        id="submitBtn" name="submit" class="btn btn-primary">Add</button>
                                     <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
                                         id="closeModalBtn">Close</button>
                                 </div>
@@ -277,7 +277,7 @@
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <button class="btn btn-sm btn-outline-success me-1" onclick='openModal("editPullOut", ${JSON.stringify(row)})'>
+                        <button class="btn btn-sm btn-success me-1" onclick='openModal("editPullOut", ${JSON.stringify(row)})'>
                             <i class="fas fa-edit"></i> Edit
                         </button>
                         <button class="btn btn-sm btn-danger" onclick="deleteBtn('${data}')">
@@ -453,7 +453,7 @@
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
-                        Swal.close(); 
+                        Swal.close();
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
@@ -468,7 +468,7 @@
                         });
                     },
                     error: function (err) {
-                        Swal.close(); 
+                        Swal.close();
                         console.log(err);
                         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                     }
