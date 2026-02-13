@@ -31,7 +31,7 @@ class Login_cont extends CI_Controller
             $this->session->set_userdata('logged_in', TRUE);
             $this->session->set_userdata('user_id', $user->id);
             $this->session->set_userdata('username', $user->username);
-            $this->session->set_flashdata('welcome_toast', 'Welcome back!, ' . ucfirst($user->username) . '!');
+            $this->session->set_flashdata('welcome_toast', 'Welcome back, ' . ucfirst($user->username) . '!');
 
             // Return success response with redirect
             echo json_encode([
