@@ -58,7 +58,7 @@ class Monitoring_cont extends CI_Controller
             COALESCE(SUM(
                 CASE 
                     WHEN b.status = "overdue" THEN COALESCE(p.payment_total, 0)
-                    ELSE b.total_amt
+                    ELSE b.capital_amt
                 END
             ), 0) AS total_loan_amount
         ');
