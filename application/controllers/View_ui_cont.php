@@ -418,7 +418,7 @@ class View_ui_cont extends CI_Controller
         // Get year total
         $this->db->select_sum('total_pull_out')
             ->from('tbl_pull_out')
-            ->where('status !=', 1)
+            ->where('status !=', '1')
             ->where('YEAR(date_added)', $year);
         $year_total_query = $this->db->get();
         $year_total = $year_total_query->row()->total_pull_out ?: 0;
