@@ -59,12 +59,14 @@ class View_ui_cont extends CI_Controller
 
         $data['total_pull_out'] = $this->db
             ->select_sum('total_pull_out')
+            ->where('status !=', '1')
             ->get('tbl_pull_out')
             ->row()
             ->total_pull_out;
 
         $data['total_expenses'] = $this->db
             ->select_sum('amt')
+            ->where('status !=', '1')
             ->get('tbl_expenses')
             ->row()
             ->amt;
