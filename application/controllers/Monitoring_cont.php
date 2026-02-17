@@ -1102,7 +1102,11 @@ class Monitoring_cont extends CI_Controller
         $sheet->getColumnDimension('H')->setWidth(15);
 
         $loanData = $this->get_weekly_data($selectedDate);
+        $expData = $this->get_weekly_expenses($selectedDate);
+
         $totalAmount = $loanData['total_amt'];
+        $totalCapitalAmount = $loanData['total_capital_amt'];
+        $totalExpAmount = $expData['total_exp'];
 
         $weekRange = $this->formatWeekRange($selectedDate);
 
@@ -1115,9 +1119,9 @@ class Monitoring_cont extends CI_Controller
             ["Onhand Last Week", "", "", ""],
             ["", "", "", ""],
             ["Total Cash", "", "", ""],
-            ["Release", "", "", ""],
-            ["Operation Exp", "", "", ""],
-            ["Withdrawal", "", "", ""],
+            ["Release", "", "", "$totalCapitalAmount"],
+            ["Operation Exp", "", "", "$totalExpAmount"],
+            ["", "", "", ""],
             ["SALARY", "", "", ""],
             ["", "", "", ""],
             ["", "", "", ""],
@@ -1325,21 +1329,52 @@ class Monitoring_cont extends CI_Controller
         $query = $this->db->get();
         return $query->result_array();
     }
+
     private function get_weekly_data($selectedDate)
     {
         $monday = date('Y-m-d', strtotime('monday this week', strtotime($selectedDate)));
         $saturday = date('Y-m-d', strtotime('saturday this week', strtotime($selectedDate)));
 
-        $this->db->select('
-           sum(a.amt) as total_amt
-        ');
-
+        // Query for payments (existing)
+        $this->db->select('SUM(a.amt) as total_amt');
         $this->db->from('tbl_payment as a');
         $this->db->join('tbl_loan as b', 'b.id = a.loan_id');
         $this->db->join('tbl_client as c', 'c.id = b.cl_id');
         $this->db->where('c.status !=', '1');
         $this->db->where("a.payment_for >=", $monday);
         $this->db->where("a.payment_for <=", $saturday);
+        $payment_query = $this->db->get();
+        $payment_result = $payment_query->row_array();
+
+        // Separate query for new loans created this week
+        $this->db->select('SUM(capital_amt) as total_capital_amt');
+        $this->db->from('tbl_loan');
+        $this->db->join('tbl_client', 'tbl_client.id = tbl_loan.cl_id');
+        $this->db->where('tbl_client.status !=', '1');
+        $this->db->where("start_date >=", $monday);
+        $this->db->where("start_date <=", $saturday);
+        $loan_query = $this->db->get();
+        $loan_result = $loan_query->row_array();
+
+        return [
+            'total_amt' => $payment_result['total_amt'] ?? 0,
+            'total_capital_amt' => $loan_result['total_capital_amt'] ?? 0
+        ];
+    }
+
+    private function get_weekly_expenses($selectedDate)
+    {
+        $monday = date('Y-m-d', strtotime('monday this week', strtotime($selectedDate)));
+        $saturday = date('Y-m-d', strtotime('saturday this week', strtotime($selectedDate)));
+
+        $this->db->select('
+           sum(amt) as total_exp
+        ');
+
+        $this->db->from('tbl_expenses');
+        $this->db->where('status !=', '1');
+        $this->db->where("date_added >=", $monday);
+        $this->db->where("date_added <=", $saturday);
 
         $query = $this->db->get();
         return $query->row_array();
