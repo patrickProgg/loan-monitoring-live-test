@@ -1183,7 +1183,7 @@
                 data: {
                     labels: payorNames,
                     datasets: [{
-                        label: 'Performance Score (Higher is Better)',
+                        // label: 'Performance Score (Higher is Better)',
                         data: performanceScores,
                         backgroundColor: function (context) {
                             const chart = context.chart;
@@ -1255,27 +1255,30 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
+                        // legend: {
+                        //     display: true,
+                        //     position: 'top',
+                        //     labels: {
+                        //         font: {
+                        //             size: 12,
+                        //             weight: 'bold'
+                        //         }
+                        //     }
+                        // },
+                        // title: {
+                        //     display: true,
+                        //     text: 'Top Good Payors - Performance Score Ranking',
+                        //     font: {
+                        //         size: 16,
+                        //         weight: 'bold'
+                        //     },
+                        //     padding: {
+                        //         top: 10,
+                        //         bottom: 30
+                        //     }
+                        // },
                         legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 12,
-                                    weight: 'bold'
-                                }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Top Good Payors - Performance Score Ranking',
-                            font: {
-                                size: 16,
-                                weight: 'bold'
-                            },
-                            padding: {
-                                top: 10,
-                                bottom: 30
-                            }
+                            display: false // This hides the entire legend
                         },
                         tooltip: {
                             callbacks: {
