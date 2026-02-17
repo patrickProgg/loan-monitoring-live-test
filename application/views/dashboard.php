@@ -233,71 +233,42 @@
                             <input type="date"
                                 style="width: 150px; display: inline-block; height: 28px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-info)"
                                 class="form-control" id="selected_date" name="selected_date"
-                                value="<?php echo $selected_date; ?>"
-                                onchange="document.getElementById('dateForm').submit()">
+                                value="<?php echo $selected_date; ?>">
                         </form>
                     </h3>
                 </div>
             </div>
             <div class="card-body">
-
                 <div class="card bg-light">
                     <div class="card-body text-center">
-                        <?php
-                        // Format dates for display
-                        $display_start = date('M j, Y', strtotime($start_date));
-                        $display_end = date('M j, Y', strtotime($end_date));
-                        $is_single_day = ($range_type == 'day');
-                        ?>
-
-                        <h4 class="text-muted mb-3">
-                            <?php if ($is_single_day): ?>
-                                Payments for <span class="text-primary"><?php echo $display_start; ?></span>
-                            <?php else: ?>
-                                Payments from
-                                <span class="text-primary"><?php echo $display_start; ?></span>
-                                to
-                                <span class="text-primary"><?php echo $display_end; ?></span>
-                            <?php endif; ?>
+                        <h4 class="text-muted mb-3" id="dateRangeText">
+                            <!-- Will be updated via AJAX -->
                         </h4>
 
-                        <div class="display-4 font-weight-bold text-success mb-3">
-                            ₱<?php echo number_format($range_total, 2); ?>
+                        <div class="display-4 font-weight-bold text-success mb-3" id="rangeTotalDisplay">
+                            <!-- Will be updated via AJAX -->
                         </div>
 
-                        <div class="text-muted">
-                            <i class="fas fa-calendar-alt"></i>
-                            <?php
-                            if ($is_single_day) {
-                                echo 'Single day';
-                            } else {
-                                $days = (strtotime($end_date) - strtotime($start_date)) / (60 * 60 * 24) + 1;
-                                echo $days . ' day' . ($days > 1 ? 's' : '');
-                            }
-                            ?>
-
-                            <?php if ($range_type == 'day' && $selected_date == date('Y-m-d')): ?>
-                                <span class="badge badge-success ml-2 text-muted">Today</span>
-                            <?php endif; ?>
+                        <div class="text-muted" id="rangeInfoDisplay">
+                            <!-- Will be updated via AJAX -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Links -->
                 <div class="mt-3 text-center">
                     <small class="text-muted">
                         Quick select:
-                        <a href="?selected_date=<?php echo date('Y-m-d'); ?>&range_type=day"
-                            class="btn btn-sm btn-outline-secondary">
+                        <a href="#" data-range="day" data-date="<?php echo date('Y-m-d'); ?>"
+                            class="btn btn-sm btn-outline-secondary quick-select">
                             Today
                         </a>
-                        <a href="?selected_date=<?php echo date('Y-m-d'); ?>&range_type=week"
-                            class="btn btn-sm btn-outline-secondary">
-                            This Week
+                        <a href="#" data-range="week" data-date="<?php echo $selected_date; ?>"
+                            class="btn btn-sm btn-outline-secondary quick-select">
+                            Week
                         </a>
-                        <a href="?selected_date=<?php echo date('Y-m-d'); ?>&range_type=month"
-                            class="btn btn-sm btn-outline-secondary">
-                            This Month
+                        <a href="#" data-range="month" data-date="<?php echo $selected_date; ?>"
+                            class="btn btn-sm btn-outline-secondary quick-select">
+                            Month
                         </a>
                     </small>
                 </div>
@@ -1376,6 +1347,99 @@
 
         // Initialize with horizontal bar chart
         createHorizontalBarChart();
+    });
+
+    $(document).ready(function () {
+        // Handle date input change
+        $('#selected_date').change(function () {
+            const selectedDate = $(this).val();
+            const rangeType = getCurrentRangeType(); // You need to track the current range type
+            loadPaymentFilterData(selectedDate, rangeType);
+        });
+
+        // Handle quick select clicks
+        $('.quick-select').click(function (e) {
+            e.preventDefault();
+            const rangeType = $(this).data('range');
+            const selectedDate = $(this).data('date');
+
+            // Update the date input value
+            $('#selected_date').val(selectedDate);
+
+            // Load data
+            loadPaymentFilterData(selectedDate, rangeType);
+        });
+
+        // Function to load payment filter data
+        function loadPaymentFilterData(selectedDate, rangeType) {
+            $.ajax({
+                url: '<?php echo site_url("View_ui_cont/get_payment_filter_data"); ?>',
+                method: 'GET',
+                data: {
+                    selected_date: selectedDate,
+                    range_type: rangeType
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        updatePaymentFilterUI(response.data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        }
+
+        // Function to update the UI
+        function updatePaymentFilterUI(data) {
+            // Update date range text
+            let dateRangeHtml = '';
+            if (data.is_single_day) {
+                dateRangeHtml = `Payments for <span class="text-primary">${data.start_date_display}</span>`;
+            } else {
+                dateRangeHtml = `Payments from <span class="text-primary">${data.start_date_display}</span> to <span class="text-primary">${data.end_date_display}</span>`;
+            }
+            $('#dateRangeText').html(dateRangeHtml);
+
+            // Update total amount
+            $('#rangeTotalDisplay').text(data.range_total_formatted);
+
+            // Update range info
+            let rangeInfoHtml = `<i class="fas fa-calendar-alt"></i> `;
+            if (data.is_single_day) {
+                rangeInfoHtml += 'Single day';
+            } else {
+                rangeInfoHtml += data.days_count + ' day' + (data.days_count > 1 ? 's' : '');
+            }
+
+            if (data.is_today) {
+                rangeInfoHtml += ` <span class="badge badge-success ml-2 text-muted">Today</span>`;
+            }
+
+            $('#rangeInfoDisplay').html(rangeInfoHtml);
+
+            // Update quick select links with current selected date
+            $('.quick-select[data-range="week"]').data('date', data.selected_date);
+            $('.quick-select[data-range="month"]').data('date', data.selected_date);
+        }
+
+        // Helper function to get current range type
+        function getCurrentRangeType() {
+            // You can store this in a data attribute or variable
+            // For now, we'll check the active quick select button
+            const activeButton = $('.quick-select.active');
+            if (activeButton.length) {
+                return activeButton.data('range');
+            }
+            return 'day'; // default
+        }
+
+        // Initial load (optional - you can keep the PHP-rendered initial state)
+        // or load via AJAX on page load
+        <?php if (isset($selected_date) && isset($range_type)): ?>
+            loadPaymentFilterData('<?php echo $selected_date; ?>', '<?php echo $range_type; ?>');
+        <?php endif; ?>
     });
 </script>
 
