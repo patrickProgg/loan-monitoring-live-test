@@ -309,7 +309,7 @@
     function deleteBtn(id) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "This action will delete expense permanently!",
+            text: "This action will move data to history!"g,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
