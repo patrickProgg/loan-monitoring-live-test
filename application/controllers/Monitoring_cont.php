@@ -1316,7 +1316,7 @@ class Monitoring_cont extends CI_Controller
     private function get_daily_data($selectedDate)
     {
         $this->db->select('
-            a.total_amt,
+            a.capital_amt,
             a.start_date,
             b.full_name
         ');
