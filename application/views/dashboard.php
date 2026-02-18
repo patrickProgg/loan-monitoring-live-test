@@ -1627,7 +1627,7 @@
             }
 
             if (data.is_today) {
-                rangeInfoHtml += ` <span class="badge badge-success ml-2">Today</span>`;
+                rangeInfoHtml += ` <span class="badge badge-success ml-2 text-muted">Today</span>`;
             }
 
             $('#rangeInfoDisplay').html(rangeInfoHtml);
