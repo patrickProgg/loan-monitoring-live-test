@@ -415,7 +415,7 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0">
-                        <span class="mr-2">📊 Monthly</span>
+                        <span class="mr-2">📊 Yearly</span>
                         <select id="dataTypeSelect" class="form-control-sm border-info"
                             style="width: 120px; display: inline-block; height: 28px; color: #444242; border-radius: 6px;">
                             <option value="payments">Payments</option>
