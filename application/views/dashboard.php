@@ -423,7 +423,7 @@
                             <option value="pullout">Pull Out</option>
                             <option value="expenses">Expenses</option>
                         </select>
-                        <span class="mx-2">-</span>
+                        <!-- <span class="mx-2">-</span> -->
                         <select id="yearSelect" class="form-control-sm border-info"
                             style="width: 80px; display: inline-block; height: 28px; background-color: white; color: #444242;">
                         </select>
