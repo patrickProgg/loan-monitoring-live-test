@@ -223,7 +223,7 @@
 
 
 <div class="row mb-3">
-    <div class="col-md-8 px-3">
+    <!-- <div class="col-md-8 px-3">
         <div class="card h-100">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -235,6 +235,65 @@
                                 class="form-control" id="selected_date" name="selected_date"
                                 value="<?php echo $selected_date; ?>">
                         </form>
+                    </h3>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h4 class="text-muted mb-3" id="dateRangeText">
+                        </h4>
+
+                        <div class="display-4 font-weight-bold text-success mb-3" id="rangeTotalDisplay">
+                        </div>
+
+                        <div class="text-muted" id="rangeInfoDisplay">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        Quick select:
+                        <a href="#" data-range="day" data-date="<?php echo date('Y-m-d'); ?>"
+                            class="btn btn-sm btn-outline-secondary quick-select">
+                            Today
+                        </a>
+                        <a href="#" data-range="week" data-date="<?php echo $selected_date; ?>"
+                            class="btn btn-sm btn-outline-secondary quick-select">
+                            Week
+                        </a>
+                        <a href="#" data-range="month" data-date="<?php echo $selected_date; ?>"
+                            class="btn btn-sm btn-outline-secondary quick-select">
+                            Month
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="col-md-8 px-3">
+        <div class="card h-100">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0" style="display: flex; align-items: center; gap: 10px;">
+                        <span>💰 Daily</span>
+                        <div style="display: flex; gap: 5px;">
+
+                            <select id="dailyTypeSelect" class="form-control-sm border-info"
+                                style="width: 120px; display: inline-block; height: 28px; color: #444242; border-radius: 6px;">
+                                <option value="payments">Payments</option>
+                                <option value="loan">Loan Released</option>
+                                <option value="pullout">Pull Out</option>
+                                <option value="expenses">Expenses</option>
+                            </select>
+
+                            <input type="date"
+                                style="width: 150px; display: inline-block; height: 28px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-info)"
+                                class="form-control" id="selected_date" name="selected_date"
+                                value="<?php echo $selected_date; ?>">
+                        </div>
                     </h3>
                 </div>
             </div>
@@ -1352,61 +1411,212 @@
         createHorizontalBarChart();
     });
 
+    // $(document).ready(function () {
+    //     // Handle date input change
+    //     $('#selected_date').change(function () {
+    //         const selectedDate = $(this).val();
+    //         const rangeType = getCurrentRangeType(); // You need to track the current range type
+    //         loadPaymentFilterData(selectedDate, rangeType);
+    //     });
+
+    //     // Handle quick select clicks
+    //     $('.quick-select').click(function (e) {
+    //         e.preventDefault();
+    //         const rangeType = $(this).data('range');
+    //         const selectedDate = $(this).data('date');
+
+    //         // Update the date input value
+    //         $('#selected_date').val(selectedDate);
+
+    //         // Load data
+    //         loadPaymentFilterData(selectedDate, rangeType);
+    //     });
+
+    //     // Function to load payment filter data
+    //     function loadPaymentFilterData(selectedDate, rangeType) {
+    //         $.ajax({
+    //             url: '<?php echo site_url("View_ui_cont/get_payment_filter_data"); ?>',
+    //             method: 'GET',
+    //             data: {
+    //                 selected_date: selectedDate,
+    //                 range_type: rangeType
+    //             },
+    //             dataType: 'json',
+    //             success: function (response) {
+    //                 if (response.success) {
+    //                     updatePaymentFilterUI(response.data);
+    //                 }
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.error('AJAX Error:', error);
+    //             }
+    //         });
+    //     }
+
+    //     // Function to update the UI
+    //     function updatePaymentFilterUI(data) {
+    //         // Update date range text
+    //         let dateRangeHtml = '';
+    //         if (data.is_single_day) {
+    //             dateRangeHtml = `Payments for <span class="text-primary">${data.start_date_display}</span>`;
+    //         } else {
+    //             dateRangeHtml = `Payments from <span class="text-primary">${data.start_date_display}</span> to <span class="text-primary">${data.end_date_display}</span>`;
+    //         }
+    //         $('#dateRangeText').html(dateRangeHtml);
+
+    //         // Update total amount
+    //         $('#rangeTotalDisplay').text(data.range_total_formatted);
+
+    //         // Update range info
+    //         let rangeInfoHtml = `<i class="fas fa-calendar-alt"></i> `;
+    //         if (data.is_single_day) {
+    //             rangeInfoHtml += 'Single day';
+    //         } else {
+    //             rangeInfoHtml += data.days_count + ' day' + (data.days_count > 1 ? 's' : '');
+    //         }
+
+    //         if (data.is_today) {
+    //             rangeInfoHtml += ` <span class="badge badge-success ml-2 text-muted">Today</span>`;
+    //         }
+
+    //         $('#rangeInfoDisplay').html(rangeInfoHtml);
+
+    //         // Update quick select links with current selected date
+    //         $('.quick-select[data-range="week"]').data('date', data.selected_date);
+    //         $('.quick-select[data-range="month"]').data('date', data.selected_date);
+    //     }
+
+    //     // Helper function to get current range type
+    //     function getCurrentRangeType() {
+    //         // You can store this in a data attribute or variable
+    //         // For now, we'll check the active quick select button
+    //         const activeButton = $('.quick-select.active');
+    //         if (activeButton.length) {
+    //             return activeButton.data('range');
+    //         }
+    //         return 'day'; // default
+    //     }
+
+    //     // Initial load (optional - you can keep the PHP-rendered initial state)
+    //     // or load via AJAX on page load
+    //     <?php if (isset($selected_date) && isset($range_type)): ?>
+        //         loadPaymentFilterData('<?php echo $selected_date; ?>', '<?php echo $range_type; ?>');
+        //     <?php endif; ?>
+    // });
+
     $(document).ready(function () {
+        // Track current values
+        let currentDate = $('#selected_date').val();
+        let currentRangeType = getCurrentRangeType();
+        let currentDailyType = $('#dailyTypeSelect').val();
+
         // Handle date input change
         $('#selected_date').change(function () {
-            const selectedDate = $(this).val();
-            const rangeType = getCurrentRangeType(); // You need to track the current range type
-            loadPaymentFilterData(selectedDate, rangeType);
+            currentDate = $(this).val();
+            currentRangeType = getCurrentRangeType();
+            currentDailyType = $('#dailyTypeSelect').val();
+            loadPaymentFilterData();
+        });
+
+        // Handle daily type select change
+        $('#dailyTypeSelect').change(function () {
+            currentDailyType = $(this).val();
+            currentDate = $('#selected_date').val();
+            currentRangeType = getCurrentRangeType();
+            loadPaymentFilterData();
         });
 
         // Handle quick select clicks
         $('.quick-select').click(function (e) {
             e.preventDefault();
-            const rangeType = $(this).data('range');
-            const selectedDate = $(this).data('date');
 
-            // Update the date input value
-            $('#selected_date').val(selectedDate);
+            // Update active state
+            $('.quick-select').removeClass('active btn-secondary').addClass('btn-outline-secondary');
+            $(this).removeClass('btn-outline-secondary').addClass('active btn-secondary');
+
+            // Update current values
+            currentRangeType = $(this).data('range');
+            currentDate = $(this).data('date');
+            currentDailyType = $('#dailyTypeSelect').val();
+
+            // Update date input
+            $('#selected_date').val(currentDate);
 
             // Load data
-            loadPaymentFilterData(selectedDate, rangeType);
+            loadPaymentFilterData();
         });
 
-        // Function to load payment filter data
-        function loadPaymentFilterData(selectedDate, rangeType) {
+        // Main function to load payment filter data (similar to loadChartData)
+        function loadPaymentFilterData() {
+            // Construct URL based on daily type
+            let url = getFilterDataUrl(currentDailyType);
+
+            // Show loading state
+            $('#rangeTotalDisplay').html('<i class="fas fa-spinner fa-spin"></i>');
+            $('#dateRangeText').html('Loading...');
+
             $.ajax({
-                url: '<?php echo site_url("View_ui_cont/get_payment_filter_data"); ?>',
+                url: url,
                 method: 'GET',
                 data: {
-                    selected_date: selectedDate,
-                    range_type: rangeType
+                    selected_date: currentDate,
+                    range_type: currentRangeType
                 },
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
+                        // Update UI with response data
                         updatePaymentFilterUI(response.data);
+
+                        // Update any additional elements
+                        // updateFilterSummary(response.data, currentDailyType);
+
+                        // Update the data type select value (optional, ensures consistency)
+                        $('#dailyTypeSelect').val(currentDailyType);
+                    } else {
+                        console.error('Error in response:', response);
+                        showErrorState();
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('AJAX Error:', error);
+                    showErrorState();
                 }
             });
         }
 
-        // Function to update the UI
+        // Helper function to get URL based on daily type (similar to switch in loadChartData)
+        function getFilterDataUrl(dailyType) {
+            const urls = {
+                'payments': '<?php echo site_url("View_ui_cont/get_payment_filter_data"); ?>',
+                'loan': '<?php echo site_url("View_ui_cont/get_loan_filter_data"); ?>',
+                'pullout': '<?php echo site_url("View_ui_cont/get_pullout_filter_data"); ?>',
+                'expenses': '<?php echo site_url("View_ui_cont/get_expenses_filter_data"); ?>'
+            };
+
+            // Return URL for the selected type, default to payments URL if not found
+            return urls[dailyType] || '<?php echo site_url("View_ui_cont/get_payment_filter_data"); ?>';
+        }
+
+        // Function to update the UI (similar structure to your chart update)
         function updatePaymentFilterUI(data) {
-            // Update date range text
+            // Update date range text with proper label
+            const typeLabel = getDataTypeLabel(currentDailyType);
             let dateRangeHtml = '';
+
             if (data.is_single_day) {
-                dateRangeHtml = `Payments for <span class="text-primary">${data.start_date_display}</span>`;
+                dateRangeHtml = `${typeLabel} for <span class="text-primary">${data.start_date_display}</span>`;
             } else {
-                dateRangeHtml = `Payments from <span class="text-primary">${data.start_date_display}</span> to <span class="text-primary">${data.end_date_display}</span>`;
+                dateRangeHtml = `${typeLabel} from <span class="text-primary">${data.start_date_display}</span> to <span class="text-primary">${data.end_date_display}</span>`;
             }
             $('#dateRangeText').html(dateRangeHtml);
 
-            // Update total amount
-            $('#rangeTotalDisplay').text(data.range_total_formatted);
+            // Update total amount with appropriate color
+            const totalColor = getTotalColorClass(currentDailyType);
+            $('#rangeTotalDisplay')
+                .removeClass('text-success text-danger text-info text-warning')
+                .addClass(totalColor)
+                .text(data.range_total_formatted);
 
             // Update range info
             let rangeInfoHtml = `<i class="fas fa-calendar-alt"></i> `;
@@ -1417,20 +1627,87 @@
             }
 
             if (data.is_today) {
-                rangeInfoHtml += ` <span class="badge badge-success ml-2 text-muted">Today</span>`;
+                rangeInfoHtml += ` <span class="badge badge-success ml-2">Today</span>`;
             }
 
             $('#rangeInfoDisplay').html(rangeInfoHtml);
+        }
 
-            // Update quick select links with current selected date
-            $('.quick-select[data-range="week"]').data('date', data.selected_date);
-            $('.quick-select[data-range="month"]').data('date', data.selected_date);
+        // Helper function to get label for data type (similar to your chart label function)
+        function getDataTypeLabel(dataType) {
+            const labels = {
+                'payments': 'Payments',
+                'loan': 'Loan Releases',
+                'pullout': 'Pull Outs',
+                'expenses': 'Expenses'
+            };
+            return labels[dataType] || 'Transactions';
+        }
+
+        // Helper function to get color class based on data type
+        function getTotalColorClass(dataType) {
+            const colors = {
+                'payments': 'text-success',
+                'loan': 'text-info',
+                'pullout': 'text-warning',
+                'expenses': 'text-danger'
+            };
+            return colors[dataType] || 'text-success';
+        }
+
+        // Function to update summary/filter display (similar to updateYearSummary)
+        function updateFilterSummary(data, dataType) {
+            let badgeClass = '';
+            let icon = '';
+
+            switch (dataType) {
+                case 'payments':
+                    badgeClass = 'bg-success';
+                    icon = '💰';
+                    break;
+                case 'loan':
+                    badgeClass = 'bg-info';
+                    icon = '🏦';
+                    break;
+                case 'pullout':
+                    badgeClass = 'bg-warning';
+                    icon = '💸';
+                    break;
+                case 'expenses':
+                    badgeClass = 'bg-danger';
+                    icon = '📝';
+                    break;
+                default:
+                    badgeClass = 'bg-secondary';
+                    icon = '📊';
+            }
+
+            // Add count if available
+            const countText = data.count ? ` (${data.count} items)` : '';
+
+            const filterHtml = `
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <span class="badge ${badgeClass} text-white p-2">
+                    <i class="fas fa-filter mr-1"></i> ${icon} ${getDataTypeLabel(dataType)}${countText}
+                </span>
+                <small class="text-muted">
+                    <i class="fas fa-calendar-day"></i> ${data.start_date_display} - ${data.end_date_display}
+                </small>
+            </div>
+        `;
+
+            $('#filterTypeDisplay').html(filterHtml);
+        }
+
+        // Helper function to show error state
+        function showErrorState() {
+            $('#rangeTotalDisplay').text('Error loading data');
+            $('#dateRangeText').text('Failed to load data');
+            $('#rangeInfoDisplay').html('<i class="fas fa-exclamation-triangle text-danger"></i> Please try again');
         }
 
         // Helper function to get current range type
         function getCurrentRangeType() {
-            // You can store this in a data attribute or variable
-            // For now, we'll check the active quick select button
             const activeButton = $('.quick-select.active');
             if (activeButton.length) {
                 return activeButton.data('range');
@@ -1438,10 +1715,27 @@
             return 'day'; // default
         }
 
-        // Initial load (optional - you can keep the PHP-rendered initial state)
-        // or load via AJAX on page load
+        // Set initial active state based on PHP variable
+        <?php if (isset($range_type) && $range_type != 'day'): ?>
+            $('.quick-select').removeClass('active btn-secondary').addClass('btn-outline-secondary');
+            $(`.quick-select[data-range="<?php echo $range_type; ?>"]`).removeClass('btn-outline-secondary').addClass('active btn-secondary');
+        <?php else: ?>
+            $('.quick-select[data-range="day"]').removeClass('btn-outline-secondary').addClass('active btn-secondary');
+        <?php endif; ?>
+
+        // Initial load
         <?php if (isset($selected_date) && isset($range_type)): ?>
-            loadPaymentFilterData('<?php echo $selected_date; ?>', '<?php echo $range_type; ?>');
+            // Set initial values
+            currentDate = '<?php echo $selected_date; ?>';
+            currentRangeType = '<?php echo $range_type; ?>';
+            currentDailyType = '<?php echo isset($daily_type) ? $daily_type : 'payments'; ?>';
+
+            // Set select values
+            $('#dailyTypeSelect').val(currentDailyType);
+            $('#selected_date').val(currentDate);
+
+            // Load initial data
+            loadPaymentFilterData();
         <?php endif; ?>
     });
 </script>
