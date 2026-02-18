@@ -1315,18 +1315,15 @@ class Monitoring_cont extends CI_Controller
     }
     private function get_daily_data($selectedDate)
     {
-        // Add 1 day to the selected date
-        $nextDay = date('Y-m-d', strtotime($selectedDate . ' +1 day'));
-
         $this->db->select('
-        a.total_amt,
-        a.start_date,
-        b.full_name
-    ');
+            a.total_amt,
+            a.start_date,
+            b.full_name
+        ');
 
         $this->db->from('tbl_loan as a');
         $this->db->join('tbl_client as b', 'b.id = a.cl_id');
-        $this->db->where('a.start_date', $nextDay); // Use the next day
+        $this->db->where('a.start_date', $selectedDate);
         $this->db->where('b.status !=', '1');
 
         $query = $this->db->get();
