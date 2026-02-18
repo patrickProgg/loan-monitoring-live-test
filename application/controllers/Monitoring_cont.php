@@ -598,7 +598,7 @@ class Monitoring_cont extends CI_Controller
             $sheet->getStyle('A' . $excelRow)->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('B' . $excelRow, $fullName); // Use the capitalized version
-            $sheet->setCellValue('D' . $excelRow, (float) $loan['total_amt']);
+            $sheet->setCellValue('D' . $excelRow, (float) $loan['capital_amt']);
             $sheet->getStyle('D' . $excelRow)->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
@@ -606,7 +606,7 @@ class Monitoring_cont extends CI_Controller
         }
 
         // Calculate TOTAL RELEASED in Excel row 33
-        $totalReleased = array_sum(array_column($loanData, 'total_amt'));
+        $totalReleased = array_sum(array_column($loanData, 'capital_amt'));
         $sheet->setCellValue('D33', (float) $totalReleased);
 
         // Apply number formatting to ALL number cells
