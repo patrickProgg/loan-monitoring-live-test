@@ -290,7 +290,7 @@
                             </select>
 
                             <input type="date"
-                                style="width: 150px; display: inline-block; height: 28px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-info)"
+                                style="font-size: 12px; width: 150px; display: inline-block; height: 28px; background-color: white; color: #444242; border-radius: 6px; border:1px solid var(--bs-info)"
                                 class="form-control" id="selected_date" name="selected_date"
                                 value="<?php echo $selected_date; ?>">
                         </div>
