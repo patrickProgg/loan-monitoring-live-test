@@ -503,6 +503,9 @@ class Monitoring_cont extends CI_Controller
 
     public function get_daily_report()
     {
+        date_default_timezone_set('Asia/Manila');
+        $this->db->query("SET time_zone = '+08:00'");
+
         $selectedDate = $this->input->post('date');
 
         $spreadsheet = new Spreadsheet();
