@@ -1315,6 +1315,8 @@ class Monitoring_cont extends CI_Controller
     }
     private function get_daily_data($selectedDate)
     {
+        $this->db->query("SET time_zone = '+08:00'");
+
         $this->db->select('
             a.total_amt,
             a.start_date,
