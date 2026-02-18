@@ -521,10 +521,8 @@ class Monitoring_cont extends CI_Controller
         $loanData = $this->get_daily_data($selectedDate);
 
         $formattedDate = date('F j, Y', strtotime($selectedDate));
-        $dateTime = new DateTime($selectedDate, new DateTimeZone('UTC'));
-
-        $excelDateHeader = Date::PHPToExcel($dateTime->getTimestamp());
-        $previousDay = Date::PHPToExcel(strtotime($dateTime . ' -1 day'));
+        $excelDateHeader = Date::PHPToExcel(strtotime($selectedDate));
+        $previousDay = Date::PHPToExcel(strtotime($selectedDate . ' -1 day'));
 
         $data = [
             [$formattedDate],
@@ -590,12 +588,8 @@ class Monitoring_cont extends CI_Controller
             if ($excelRow > 32)
                 break;
 
-
-            $timestamp = ($loan['start_date']);
-
-            $dateTime = new DateTime($timestamp, new DateTimeZone('UTC'));
-
-            $excelDate = Date::PHPToExcel($dateTime);
+            $timestamp = strtotime($loan['start_date']);
+            $excelDate = Date::PHPToExcel($timestamp);
 
             // Convert full name to title case
             $fullName = ucwords(strtolower($loan['full_name']));
