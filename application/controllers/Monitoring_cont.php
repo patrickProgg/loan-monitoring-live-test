@@ -524,7 +524,7 @@ class Monitoring_cont extends CI_Controller
         $dateTime = new DateTime($selectedDate, new DateTimeZone('UTC'));
 
         $excelDateHeader = Date::PHPToExcel($dateTime->getTimestamp());
-        $previousDay = Date::PHPToExcel(strtotime($selectedDate . ' -1 day'));
+        $previousDay = Date::PHPToExcel(strtotime($dateTime . ' -1 day'));
 
         $data = [
             [$formattedDate],
@@ -590,8 +590,12 @@ class Monitoring_cont extends CI_Controller
             if ($excelRow > 32)
                 break;
 
-            $timestamp = strtotime($loan['start_date']);
-            $excelDate = Date::PHPToExcel($timestamp);
+
+            $timestamp = ($loan['start_date']);
+
+            $dateTime = new DateTime($timestamp, new DateTimeZone('UTC'));
+
+            $excelDate = Date::PHPToExcel($dateTime);
 
             // Convert full name to title case
             $fullName = ucwords(strtolower($loan['full_name']));
