@@ -503,9 +503,6 @@ class Monitoring_cont extends CI_Controller
 
     public function get_daily_report()
     {
-        date_default_timezone_set('Asia/Manila');
-        $this->db->query("SET time_zone = '+08:00'");
-
         $selectedDate = $this->input->post('date');
 
         $spreadsheet = new Spreadsheet();
@@ -524,7 +521,9 @@ class Monitoring_cont extends CI_Controller
         $loanData = $this->get_daily_data($selectedDate);
 
         $formattedDate = date('F j, Y', strtotime($selectedDate));
-        $excelDateHeader = Date::PHPToExcel(strtotime($selectedDate));
+        $dateTime = new DateTime($selectedDate, new DateTimeZone('UTC'));
+
+        $excelDateHeader = Date::PHPToExcel($dateTime->getTimestamp());
         $previousDay = Date::PHPToExcel(strtotime($selectedDate . ' -1 day'));
 
         $data = [
