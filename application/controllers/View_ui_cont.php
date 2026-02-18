@@ -8,6 +8,9 @@ class View_ui_cont extends CI_Controller
     {
         parent::__construct();
 
+        date_default_timezone_set('Asia/Manila');
+        $this->db->query("SET time_zone = '+08:00'");
+
         if (!$this->session->userdata('logged_in')) {
             redirect('login');
         }
