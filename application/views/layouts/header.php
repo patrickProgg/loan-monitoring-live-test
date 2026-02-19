@@ -334,7 +334,7 @@
         fixed; top: 0; width: 100%; z-index: 1050; padding:0">
         <a class="navbar-brand d-flex align-items-center" style="margin-left:129px;" href="<?= base_url(); ?>dashboard"
             style="height: 100%;">
-            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 30px;">
+            <!-- <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 30px;"> -->
         </a>
 
         <ul class="navbar-nav flex-row align-items-center me-auto" style="margin: 0; padding: 0; column-gap: 12px;">
