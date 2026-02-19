@@ -593,8 +593,7 @@ class Monitoring_cont extends CI_Controller
                 break;
 
             $timestamp = strtotime($loan['start_date']);
-            $excelDate = date('Y-m-d', strtotime($timestamp));
-            // $excelDate = Date::PHPToExcel($timestamp);
+            $excelDate = Date::PHPToExcel($timestamp) + 1;
 
             // Convert full name to title case
             $fullName = ucwords(strtolower($loan['full_name']));
