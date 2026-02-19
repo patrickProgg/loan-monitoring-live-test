@@ -593,12 +593,12 @@ class Monitoring_cont extends CI_Controller
                 break;
 
             $timestamp = strtotime($loan['start_date']);
-            $excelDate = Date::PHPToExcel($timestamp);
+            // $excelDate = Date::PHPToExcel($timestamp);
 
             // Convert full name to title case
             $fullName = ucwords(strtolower($loan['full_name']));
 
-            $sheet->setCellValue('A' . $excelRow, $excelDate);
+            $sheet->setCellValue('A' . $excelRow, $timestamp);
             $sheet->getStyle('A' . $excelRow)->getAlignment()
                 ->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->setCellValue('B' . $excelRow, $fullName); // Use the capitalized version
