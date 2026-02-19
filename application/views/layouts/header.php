@@ -330,13 +330,11 @@
 
 <body>
     <!-- Navbar Start -->
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm px-0" style="height: 50px; background-size: cover; background-position: center; background-repeat: no-repeat; background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), url('<?php echo base_url("assets/images/blue.png"); ?>'); width: 100%; position:
-        fixed; top: 0; width: 100%; z-index: 1050; padding:0">
-        <a class="navbar-brand d-flex align-items-center"
-            style="margin-left:129px; background-color: #ffffff; height: 100%; padding: 0 15px; border-radius: 4px;"
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm px-0"
+        style="height: 50px; background-color: #ffffff; width: 100%; position: fixed; top: 0; width: 100%; z-index: 1050; padding:0">
+        <a class="navbar-brand d-flex align-items-center" style="margin-left:129px; height: 100%;"
             href="<?= base_url(); ?>dashboard">
-            <span style="font-size: 1.5rem; margin-right: 5px;">📊</span>
-            <span style="color: #333;">Dashboard</span>
+            <img src="<?= base_url(); ?>assets/images/loan.png" alt="Logo" style="height: 30px;">
         </a>
 
         <ul class="navbar-nav flex-row align-items-center me-auto" style="margin: 0; padding: 0; column-gap: 12px;">
