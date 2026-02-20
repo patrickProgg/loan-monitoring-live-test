@@ -2739,7 +2739,15 @@
             data: { date: date },
             success: function (response) {
                 console.log(response);
+
+                let entryCount = response.data.length;
+
+                let totalAmt = response.data.reduce((sum, item) => sum + (parseFloat(item.amt) || 0), 0);
+
                 populateBulkPaymentTable(response, date);
+                $('#total_clients_count').text(entryCount);
+                $('#total_payments_sum').text(totalAmt);
+
                 $('#bulk_payment_modal').modal('show');
             },
             error: function () {
