@@ -2746,7 +2746,10 @@
 
                 populateBulkPaymentTable(response, date);
                 $('#total_clients_count').text(entryCount);
-                $('#total_payments_sum').text(totalAmt);
+                $('#total_payments_sum').text(totalAmt.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
 
                 $('#bulk_payment_modal').modal('show');
             },
