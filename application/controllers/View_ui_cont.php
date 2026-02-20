@@ -60,12 +60,18 @@ class View_ui_cont extends CI_Controller
             ->row()
             ->amt ?? 0;
 
+        // $data['total_pull_out'] = $this->db
+        //     ->select_sum('total_pull_out')
+        //     ->where('status !=', '1')
+        //     ->get('tbl_pull_out')
+        //     ->row()
+        //     ->total_pull_out;
+
         $data['total_pull_out'] = $this->db
-            ->select_sum('total_pull_out')
-            ->where('status !=', '1')
-            ->get('tbl_pull_out')
+            ->select('pull_out_bal')
+            ->get('tbl_balance')
             ->row()
-            ->total_pull_out;
+            ->pull_out_bal;
 
         $data['total_expenses'] = $this->db
             ->select_sum('amt')

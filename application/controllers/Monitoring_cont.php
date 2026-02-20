@@ -488,6 +488,19 @@ class Monitoring_cont extends CI_Controller
             $recovered = $this->db->update('tbl_expenses', $status);
         }
 
+        if ($recovered && $type === "pull_out") {
+            $record = $this->db->select('total_pull_out')
+                ->where('id', $id)
+                ->get('tbl_pull_out')
+                ->row();
+
+            $total_pull_out = floatval($record->total_pull_out);
+
+            $this->db->set('pull_out_bal', 'pull_out_bal + ' . $total_pull_out, FALSE)
+                ->where('id', 1)
+                ->update('tbl_balance');
+        }
+
         if ($recovered) {
             echo json_encode([
                 'status' => 'success',
@@ -532,10 +545,10 @@ class Monitoring_cont extends CI_Controller
 
         $data = [
             [$formattedDate],
-            ["AREA 4'-Payment", "", "", ""],
-            ["Processing Fee", "", "", "", "", "", "RP LENDING SERVICES", ""],
-            ["EXCESS", "", "", "", "", "Area 4", "", ""],
-            ["T O T A L - C P", "", "", "", "", "LEAH MAE GUCOR", "", ""],
+            ["Payment", "", "", ""],
+            ["Processing Fee", "", "", "", "", "", "", ""],
+            ["EXCESS", "", "", "", "", "", "Rentrap Lending", ""],
+            ["T O T A L - C P", "", "", "", "", "", "", ""],
             ["LESS : E X P E N S E S", "", "", "", "", "CASH COUNT", "", ""],
             ["Gas", "", "", "", "", "PIECES", "DENOMINATION", "AMOUNT"],
             ["Motor Shop", "", "", "", "", "", "", ""],
@@ -733,7 +746,7 @@ class Monitoring_cont extends CI_Controller
         for ($row = 1; $row <= 14; $row++) {
             $sheet->mergeCells('A' . $row . ':C' . $row);
         }
-        $sheet->mergeCells('G3:H3');
+        $sheet->mergeCells('G4:H4');
         $sheet->mergeCells('F5:H5');
         $sheet->mergeCells('F6:H6');
         for ($row = 15; $row <= 16; $row++) {
@@ -813,7 +826,7 @@ class Monitoring_cont extends CI_Controller
         }
 
         // Bold rows
-        $totalRows = ['D2', 'D3', 'D4', 'D5', 'D15', 'D16', 'A18', 'D16', 'D18', 'A20', 'B20', 'D20', 'A33', 'A36', 'B36', 'C36', 'D36', 'A42', 'A43', 'F7', 'G7', 'H7', 'F18', 'H18', 'G3', 'F4', 'F5', 'F6', 'A5', 'A15', 'A16', 'D43', 'A2'];
+        $totalRows = ['D2', 'D3', 'D4', 'D5', 'D15', 'D16', 'A18', 'D16', 'D18', 'A20', 'B20', 'D20', 'A33', 'A36', 'B36', 'C36', 'D36', 'A42', 'A43', 'F7', 'G7', 'H7', 'F18', 'H18', 'G3', 'F4', 'F5', 'F6', 'A5', 'A15', 'A16', 'D43', 'A2','G4'];
         foreach ($totalRows as $cell) {
             $sheet->getStyle($cell)->getFont()->setBold(true);
         }

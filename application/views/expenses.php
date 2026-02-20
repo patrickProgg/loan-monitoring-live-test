@@ -37,6 +37,25 @@
         justify-content: flex-start;
         /* left align by default */
     }
+
+    /* Form control focus effects */
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #ffc107;
+        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+    }
+
+    /* Quick amount buttons hover */
+    .quick-capital:hover {
+        background-color: #198754;
+        border-color: #198754;
+        color: white;
+    }
+
+    /* Summary display */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
 </style>
 <section id="content">
     <main>
@@ -75,56 +94,91 @@
 
         <div class="modal fade" id="addExpenses" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
             data-bs-keyboard="false">
-            <div class="modal-dialog" style="margin-top:10px">
+            <div class="modal-dialog" style="max-width:600px; margin-top:10px">
                 <div class="modal-content">
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title">Expenses Type</h5>
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-receipt me-2 text-warning"></i>
+                            Expenses Details
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <form id="expenses_form">
-                        <div class="modal-body">
-                            <div id="expenseRows">
-                                <div class="row g-2 expense-row mb-2 align-items-end">
-                                    <div class="col-7">
-                                        <label>Type</label>
-                                        <select class="form-control expense-type">
-                                            <option value="">Select type</option>
-                                            <option value="gas">Gas</option>
-                                            <option value="meal">Meal</option>
-                                            <option value="motor_shop">Motor Shop</option>
-                                            <option value="ca">Cash Advance</option>
-                                            <option value="other">Other</option>
-                                        </select>
-
-                                        <input type="text" class="form-control mt-2 other-expense d-none"
-                                            placeholder="Enter other type" />
-                                    </div>
-
-                                    <div class="col-4">
-                                        <label>Amount</label>
-                                        <input type="number" class="form-control expense-amount" />
-                                    </div>
-
-                                    <div class="col-1">
-                                        <button type="button" class="btn btn-sm btn-primary add-row-btn mb-1">+</button>
-                                    </div>
+                        <div class="modal-body pb-0">
+                            <!-- Expenses Card -->
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-header bg-white border-0">
+                                    <h6 class="fw-bold mb-0">
+                                        <i class="fas fa-list-alt me-2 text-warning"></i>
+                                        Expense Details
+                                    </h6>
                                 </div>
-                            </div>
+                                <div class="card-body px-4">
+                                    <div id="expenseRows">
+                                        <!-- First expense row -->
+                                        <div class="row g-2 expense-row mb-3 align-items-end">
+                                            <div class="col-7">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-tag me-1"></i> EXPENSE TYPE
+                                                </label>
+                                                <select class="form-select  expense-type">
+                                                    <option value="">Select type</option>
+                                                    <option value="gas">⛽ Gas</option>
+                                                    <option value="meal">🍽️ Meal</option>
+                                                    <option value="motor_shop">🔧 Motor Shop</option>
+                                                    <option value="ca">💰 Cash Advance</option>
+                                                    <option value="other">📌 Other</option>
+                                                </select>
 
+                                                <input type="text"
+                                                    class="form-control form-control-lg mt-3 other-expense d-none"
+                                                    placeholder="Enter other expense type" />
+                                            </div>
 
-                            <div class="row g-2 mt-2">
-                                <div class="col-4">
-                                    <label>Date</label>
-                                    <input type="date" class="form-control date-added" value="<?= date('Y-m-d') ?>" />
+                                            <div class="col-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-coins me-1"></i> AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                    <input type="number"
+                                                        class="form-control form-control-lg expense-amount"
+                                                        placeholder="0.00" min="0" step="0.01" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-1">
+                                                <button type="button" class="btn btn-primary rounded-circle add-row-btn"
+                                                    style="width: 38px; height: 38px;" title="Add another expense">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Date and Additional Info -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-calendar-alt me-1"></i> EXPENSE DATE
+                                            </label>
+                                            <input type="date" class="form-control form-control-lg date-added"
+                                                value="<?= date('Y-m-d') ?>" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="modal-footer">
+                        <div class="modal-footer border-0 pt-0">
                             <button type="button" onclick="handleFormSubmit(currentAction, currentId)" id="submitBtn"
-                                name="submit" class="btn btn-primary">Add</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                name="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Save Expenses
+                            </button>
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i> Close
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -269,58 +323,222 @@
     // });
 
     $(document).ready(function () {
+        // Initialize total display
+        updateExpenseSummary();
 
+        // Add new expense row
         $(document).on("click", ".add-row-btn", function () {
             const newRow = $(`
-            <div class="row g-2 expense-row mb-2 align-items-end">
+            <div class="row g-2 expense-row mb-3 align-items-end">
                 <div class="col-7">
-                    <label>Type</label>
-                    <select class="form-control expense-type">
+                    <label class="form-label fw-bold text-muted small mb-2">
+                        <i class="fas fa-tag me-1"></i> EXPENSE TYPE
+                    </label>
+                    <select class="form-select  expense-type">
                         <option value="">Select type</option>
-                        <option value="gas">Gas</option>
-                        <option value="meal">Meal</option>
-                        <option value="motor_shop">Motor Shop</option>
-                        <option value="ca">Cash Advance</option>
-                        <option value="other">Other</option>
+                        <option value="gas">⛽ Gas</option>
+                        <option value="meal">🍽️ Meal</option>
+                        <option value="motor_shop">🔧 Motor Shop</option>
+                        <option value="ca">💰 Cash Advance</option>
+                        <option value="other">📌 Other</option>
                     </select>
 
                     <input type="text"
-                        class="form-control mt-2 other-expense d-none"
-                        placeholder="Enter other type" />
+                        class="form-control form-control-lg mt-3 other-expense d-none"
+                        placeholder="Enter other expense type" />
                 </div>
 
                 <div class="col-4">
-                    <label>Amount</label>
-                    <input type="number" class="form-control expense-amount" placeholder="Amount" />
+                    <label class="form-label fw-bold text-muted small mb-2">
+                        <i class="fas fa-coins me-1"></i> AMOUNT
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                        <input type="number" class="form-control form-control-lg expense-amount" 
+                            placeholder="0.00" min="0" step="0.01" />
+                    </div>
                 </div>
 
-                <div class="col-1">
+               <div class="col-1">
                     <button type="button"
-                        class="btn btn-sm btn-danger remove-row-btn mb-1">−</button>
+                        class="btn btn-danger rounded-circle remove-row-btn" 
+                        style="width: 38px; height: 38px;"
+                        title="Remove expense">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
         `);
 
             $("#expenseRows").append(newRow);
+
+            // Add animation
+            newRow.hide().slideDown(300);
             newRow.find(".expense-type").focus();
+
+            // Update summary
+            updateExpenseSummary();
         });
 
+        // Remove expense row with animation
         $(document).on("click", ".remove-row-btn", function () {
-            $(this).closest(".expense-row").remove();
-        });
+            const row = $(this).closest(".expense-row");
 
-        // Show "Other" input when selected
-        $(document).on("change", ".expense-type", function () {
-            const $row = $(this).closest(".expense-row");
-            const $other = $row.find(".other-expense");
-
-            if ($(this).val() === "other") {
-                $other.removeClass("d-none").focus();
+            // Check if there are multiple rows
+            if ($(".expense-row").length > 1) {
+                row.slideUp(300, function () {
+                    $(this).remove();
+                    updateExpenseSummary();
+                });
             } else {
-                $other.addClass("d-none").val("");
+                row.find('.expense-type').val('');
+                row.find('.expense-amount').val('');
+                row.find('.other-expense').addClass('d-none').val('');
+                updateExpenseSummary();
+
+                row.css('background-color', '#fff3cd');
+                setTimeout(() => {
+                    row.css('background-color', '');
+                }, 300);
             }
         });
 
+        $(document).on("change", ".expense-type", function () {
+            const $row = $(this).closest(".expense-row");
+            const $other = $row.find(".other-expense");
+            const selectedValue = $(this).val();
+
+            if (selectedValue === "other") {
+                $other.removeClass("d-none").hide().slideDown(200).focus();
+            } else {
+                $other.slideUp(200, function () {
+                    $(this).addClass("d-none").val("");
+                });
+            }
+
+            // Log selection (optional)
+            console.log('Expense type selected:', selectedValue);
+        });
+
+        // Update total when amount changes
+        $(document).on("input", ".expense-amount", function () {
+            updateExpenseSummary();
+
+            // Highlight the changed field
+            $(this).addClass('bg-light');
+            setTimeout(() => {
+                $(this).removeClass('bg-light');
+            }, 200);
+        });
+
+        // Function to update expense summary
+        function updateExpenseSummary() {
+            let total = 0;
+            let count = 0;
+            let details = [];
+
+            $(".expense-row").each(function (index) {
+                let type = $(this).find(".expense-type").val();
+                let otherType = $(this).find(".other-expense").val();
+                let amount = parseFloat($(this).find(".expense-amount").val()) || 0;
+
+                if (amount > 0) {
+                    total += amount;
+                    count++;
+
+                    // Get display type
+                    let displayType = type;
+                    if (type === 'other') {
+                        displayType = otherType || 'Other';
+                    } else if (type) {
+                        // Capitalize and format
+                        displayType = type.split('_').map(word =>
+                            word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ');
+                    }
+
+                    if (type && amount > 0) {
+                        details.push({
+                            type: displayType,
+                            amount: amount
+                        });
+                    }
+                }
+            });
+
+            // Update display
+            if ($("#totalExpensesDisplay").length) {
+                $("#totalExpensesDisplay").text('₱' + total.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }));
+            }
+
+            if ($("#expenseCountDisplay").length) {
+                $("#expenseCountDisplay").text(count).toggleClass('text-muted', count === 0);
+            }
+
+            // Update button states
+            $(".remove-row-btn").prop('disabled', $(".expense-row").length === 1);
+
+            // Store total in data attribute for form submission
+            $("#expenses_form").data('total', total);
+            $("#expenses_form").data('details', details);
+
+            // Log summary
+            console.log('Expense Summary:', { total, count, details });
+        }
+
+        // Keyboard shortcuts
+        $(document).on('keydown', '.expense-amount', function (e) {
+            // Press Enter to add new row
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                $('.add-row-btn').first().click();
+            }
+        });
+
+        // Quick fill with sample data (for testing)
+        $("#quickFillBtn").click(function () {
+            const sampleData = [
+                { type: 'gas', amount: 500 },
+                { type: 'meal', amount: 250 },
+                { type: 'motor_shop', amount: 1200 }
+            ];
+
+            $(".expense-row").remove();
+
+            sampleData.forEach((item, index) => {
+                if (index === 0) {
+                    // Use first existing row
+                    $(".expense-row").find('.expense-type').val(item.type).trigger('change');
+                    $(".expense-row").find('.expense-amount').val(item.amount);
+                } else {
+                    // Add new rows
+                    $('.add-row-btn').click();
+                    let newRow = $(".expense-row").last();
+                    newRow.find('.expense-type').val(item.type).trigger('change');
+                    newRow.find('.expense-amount').val(item.amount);
+                }
+            });
+
+            updateExpenseSummary();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Sample Data Loaded',
+                text: 'Sample expense data has been filled',
+                timer: 1500,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        });
+
+        // Reset validation on input change
+        $(document).on('input change', '.expense-type, .expense-amount, .other-expense', function () {
+            $(this).removeClass('is-invalid');
+        });
     });
 
 
@@ -341,35 +559,47 @@
         if (row) currentId = row.id;
 
         const submitBtn = document.getElementById('submitBtn');
-        submitBtn.textContent = action.startsWith('add') ? 'Add' : 'Update';
+        submitBtn.innerHTML = action.startsWith('add') ?
+            '<i class="fas fa-plus me-1"></i> Add' :
+            '<i class="fas fa-edit me-1"></i> Update';
         if (action === 'editExpenses' && row) {
             $("#expenseRows").empty();
 
             const isPreset = ['gas', 'meal', 'motor_shop', 'ca'].includes(row.type);
 
             const editRow = $(`
-                <div class="row g-2 expense-row mb-2 align-items-end">
+                <div class="row g-3 expense-row mb-3 align-items-end">
                     <div class="col-7">
-                        <label>Type</label>
-                        <select class="form-control expense-type">
+                        <label class="form-label fw-bold text-muted small mb-2">
+                            <i class="fas fa-tag me-1"></i> TYPE
+                        </label>
+                        <select class="form-select  expense-type">
                             <option value="">Select type</option>
-                            <option value="gas">Gas</option>
-                            <option value="meal">Meal</option>
-                            <option value="motor_shop">Motor Shop</option>
-                            <option value="ca">Cash Advance</option>
-                            <option value="other">Other</option>
+                            <option value="gas">⛽ Gas</option>
+                            <option value="meal">🍽️ Meal</option>
+                            <option value="motor_shop">🔧 Motor Shop</option>
+                            <option value="ca">💰 Cash Advance</option>
+                            <option value="other">📌 Other</option>
                         </select>
 
                         <input type="text"
-                            class="form-control mt-2 other-expense d-none"
-                            placeholder="Enter other type">
+                            class="form-control form-control-lg mt-3 other-expense d-none"
+                            placeholder="Enter other expense type">
                     </div>
 
-                    <div class="col-4">
-                        <label>Amount</label>
-                        <input type="number"
-                            class="form-control expense-amount"
-                            value="${row.amt}">
+                    <div class="col-5">
+                        <label class="form-label fw-bold text-muted small mb-2">
+                            <i class="fas fa-coins me-1"></i> AMOUNT
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                            <input type="number"
+                                class="form-control form-control-lg expense-amount"
+                                value="${row.amt}"
+                                min="0"
+                                step="0.01"
+                                placeholder="0.00">
+                        </div>
                     </div>
                 </div>
             `);
@@ -384,9 +614,13 @@
             }
 
             $(".add-row-btn").hide();
-            $('.date-added').val(row.date_added);
-        }
+            $('.date-added').val(row.date_added || new Date().toISOString().split('T')[0]);
 
+            // Update summary if function exists
+            if (typeof updateExpenseSummary === 'function') {
+                updateExpenseSummary();
+            }
+        }
 
         $('#addExpenses').modal('show');
     };
@@ -397,75 +631,6 @@
             handleFormSubmit(currentAction, currentId);
         }
     });
-
-    // function handleFormSubmit(action, id = null) {
-    //     const expenses = [];
-    //     $("#expenseRows .expense-row").each(function () {
-    //         const type = $(this).find(".expense-type").val().trim();
-    //         const amt = parseFloat($(this).find(".expense-amount").val()) || 0;
-    //         if (type !== "" || amt !== 0) expenses.push({ type, amt });
-    //     });
-
-    //     const formData = {
-    //         date: $('.date-added').val(),
-    //         expenses: expenses
-    //     };
-
-    //     console.log("Submitting:", formData);
-
-    //     let url, method;
-    //     switch (action) {
-    //         case 'addExpenses':
-    //             url = '<?php echo base_url("Expenses_cont/add_expenses"); ?>';
-    //             method = 'POST';
-    //             break;
-    //         case 'editExpenses':
-    //             url = '<?php echo base_url("Expenses_cont/update_expenses/"); ?>' + id;
-    //             method = 'POST';
-    //             break;
-    //     }
-
-    //     if (expenses.length === 0) {
-    //         Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please fill at least one.' });
-    //         return;
-    //     }
-    //     Swal.fire({
-    //         title: 'Are you sure?',
-    //         text: action === 'addExpenses' ? 'You are about to add this record.' : 'You are about to update this record.',
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#3085d6',
-    //         cancelButtonColor: '#d33',
-    //         confirmButtonText: 'Yes, proceed!',
-    //         cancelButtonText: 'Cancel',
-    //         allowEnterKey: false
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             $.ajax({
-    //                 url: url,
-    //                 type: method,
-    //                 data: formData,
-    //                 dataType: 'json',
-    //                 success: function (res) {
-    //                     Swal.fire({
-    //                         title: 'Success',
-    //                         text: res.message,
-    //                         icon: 'success',
-    //                         timer: 500,
-    //                         showConfirmButton: false
-    //                     }).then(() => {
-    //                         expenses_table.ajax.reload();
-    //                         $('#addExpenses').modal('hide');
-    //                     });
-    //                 },
-    //                 error: function (err) {
-    //                     console.log(err);
-    //                     alert('Server error. Check console.');
-    //                 }
-    //             });
-    //         }
-    //     });
-    // };
 
     function handleFormSubmit(action, id = null) {
         const expenses = [];
@@ -516,43 +681,22 @@
             confirmButtonText: 'Yes, proceed!'
         }).then((result) => {
             if (result.isConfirmed) {
-
-                Swal.fire({
-                    title: 'Processing...',
-                    html: 'Please wait',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
                 $.ajax({
                     url: url,
                     type: 'POST',
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
-                        Swal.close();
-                        // Loading Swal will be auto-replaced by success/error Swal
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
                             icon: 'success',
-                            timer: 800,
-                            showConfirmButton: false,
-                            timerProgressBar: true
+                            timer: 500,
+                            showConfirmButton: false
                         }).then(() => {
                             document.getElementById('expenses_form').reset();
                             expenses_table.ajax.reload();
                             $('#addExpenses').modal('hide');
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Something went wrong: ' + error,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
                         });
                     }
                 });
@@ -562,36 +706,13 @@
 
 
     $(document).ready(function () {
-
         $('#addExpenses').on('hidden.bs.modal', function () {
-            $("#expenseRows").empty();
+            // Reset all form inputs
+            $('#expenses_form')[0].reset();
 
-            const defaultRow = $(`
-                <div class="row g-2 expense-row mb-2 align-items-end">
-                    <div class="col-7">
-                        <label>Type</label>
-                        <input type="text" class="form-control expense-type" placeholder="Type" />
-                    </div>
-                    <div class="col-4">
-                        <label>Amount</label>
-                        <input type="number" class="form-control expense-amount" placeholder="Amount" />
-                    </div>
-                    <div class="col-1">
-                        <button type="button" class="btn btn-sm btn-primary add-row-btn mb-1">+</button>
-                    </div>
-                </div>
-            `);
-
-            $("#expenseRows").append(defaultRow);
-
+            // Reset date to today
             $('.date-added').val(new Date().toISOString().split('T')[0]);
-
-            $(".add-row-btn").show();
-
-            currentAction = 'addExpenses';
-            currentId = 0;
         });
-
     });
 
     function deleteBtn(id) {

@@ -204,7 +204,7 @@
                     style="background: rgba(153, 102, 255, 0.2); color: rgba(153, 102, 255, 1);"></i>
                 <span class="text">
                     <h3>₱<?= number_format($total_pull_out, 2) ?></h3>
-                    <p style="color:rgba(153, 102, 255, 1)">Total Pull Out</p>
+                    <p style="color:rgba(153, 102, 255, 1)">Available Pull Out</p>
                 </span>
             </li>
         </a>

@@ -53,6 +53,26 @@
         background-color: #f8f9fa;
         font-weight: bold;
     }
+
+
+    /* Form control focus effects */
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    /* Quick amount buttons hover */
+    .quick-capital:hover {
+        background-color: #198754;
+        border-color: #198754;
+        color: white;
+    }
+
+    /* Summary display */
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
 </style>
 
 <section id="content">
@@ -111,87 +131,178 @@
 
         <!-- ADD MODAL -->
         <div class="modal fade" id="addLoaner" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog" style="max-width:600px; margin-top: 10px;">
+            <div class="modal-dialog" style="max-width:700px; margin-top: 10px;">
                 <div class="modal-content">
 
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title fw-bold">Client Details</h5>
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-user-plus me-2 text-primary"></i>
+                            Client Details
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <div class="container">
+                        <div class="container  p-0">
+                            <!-- Client Information Card -->
                             <form id="client_form">
-                                <div class="mb-3 row align-items-center">
-                                    <div class="col-md-3 position-relative">
-                                        <label for="acc_no" class="form-label">Acc No.</label>
-                                        <input type="text" class="form-control" placeholder="Enter Acc No." id="acc_no"
-                                            name="acc_no" autocomplete="off">
+                                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                    <div class="card-header bg-white border-0">
+                                        <h6 class="fw-bold mb-0">
+                                            <i class="fas fa-id-card me-2 text-primary"></i>
+                                            Client Information
+                                        </h6>
                                     </div>
-                                    <div class="col-md-9 position-relative">
-                                        <label for="fullName" class="form-label">Full Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter Fullname"
-                                            id="full_name" name="full_name" autocomplete="off">
+                                    <div class="card-body px-4">
+
+                                        <div class="row mb-4">
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-hashtag me-1"></i> ACC NO.
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Acc No." id="acc_no" name="acc_no"
+                                                    autocomplete="off">
+                                            </div>
+                                            <div class="col-md-9">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-user me-1"></i> FULL NAME
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Fullname" id="full_name" name="full_name"
+                                                    autocomplete="off">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-map-marker-alt me-1"></i> ADDRESS
+                                            </label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                placeholder="Enter Address" id="address" name="address">
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-phone me-1"></i> CONTACT #
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Contact #" id="contact_no_1" name="contact_no_1"
+                                                    autocomplete="off" maxlength="11">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-phone-alt me-1"></i> ALT CONTACT #
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Contact #" id="contact_no_2" name="contact_no_2"
+                                                    autocomplete="off" maxlength="11">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-calendar-alt me-1"></i> DATE
+                                                </label>
+                                                <input type="date" class="form-control form-control-lg" id="date_added"
+                                                    name="date_added" value="<?= date('Y-m-d') ?>">
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 
-                                <div class="mb-3 row align-items-center">
-                                    <div class="col-md-12 position-relative">
-                                        <label for="address" class="form-label">Address</label>
-                                        <input type="text" class="form-control" placeholder="Enter Address" id="address"
-                                            name="address">
+                                <!-- Loan Details Card -->
+                                <div class="card border-0 shadow-sm rounded-4">
+                                    <div class="card-header bg-white border-0">
+                                        <h6 class="fw-bold mb-0">
+                                            <i class="fas fa-hand-holding-usd me-2 text-success"></i>
+                                            Loan Details
+                                        </h6>
                                     </div>
-                                </div>
+                                    <div class="card-body px-4 pb-4">
+                                        <div class="row mb-4">
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-coins me-1"></i> AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control form-control-lg"
+                                                        id="capital_amt" name="capital_amt" placeholder="0.00" min="0"
+                                                        step="0.01">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-percent me-1"></i> INTEREST %
+                                                </label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control form-control-lg"
+                                                        id="interest" name="interest" value="15" min="0" step="0.1">
+                                                    <span class="input-group-text bg-light border-0">%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-plus-circle me-1"></i> ADDED AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control form-control-lg"
+                                                        id="added_amt" name="added_amt" placeholder="0.00" min="0"
+                                                        step="0.01">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-calculator me-1"></i> TOTAL AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <input type="number"
+                                                        class="form-control form-control-lg fw-bold text-success"
+                                                        id="total_amt" name="total_amt" readonly
+                                                        style="background-color: #f8f9fa;">
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="mb-3 row align-items-center">
-                                    <div class="col-md-4 position-relative">
-                                        <label for="fullName" class="form-label">Contact #</label>
-                                        <input type="text" class="form-control" placeholder="Enter Contact #"
-                                            id="contact_no_1" name="contact_no_1" autocomplete="off" maxlength="11">
-                                    </div>
-                                    <div class="col-md-4 position-relative">
-                                        <label for="fullName" class="form-label">Alt Contact #</label>
-                                        <input type="text" class="form-control" placeholder="Enter Contact #"
-                                            id="contact_no_2" name="contact_no_2" autocomplete="off" maxlength="11">
-                                    </div>
+                                        <div>
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-bolt me-1"></i> QUICK SELECT AMOUNT
+                                            </label>
+                                            <div class="d-flex gap-2 flex-wrap">
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm quick-capital"
+                                                    data-amount="1000">₱1,000</button>
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm quick-capital"
+                                                    data-amount="2000">₱2,000</button>
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm quick-capital"
+                                                    data-amount="3000">₱3,000</button>
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm quick-capital"
+                                                    data-amount="5000">₱5,000</button>
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm quick-capital"
+                                                    data-amount="10000">₱10,000</button>
+                                                <button type="button"
+                                                    class="btn btn-outline-success btn-sm quick-capital"
+                                                    data-amount="20000">₱20,000</button>
+                                            </div>
+                                        </div>
 
-                                    <div class="col-md-4 position-relative">
-                                        <label for="date" class="form-label">Date</label>
-                                        <input type="date" class="form-control" id="date_added" name="date_added"
-                                            value="<?= date('Y-m-d') ?>">
-                                    </div>
-                                </div>
-
-                                <div class="mb-3 row">
-                                    <div class="col-md-3">
-                                        <label for="position" class="form-label">Amount</label>
-                                        <input type="number" class="form-control" id="capital_amt" name="capital_amt"
-                                            placeholder="Enter Amount">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="department" class="form-label">Interest %</label>
-                                        <input type="text" class="form-control" id="interest" name="interest"
-                                            value="15">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="department" class="form-label">Added Amount</label>
-                                        <input type="number" class="form-control" id="added_amt" name="added_amt"
-                                            placeholder="Enter Added Amount">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="department" class="form-label">Total Amount</label>
-                                        <input type="number" class="form-control" id="total_amt" name="total_amt"
-                                            readonly>
                                     </div>
                                 </div>
                             </form>
 
                             <div class="row">
                                 <div class="d-flex justify-content-end">
-                                    <button type="button" id="add_client" name="submit"
-                                        class="btn btn-primary">Add</button>
-                                    <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
-                                        id="closeModalBtn">Close</button>
+                                    <button type="button" id="add_client" name="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Save Client
+                                    </button>
+                                    <button type="button" class="btn btn-light ms-2" data-bs-dismiss="modal"
+                                        id="closeModalBtn">
+                                        <i class="fas fa-times me-1"></i> Cancel
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -204,68 +315,102 @@
 
         <!-- EDIT MODAL -->
         <div class="modal fade" id="editLoaner" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog" style="max-width:600px;  margin-top: 10px;">
+            <div class="modal-dialog" style="max-width:700px; margin-top: 10px;">
                 <div class="modal-content">
 
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title fw-bold">Details</h5>
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-edit me-2 text-primary"></i>
+                            Edit Client Details
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
                     <div class="modal-body">
-                        <div class="container">
-                            <form id="edit_client_form">
-                                <div class="mb-3 row align-items-center">
-                                    <div class="col-md-3 position-relative">
-                                        <label for="edit_acc_no" class="form-label">Acc No.</label>
-                                        <input type="text" class="form-control" placeholder="Enter Acc No."
-                                            id="edit_acc_no" name="edit_acc_no" autocomplete="off">
-                                    </div>
-                                    <div class="col-md-9 position-relative">
-                                        <label for="fullName" class="form-label">Full Name</label>
-                                        <input type="text" class="form-control" placeholder="Enter Fullname"
-                                            id="edit_full_name" name="edit_full_name" autocomplete="off">
-                                    </div>
+                        <div class="container p-0">
+                            <!-- Hidden ID field -->
+                            <input type="hidden" id="edit_client_id" name="edit_client_id">
+
+                            <!-- Client Information Card -->
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-header bg-white border-0">
+                                    <h6 class="fw-bold mb-0">
+                                        <i class="fas fa-id-card me-2 text-primary"></i>
+                                        Client Information
+                                    </h6>
                                 </div>
+                                <div class="card-body">
+                                    <form id="edit_client_form">
+                                        <div class="row mb-4">
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-hashtag me-1"></i> ACC NO.
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Acc No." id="edit_acc_no" name="edit_acc_no"
+                                                    autocomplete="off">
+                                            </div>
+                                            <div class="col-md-9">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-user me-1"></i> FULL NAME
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Fullname" id="edit_full_name"
+                                                    name="edit_full_name" autocomplete="off">
+                                            </div>
+                                        </div>
 
-                                <div class="mb-3 row align-items-center">
-                                    <div class="col-md-12 position-relative">
-                                        <label for="address" class="form-label">Address</label>
-                                        <input type="text" class="form-control" placeholder="Enter Address"
-                                            id="edit_address" name="edit_address">
-                                    </div>
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-map-marker-alt me-1"></i> ADDRESS
+                                            </label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                placeholder="Enter Address" id="edit_address" name="edit_address">
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-phone me-1"></i> CONTACT #
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Contact #" id="edit_contact_no_1"
+                                                    name="edit_contact_no_1" autocomplete="off" maxlength="11">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-phone-alt me-1"></i> ALT CONTACT #
+                                                </label>
+                                                <input type="text" class="form-control form-control-lg"
+                                                    placeholder="Enter Contact #" id="edit_contact_no_2"
+                                                    name="edit_contact_no_2" autocomplete="off" maxlength="11">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-calendar-alt me-1"></i> DATE STARTED
+                                                </label>
+                                                <input type="date" class="form-control form-control-lg"
+                                                    id="edit_start_date" name="edit_start_date"
+                                                    value="<?= date('Y-m-d') ?>">
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
+                            </div>
 
-                                <div class="mb-3 row align-items-center">
-                                    <div class="col-md-4 position-relative">
-                                        <label for="fullName" class="form-label">Contact #</label>
-                                        <input type="text" class="form-control" placeholder="Enter Contact #"
-                                            id="edit_contact_no_1" name="edit_contact_no_1" autocomplete="off"
-                                            maxlength="11">
-                                    </div>
-                                    <div class="col-md-4 position-relative">
-                                        <label for="fullName" class="form-label">Alt Contact #</label>
-                                        <input type="text" class="form-control" placeholder="Enter Contact #"
-                                            id="edit_contact_no_2" name="edit_contact_no_2" autocomplete="off"
-                                            maxlength="11">
-                                    </div>
-
-                                    <div class="col-md-4 position-relative">
-                                        <label for="date" class="form-label">Date</label>
-                                        <input type="date" class="form-control" id="edit_start_date"
-                                            name="edit_start_date" value="<?= date('Y-m-d') ?>">
-                                    </div>
-                                </div>
-                            </form>
-
+                            <!-- Action Buttons -->
                             <div class="row">
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" id="deleteBtn"
-                                        class="btn btn-outline-danger me-2">Delete</button>
-                                    <button type="button" id="update_client" name="submit"
-                                        class="btn btn-primary ">Update</button>
-                                    <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
-                                        id="closeModalBtn">Close</button>
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <button type="button" id="deleteBtn" class="btn btn-outline-danger me-auto">
+                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                    </button>
+                                    <button type="button" id="update_client" name="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Update
+                                    </button>
+                                    <button type="button" class="btn btn-light ms-2" data-bs-dismiss="modal"
+                                        id="closeModalBtn">
+                                        <i class="fas fa-times me-1"></i> Cancel
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -274,6 +419,7 @@
                 </div>
             </div>
         </div>
+
         <!-- EDIT MODAL -->
 
         <!-- VIEW MODAL -->
@@ -570,6 +716,9 @@
     </main>
 </section>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+
 <script>
 
     let startDate = '';
@@ -615,9 +764,6 @@
                 d.length = d.length || 10;
                 d.startDate = startDate;
                 d.endDate = endDate;
-            },
-            xhrFields: {
-                withCredentials: true
             },
             dataType: 'json',
             error: function (xhr, status, error) {
@@ -695,6 +841,8 @@
         var amt = $("#capital_amt").val();
         var interest = $("#interest").val();
 
+        console.log(amt);
+
         if (!name || !amt || !interest) {
             Swal.fire({ icon: 'error', title: 'Oops...', text: 'All fields are required' });
             return;
@@ -709,23 +857,12 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Show loading Swal
-                Swal.fire({
-                    title: 'Adding client...',
-                    html: 'Please wait',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
                 $.ajax({
                     type: "POST",
                     url: "<?= site_url('Monitoring_cont/add_client'); ?>",
                     data: $('#client_form').serialize(),
                     dataType: 'json',
                     success: function (response) {
-                        Swal.close(); // Close loading Swal
                         if (response.status === "success") {
                             Swal.fire({
                                 title: 'Success!',
@@ -745,16 +882,25 @@
                                 icon: 'error',
                                 showConfirmButton: true,
                             });
+
+                            return;
                         }
-                    },
-                    error: function (err) {
-                        Swal.close(); // Close loading Swal
-                        console.log(err);
-                        Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                     }
                 });
             }
         });
+    });
+
+    $('.quick-capital').click(function () {
+        let amount = $(this).data('amount');
+        $('#capital_amt').val(amount);
+
+        // Optional: Trigger change event to update calculations
+        $('#capital_amt').trigger('input');
+
+        // Optional: Add visual feedback
+        $(this).addClass('active').siblings().removeClass('active');
+        calculateTotal();
     });
 
     $('#client_form').on('keypress', function (e) {
@@ -778,7 +924,6 @@
     $('#capital_amt, #interest, #added_amt').on('input', calculateTotal);
 
     function openEditModal(id, acc_no, fullname, address, contact_1, contact_2, date_added) {
-        // Fill modal fields
         $('#editLoaner').modal('show');
         $('#edit_acc_no').val(acc_no);
         $('#edit_full_name').val(fullname);
@@ -787,19 +932,18 @@
         $('#edit_contact_no_2').val(contact_2);
         $('#edit_start_date').val(date_added);
 
-        // Prevent Enter from submitting
-        $('#edit_client_form').off('keypress').on('keypress', function (e) {
+        $('#edit_client_form').on('keypress', function (e) {
             if (e.which === 13) {
                 e.preventDefault();
                 $('#update_client').trigger('click');
             }
         });
 
-        // Update client
-        $('#update_client').off('click').on('click', function (e) {
+        $("#update_client").on('click', function (e) {
             e.preventDefault();
 
-            var name = $('#edit_full_name').val();
+            var name = $("#edit_full_name").val();
+
             if (!name) {
                 Swal.fire({ icon: 'error', title: 'Oops...', text: "Can't leave full name empty" });
                 return;
@@ -815,44 +959,29 @@
                 allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Loading Swal
-                    Swal.fire({
-                        title: 'Updating client...',
-                        html: 'Please wait',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-
                     $.ajax({
                         type: "POST",
                         url: "<?= site_url('Monitoring_cont/update_client'); ?>",
                         data: $('#edit_client_form').serialize() + '&id=' + id,
                         dataType: 'json',
                         success: function (response) {
-                            Swal.close();
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.message,
                                 icon: 'success',
-                                timer: 800,
+                                timer: 500,
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
                             $('#editLoaner').modal('hide');
                             client_table.ajax.reload();
-                        },
-                        error: function (err) {
-                            Swal.close();
-                            console.log(err);
-                            Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                         }
                     });
                 }
             });
         });
 
-        // Delete client
-        $('#deleteBtn').off('click').on('click', function (e) {
+        $("#deleteBtn").on('click', function (e) {
             e.preventDefault();
 
             Swal.fire({
@@ -867,41 +996,28 @@
                 allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Loading Swal
-                    Swal.fire({
-                        title: 'Deleting client...',
-                        html: 'Please wait',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-
                     $.ajax({
                         type: "POST",
                         url: "<?= site_url('Monitoring_cont/delete_id'); ?>",
                         data: { id: id },
                         dataType: 'json',
                         success: function (response) {
-                            Swal.close();
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.message,
                                 icon: 'success',
-                                timer: 800,
+                                timer: 500,
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
                             $('#editLoaner').modal('hide');
                             client_table.ajax.reload();
-                        },
-                        error: function (err) {
-                            Swal.close();
-                            console.log(err);
-                            Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                         }
                     });
                 }
             });
         });
+
     }
 
     function openViewModal(id, fullname, address, acc_no) {
@@ -911,8 +1027,6 @@
         $('#header_acc_no').text(acc_no);
         $('#header_name').text(fullname.replace(/\b\w/g, c => c.toUpperCase()));
         $('#header_address').text(address.replace(/\b\w/g, c => c.toUpperCase()));
-
-        $('#payment_table tbody').empty();
 
         $.ajax({
             url: "<?php echo base_url('Monitoring_cont/get_start_due_date'); ?>",
@@ -979,15 +1093,6 @@
                     $('#header_loan_id').val(firstItemId);
 
                     triggerLoanDetails(firstItemId, firstStatus);
-                    Swal.fire({
-                        title: 'Loading Data...',
-                        html: 'Please wait',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-
                 }
             },
             error: function () {
@@ -1025,7 +1130,29 @@
                 data: { id: loanId },
                 success: function (response) {
 
-                    Swal.close();
+                    console.log(response);
+                    // const key = CryptoJS.enc.Utf8.parse("my-secret-key-1234567890123456");
+                    // const iv = CryptoJS.enc.Utf8.parse("1234567890123456");
+
+                    // // 🔓 decrypt
+                    // const decrypted = CryptoJS.AES.decrypt(
+                    //     response.data,
+                    //     key,
+                    //     {
+                    //         iv: iv,
+                    //         mode: CryptoJS.mode.CBC,
+                    //         padding: CryptoJS.pad.Pkcs7
+                    //     }
+                    // );
+
+                    // // convert to string
+                    // const jsonString = decrypted.toString(CryptoJS.enc.Utf8);
+
+                    // // convert to object
+                    // const decryptedData = JSON.parse(jsonString);
+
+                    // // now use like before
+                    // const loan = decryptedData[0];
 
                     const loan = response[0];
 
@@ -1181,9 +1308,7 @@
                     $('#payment_table tbody').html(tableBody);
 
                 }
-
             });
-
         };
     }
 
@@ -1684,7 +1809,7 @@
                         title: 'Success!',
                         text: response.message,
                         showConfirmButton: false,
-                        timer: 500,
+                        timer: 800,
                         timerProgressBar: true,
                     });
 
@@ -1721,24 +1846,63 @@
     });
 
     $(document).on('click', '#generate_daily', function () {
+        // const today = new Date();
+        // const yyyy = today.getFullYear();
+        // const mm = String(today.getMonth() + 1).padStart(2, '0');
+        // const dd = String(today.getDate()).padStart(2, '0');
+        // const formattedDate = `${yyyy}-${mm}-${dd}`;
 
         const selectedDate = $('#selected_date').val();
+
+        // Swal.fire({
+        //     title: 'Select Date for Report',
+        //     // input: 'date',
+        //     // inputLabel: 'Date',
+        //     // inputValue: formattedDate,
+        //     // inputAttributes: {
+        //     //     style: 'display: block; margin: 0 auto; text-align: center; width: 200px;'
+        //     // },
+        //     showCancelButton: true,
+        //     confirmButtonText: 'Download',
+        //     cancelButtonText: 'Cancel'
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         const selectedDate = result.value;
 
         if (!selectedDate) {
             Swal.fire('Error', 'Please select a valid date.', 'error');
             return;
         }
 
-        // Show loading Swal
-        Swal.fire({
-            title: 'Generating daily report...',
-            html: 'Please wait',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        // Swal.fire({
+        //     title: 'Generating Excel Report...',
+        //     html: 'Please wait while we generate your report.<br><br><div class="spinner-border text-primary" role="status"></div>',
+        //     allowOutsideClick: false,
+        //     allowEscapeKey: false,
+        //     showConfirmButton: false,
+        //     didOpen: () => {
+        //         Swal.showLoading();
+        //     }
+        // });
 
+        // $.ajax({
+        //     url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
+        //     type: 'POST',
+        //     dataType: 'json',
+        //     data: { date: selectedDate },
+        //     success: function (response) {
+        //         console.log(response);
+        //         if (response.status === "warning") {
+        //             Swal.fire('Warning!', response.message, 'warning');
+        //         } else {
+        //             Swal.fire('Saved!', 'Daily report has been saved.', 'success');
+        //         }
+        //     },
+        //     error: function () {
+        //         Swal.fire('Error', 'Something went wrong.', 'error');
+        //     }
+        // });
+        // Change your AJAX call
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
             type: 'POST',
@@ -1747,8 +1911,6 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
-                Swal.close(); // Close loading Swal
-
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -1767,15 +1929,13 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
 
-                Swal.fire('Success!', 'Report downloaded successfully.', 'success');
+                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
             },
             error: function () {
-                Swal.close(); // Close loading Swal
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
     });
-
 
     $(document).on('click', '#generate_weekly', function () {
         const selectedDate = $('#selected_date').val();
@@ -1785,15 +1945,25 @@
             return;
         }
 
-        // Show loading Swal
-        Swal.fire({
-            title: 'Generating weekly report...',
-            html: 'Please wait',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+        console.log(selectedDate);
+
+        // $.ajax({
+        //     url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
+        //     type: 'POST',
+        //     dataType: 'json',
+        //     data: { date: selectedDate },
+        //     success: function (response) {
+        //         console.log(response);
+        //         if (response.status === "warning") {
+        //             Swal.fire('Warning!', response.message, 'warning');
+        //         } else {
+        //             Swal.fire('Saved!', 'Weekly report has been saved.', 'success');
+        //         }
+        //     },
+        //     error: function () {
+        //         Swal.fire('Error', 'Something went wrong.', 'error');
+        //     }
+        // });
 
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
@@ -1803,64 +1973,6 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
-                Swal.close(); // Close loading Swal
-
-                // Get filename from headers
-                var filename = 'Weekly_Report_' + selectedDate + '.xlsx';
-                var disposition = xhr.getResponseHeader('Content-Disposition');
-                if (disposition && disposition.indexOf('attachment') !== -1) {
-                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                    var matches = filenameRegex.exec(disposition);
-                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-                }
-
-                // Create download link
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-
-                Swal.fire('Success!', 'Report downloaded successfully.', 'success');
-            },
-            error: function () {
-                Swal.close(); // Close loading Swal
-                Swal.fire('Error', 'Failed to generate report.', 'error');
-            }
-        });
-    });
-
-
-    $(document).on('click', '#generate_monthly', function () {
-        const selectedDate = $('#selected_date').val();
-
-        if (!selectedDate) {
-            Swal.fire('Error', 'Please select a valid date.', 'error');
-            return;
-        }
-
-        // Show loading Swal
-        Swal.fire({
-            title: 'Generating report...',
-            html: 'Please wait',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        $.ajax({
-            url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
-            type: 'POST',
-            data: { date: selectedDate },
-            xhrFields: {
-                responseType: 'blob' // Handle binary response
-            },
-            success: function (blob, status, xhr) {
-                Swal.close(); // Close loading Swal
-
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -1879,15 +1991,75 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
 
-                Swal.fire('Success!', 'Report downloaded successfully.', 'success');
+                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
             },
             error: function () {
-                Swal.close(); // Close loading Swal
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
     });
 
+    $(document).on('click', '#generate_monthly', function () {
+        const selectedDate = $('#selected_date').val();
+
+        if (!selectedDate) {
+            Swal.fire('Error', 'Please select a valid date.', 'error');
+            return;
+        }
+
+        console.log(selectedDate);
+
+        // $.ajax({
+        //     url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
+        //     type: 'POST',
+        //     dataType: 'json',
+        //     data: { date: selectedDate },
+        //     success: function (response) {
+        //         console.log(response);
+        //         if (response.status === "warning") {
+        //             Swal.fire('Warning!', response.message, 'warning');
+        //         } else {
+        //             Swal.fire('Saved!', 'Monthly report has been saved.', 'success');
+        //         }
+        //     },
+        //     error: function () {
+        //         Swal.fire('Error', 'Something went wrong.', 'error');
+        //     }
+        // });
+
+        $.ajax({
+            url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
+            type: 'POST',
+            data: { date: selectedDate },
+            xhrFields: {
+                responseType: 'blob' // Handle binary response
+            },
+            success: function (blob, status, xhr) {
+                // Get filename from headers
+                var filename = 'Daily_Report_' + selectedDate + '.xlsx';
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
+
+                // Create download link
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
+            },
+            error: function () {
+                Swal.fire('Error', 'Failed to generate report.', 'error');
+            }
+        });
+    });
 
     let bulkPaymentData = {
         selected_date: null,
@@ -2403,20 +2575,6 @@
         const date = $('#selected_date').val();
         bulkPaymentData.selected_date = date;
 
-        if (!date) {
-            Swal.fire('Error', 'Please select a valid date.', 'error');
-            return;
-        }
-
-        Swal.fire({
-            title: 'Loading...',
-            html: 'Please wait while we fetch bulk payments.',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
         console.log(date);
         $('#bulk_date').text(formatDate(date));
 
@@ -2426,18 +2584,15 @@
             dataType: 'json',
             data: { date: date },
             success: function (response) {
-                Swal.close();
                 console.log(response);
                 populateBulkPaymentTable(response, date);
                 $('#bulk_payment_modal').modal('show');
             },
             error: function () {
-                Swal.close();
                 Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });
     });
-
 
     function populateBulkPaymentTable(response, date) {
         const table = $('#bulk_payment_table');
