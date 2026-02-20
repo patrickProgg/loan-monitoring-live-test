@@ -577,10 +577,13 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center w-100 pt-3">
-                            <div class="bg-light rounded-3 px-4 py-2">
+                            <div style="width: 50px;"></div>
+
+                            <div class="text-center">
                                 <span class="text-muted me-2">Total Payments:</span>
                                 <span class="fw-bold text-primary fs-5">₱ <span id="total_payment">0.00</span></span>
                             </div>
+
                             <div>
                                 <button type="button" id="addNewLoan" class="btn btn-primary me-2"
                                     onclick="openAddNewLoanModal()">
@@ -592,13 +595,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Footer -->
-                    <!-- <div class="modal-footer"> -->
-
-                    <!-- </div> -->
-
-                    <!-- Hidden Fields -->
+                    
                     <input type="hidden" id="header_id">
                     <input type="hidden" id="header_loan_id">
                 </div>
