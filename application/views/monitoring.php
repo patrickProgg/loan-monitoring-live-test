@@ -36,25 +36,6 @@
         color: #333;
     }
 
-    #bulk_payment_table th,
-    #bulk_payment_table td {
-        white-space: nowrap;
-        font-size: 0.9rem;
-    }
-
-    #bulk_payment_table th {
-        background-color: #f8f9fa;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    #bulk_payment_table tfoot td {
-        background-color: #f8f9fa;
-        font-weight: bold;
-    }
-
-
     /* Form control focus effects */
     .form-control:focus,
     .form-select:focus {
@@ -800,39 +781,72 @@
 
         <!-- BULK PAYMENT -->
         <div class="modal fade" id="bulk_payment_modal" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog" style="width:600px; margin-top: 10px;">
+            <div class="modal-dialog modal-lg" style="max-width: 600px; margin-top: 10px;">
                 <div class="modal-content">
-
+                    <!-- Header -->
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title fw-bold">Bulk Payment For - <span id="bulk_date"
-                                style="font-weight: bold;"></span></h5>
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-money-bill-wave me-2 text-success"></i>
+                            Bulk Payment For: <span id="bulk_date" class="text-success ms-1"></span>
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <div class="modal-body">
-
-                        <div class="table-responsive" style="max-height: 580px; overflow-y: auto">
-                            <table id="bulk_payment_table" class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <!-- Headers will be dynamically generated -->
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Rows will be dynamically generated -->
-                                </tbody>
-                                <tfoot>
-                                    <!-- Footer row for totals will be dynamically generated -->
-                                </tfoot>
-                            </table>
+                    <!-- Body -->
+                    <div class="modal-body p-3">
+                        <!-- Summary Card -->
+                        <div class="card border-0 shadow-sm rounded-3 mb-3">
+                            <div class="card-body p-3 pt-0">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="text-center p-2 bg-light rounded-3">
+                                            <small class="text-muted d-block">Total Clients</small>
+                                            <span class="fw-bold fs-5" id="total_clients_count">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-center p-2 bg-light rounded-3">
+                                            <small class="text-muted d-block">Total Payments</small>
+                                            <span class="fw-bold fs-5 text-success" id="total_payments_sum">₱0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="row mt-3">
+                        <!-- Payment Table -->
+                        <div class="card border-0 shadow-sm rounded-3">
+                            <div class="card-header bg-white border-0 pt-3 px-3">
+                                <h6 class="fw-bold mb-0">
+                                    <i class="fas fa-list me-2 text-success"></i>
+                                    Payment Entries
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive"
+                                    style="max-height: 444px; overflow-y: auto; border-radius: 8px;">
+                                    <table id="bulk_payment_table" class="table table-sm table-hover mb-0">
+                                        <thead class="table-light sticky-top" style="background-color: #f8f9fa;">
+                                            <!-- Headers will be dynamically generated -->
+                                        </thead>
+                                        <tbody id="bulk_payment_body">
+                                            <!-- Rows will be dynamically generated -->
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <!-- Footer row for totals will be dynamically generated -->
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="d-flex justify-content-end">
-                                <button type="button" id="save_bulk_payments" name="submit"
-                                    class="btn btn-success">Save</button>
-                                <button type="button" class="btn btn-danger ms-2" data-bs-dismiss="modal"
-                                    id="closeModalBtn">Close</button>
+                                <button type="button" id="save_bulk_payments" class="btn btn-success me-2">
+                                    <i class="fas fa-save me-1"></i> Save Payments
+                                </button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i> Close
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -2736,58 +2750,56 @@
 
     function populateBulkPaymentTable(response, date) {
         const table = $('#bulk_payment_table');
+        const thead = table.find('thead');
         const tbody = table.find('tbody');
-        const thead = table.find('thead tr');
 
-        // Clear existing content
         tbody.empty();
         thead.empty();
 
-        // Create table headers
-        thead.append('<th style="width:20%; color:var(--dark); background-color:var(--light-grey); font-size:13px" class="text-center  align-middle">ACC NO</th>');
-        thead.append('<th style="width:65%; color:var(--dark); background-color:var(--light-grey); font-size:13px" class="align-middle">FULL NAME</th>');
-        thead.append('<th style="width:15%; color:var(--dark); background-color:var(--light-grey); font-size:13px; height:40px" class="text-center align-middle">AMOUNT</th>');
+        const headerRow = $('<tr></tr>');
+        headerRow.append('<th style="width:20%; background-color:var(--light-grey); font-size:13px; height:40px; color:var(--dark); font-weight: bold;" class="text-center align-middle">ACC NO</th>');
+        headerRow.append('<th style="width:65%; background-color:var(--light-grey); font-size:13px; color:var(--dark); font-weight: bold" class="align-middle">FULL NAME</th>');
+        headerRow.append('<th style="width:15%; background-color:var(--light-grey); font-size:13px; color:var(--dark); font-weight: bold" class="text-center align-middle">AMOUNT</th>');
+        thead.append(headerRow);
 
-        // Check if we have data
         if (!response.data || response.data.length === 0) {
-            tbody.append(`
-            <tr>
-                <td colspan="3" class="text-center">No clients found for the selected date</td>
-            </tr>
-        `);
+            const emptyRow = $('<tr></tr>');
+            emptyRow.append('<td colspan="3" class="text-center py-4">No clients found for the selected date</td>');
+            tbody.append(emptyRow);
             return;
         }
 
-        // Create table rows
         response.data.forEach(client => {
             const row = $('<tr></tr>');
 
-            // Add account number
-            row.append(`<td class="text-center">${client.acc_no || 'N/A'}</td>`);
+            const accNoCell = $('<td class="text-center align-middle"></td>').text(client.acc_no || 'N/A');
+            row.append(accNoCell);
 
-            // Add client name (proper case)
-            const formattedName = client.full_name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
-            row.append(`<td>${formattedName}</td>`);
+            const formattedName = client.full_name ?
+                client.full_name.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) : 'N/A';
+            const nameCell = $('<td class="align-middle"></td>').text(formattedName);
+            row.append(nameCell);
 
-            // Add BLANK amount column for input
-            const hasPayment = client.amt && client.amt > 0;
+            const hasPayment = client.amt && parseFloat(client.amt) > 0;
             const inputValue = hasPayment ? client.amt : '';
 
-            row.append(`
-                <td class="text-center">
-                    <input ${hasPayment ? 'type="text"' : 'type="number"'} 
-                        class="form-control form-control-sm bulk-payment-input text-center ${hasPayment ? 'bg-light text-success font-weight-bold' : ''}"   
-                        value="${inputValue}" 
-                        data-client-id="${client.client_id}" 
-                        data-loan-id="${client.loan_id}" 
-                        data-date="${date}"
-                        ${hasPayment ? 'readonly' : ''}
-                        ${hasPayment ? 'title="Payment already recorded"' : ''}
-                        step="0.01" 
-                        min="0" 
-                        style="width: 100px; margin: 0 auto;">
-                </td>
+            const amountCell = $('<td class="text-center align-middle"></td>');
+            const input = $(`
+            <input type="${hasPayment ? 'text' : 'number'}" 
+                    class="form-control form-control-sm bulk-payment-input text-center ${hasPayment ? 'bg-light text-success fw-bold' : ''}"   
+                    value="${inputValue}" 
+                    data-client-id="${client.client_id}" 
+                    data-loan-id="${client.loan_id}" 
+                    data-date="${date}"
+                    ${hasPayment ? 'readonly' : ''}
+                    ${hasPayment ? 'title="Payment already recorded"' : ''}
+                    step="0.01" 
+                    min="0" 
+                    style="width: 100px; margin: 0 auto;">
             `);
+
+            amountCell.append(input);
+            row.append(amountCell);
 
             tbody.append(row);
         });
