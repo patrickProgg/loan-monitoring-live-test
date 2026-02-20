@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="container  p-0">
+                        <div class="container p-0">
                             <!-- Client Information Card -->
                             <form id="client_form">
                                 <div class="card border-0 shadow-sm rounded-4 mb-4">
@@ -153,8 +153,7 @@
                                             Client Information
                                         </h6>
                                     </div>
-                                    <div class="card-body px-4">
-
+                                    <div class="card-body">
                                         <div class="row mb-4">
                                             <div class="col-md-3">
                                                 <label class="form-label fw-bold text-muted small mb-2">
@@ -219,13 +218,14 @@
                                             Loan Details
                                         </h6>
                                     </div>
-                                    <div class="card-body px-4 pb-4">
+                                    <div class="card-body">
                                         <div class="row mb-4">
                                             <div class="col-md-3">
                                                 <label class="form-label fw-bold text-muted small mb-2">
                                                     <i class="fas fa-coins me-1"></i> AMOUNT
                                                 </label>
                                                 <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
                                                     <input type="number" class="form-control form-control-lg"
                                                         id="capital_amt" name="capital_amt" placeholder="0.00" min="0"
                                                         step="0.01">
@@ -246,6 +246,7 @@
                                                     <i class="fas fa-plus-circle me-1"></i> ADDED AMOUNT
                                                 </label>
                                                 <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
                                                     <input type="number" class="form-control form-control-lg"
                                                         id="added_amt" name="added_amt" placeholder="0.00" min="0"
                                                         step="0.01">
@@ -256,7 +257,8 @@
                                                     <i class="fas fa-calculator me-1"></i> TOTAL AMOUNT
                                                 </label>
                                                 <div class="input-group">
-                                                    <input type="number"
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                    <input type="text"
                                                         class="form-control form-control-lg fw-bold text-success"
                                                         id="total_amt" name="total_amt" readonly
                                                         style="background-color: #f8f9fa;">
@@ -627,42 +629,134 @@
         <!-- ADD LOAN SAME CLIENT -->
         <div class="modal fade" id="addLoanSameClient" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
             data-bs-keyboard="false">
-            <div class="modal-dialog" style="margin-top:10px">
+            <div class="modal-dialog" style="max-width:600px; margin-top:10px">
                 <div class="modal-content">
                     <div class="modal-header bg-light border-bottom">
-                        <h5 class="modal-title">Loan Details</h5>
+                        <h5 class="modal-title fw-bold">
+                            <i class="fas fa-hand-holding-usd me-2 text-success"></i>
+                            New Loan for Existing Client
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
 
-                    <div class="modal-body">
-                        <div class="row g-2">
-                            <div class="col-4">
-                                <label>Capital Amt</label>
-                                <input id="add_capital_amt" type="number" class="form-control" />
-                                <input id="new_type" type="hidden" />
+                    <div class="modal-body pb-0">
+                        <div class="container p-0">
+                            <!-- Loan Details Card -->
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-header bg-white border-0">
+                                    <h6 class="fw-bold mb-0">
+                                        <i class="fas fa-calculator me-2 text-success"></i>
+                                        Loan Details
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <!-- Capital Amount -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-coins me-1"></i> CAPITAL AMOUNT
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                <input id="add_capital_amt" type="number"
+                                                    class="form-control form-control-lg" placeholder="0.00" min="0"
+                                                    step="0.01" />
+                                            </div>
+                                        </div>
+
+                                        <!-- Interest Rate -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-percent me-1"></i> INTEREST RATE
+                                            </label>
+                                            <div class="input-group">
+                                                <input id="add_interest" type="number"
+                                                    class="form-control form-control-lg" value="15" min="0"
+                                                    step="0.1" />
+                                                <span class="input-group-text bg-light border-0">%</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Added Amount (Auto-calculated) -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-plus-circle me-1"></i> ADDED AMOUNT
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                <input id="add_added_amt" type="number"
+                                                    class="form-control form-control-lg" />
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Total Amount -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-calculator me-1"></i> TOTAL AMOUNT
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                <input id="add_total_amt" type="text"
+                                                    class="form-control form-control-lg fw-bold text-success" readonly
+                                                    style="background-color: #f8f9fa;" />
+                                            </div>
+                                            <small class="text-muted">Auto-calculated</small>
+                                        </div>
+
+                                        <!-- Start Date -->
+                                        <div class="col-md-12">
+                                            <label class="form-label fw-bold text-muted small mb-2">
+                                                <i class="fas fa-calendar-alt me-1"></i> NEW START DATE
+                                            </label>
+                                            <input id="add_start_date" type="date" class="form-control form-control-lg"
+                                                value="<?= date('Y-m-d') ?>" />
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Amount Selector -->
+                                    <div class="mt-4">
+                                        <label class="form-label fw-bold text-muted small mb-2">
+                                            <i class="fas fa-bolt me-1"></i> QUICK SELECT AMOUNT
+                                        </label>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm quick-loan-amount"
+                                                data-amount="1000">₱1,000</button>
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm quick-loan-amount"
+                                                data-amount="2000">₱2,000</button>
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm quick-loan-amount"
+                                                data-amount="3000">₱3,000</button>
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm quick-loan-amount"
+                                                data-amount="5000">₱5,000</button>
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm quick-loan-amount"
+                                                data-amount="10000">₱10,000</button>
+                                            <button type="button"
+                                                class="btn btn-outline-success btn-sm quick-loan-amount"
+                                                data-amount="20000">₱20,000</button>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
-                            <div class="col-4">
-                                <label>Interest (%)</label>
-                                <input id="add_interest" type="number" class="form-control" value="15" />
-                            </div>
-                            <div class="col-4">
-                                <label>Added Amt</label>
-                                <input id="add_added_amt" type="number" class="form-control" />
-                            </div>
-                            <div class="col-6">
-                                <label>Total Amt</label>
-                                <input id="add_total_amt" type="number" class="form-control" />
-                            </div>
-                            <div class="col-6">
-                                <label>New Start Date</label>
-                                <input id="add_start_date" type="date" class="form-control" />
-                            </div>
+
+                            <!-- Hidden Fields -->
+                            <input id="new_type" type="hidden" />
+                            <input id="client_id" type="hidden" />
                         </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="addLoanBtn">Continue</button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-success" id="addLoanBtn">
+                            <i class="fas fa-check-circle me-1"></i> Process Loan
+                        </button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i> Cancel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1595,6 +1689,17 @@
 
     function openAddNewLoanModal() {
         $('#addLoanSameClient').modal('show');
+
+
+        $('.quick-loan-amount').click(function () {
+            let amount = $(this).data('amount');
+            $('#add_capital_amt').val(amount).trigger('input');
+
+            // Visual feedback
+            $(this).addClass('active').siblings().removeClass('active');
+
+            calculateNewTotal();
+        });
 
         function calculateNewTotal() {
             let capital = parseFloat($('#add_capital_amt').val()) || 0;
