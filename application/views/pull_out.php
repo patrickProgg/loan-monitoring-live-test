@@ -30,7 +30,8 @@
         justify-content: space-between;
         align-items: center;
     }
-.bg-gradient-danger {
+
+    .bg-gradient-danger {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
 
@@ -368,17 +369,17 @@
                                             <i class="fas fa-bolt me-1"></i> QUICK SELECT
                                         </label>
                                         <div class="d-flex gap-2 flex-wrap">
-                                            <button type="button" class="btn btn-outline-primary btn-sm quick-amount"
+                                            <button type="button" class="btn btn-outline-danger btn-sm quick-amount"
                                                 data-amount="100">₱100</button>
-                                            <button type="button" class="btn btn-outline-primary btn-sm quick-amount"
+                                            <button type="button" class="btn btn-outline-danger btn-sm quick-amount"
                                                 data-amount="500">₱500</button>
-                                            <button type="button" class="btn btn-outline-primary btn-sm quick-amount"
+                                            <button type="button" class="btn btn-outline-danger btn-sm quick-amount"
                                                 data-amount="1000">₱1,000</button>
-                                            <button type="button" class="btn btn-outline-primary btn-sm quick-amount"
+                                            <button type="button" class="btn btn-outline-danger btn-sm quick-amount"
                                                 data-amount="5000">₱5,000</button>
-                                            <button type="button" class="btn btn-outline-primary btn-sm quick-amount"
+                                            <button type="button" class="btn btn-outline-danger btn-sm quick-amount"
                                                 data-amount="10000">₱10,000</button>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                            <button type="button" class="btn btn-outline-danger btn-sm quick-amount"
                                                 id="max_amount">Max</button>
                                         </div>
                                     </div>
@@ -819,6 +820,8 @@
                 $('.quick-amount').click(function () {
                     let amount = $(this).data('amount');
                     let maxAmount = parseFloat($('#withdraw_amount').attr('max')) || 0;
+
+                    $(this).addClass('active').siblings().removeClass('active');
 
                     if (amount > maxAmount) {
                         Swal.fire({
