@@ -549,7 +549,7 @@
                             <table id="payment_table" class="table table-sm table-hover mb-0">
                                 <thead class="table-light sticky-top"
                                     style="background-color: #f8f9fa; height:40px; vertical-align: middle;">
-                                    <tr>
+                                    <tr style="width:10%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
                                         <th class="text-center" style="width:10%;">#</th>
                                         <th class="text-center" style="width:30%;">DATE</th>
                                         <th class="text-center" style="width:30%;">PAYMENT</th>
@@ -824,7 +824,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive"
-                                    style="max-height: 444px; overflow-y: auto; border-radius: 8px;">
+                                    style="max-height: 444px; overflow-y: auto;">
                                     <table id="bulk_payment_table" class="table table-sm table-hover mb-0">
                                         <thead class="table-light sticky-top" style="background-color: #f8f9fa;">
                                             <!-- Headers will be dynamically generated -->
