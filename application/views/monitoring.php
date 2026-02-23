@@ -2043,63 +2043,22 @@
     });
 
     $(document).on('click', '#generate_daily', function () {
-        // const today = new Date();
-        // const yyyy = today.getFullYear();
-        // const mm = String(today.getMonth() + 1).padStart(2, '0');
-        // const dd = String(today.getDate()).padStart(2, '0');
-        // const formattedDate = `${yyyy}-${mm}-${dd}`;
-
         const selectedDate = $('#selected_date').val();
-
-        // Swal.fire({
-        //     title: 'Select Date for Report',
-        //     // input: 'date',
-        //     // inputLabel: 'Date',
-        //     // inputValue: formattedDate,
-        //     // inputAttributes: {
-        //     //     style: 'display: block; margin: 0 auto; text-align: center; width: 200px;'
-        //     // },
-        //     showCancelButton: true,
-        //     confirmButtonText: 'Download',
-        //     cancelButtonText: 'Cancel'
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         const selectedDate = result.value;
 
         if (!selectedDate) {
             Swal.fire('Error', 'Please select a valid date.', 'error');
             return;
         }
 
-        // Swal.fire({
-        //     title: 'Generating Excel Report...',
-        //     html: 'Please wait while we generate your report.<br><br><div class="spinner-border text-primary" role="status"></div>',
-        //     allowOutsideClick: false,
-        //     allowEscapeKey: false,
-        //     showConfirmButton: false,
-        //     didOpen: () => {
-        //         Swal.showLoading();
-        //     }
-        // });
+        Swal.fire({
+            title: 'Generating daily report...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
-        // $.ajax({
-        //     url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     data: { date: selectedDate },
-        //     success: function (response) {
-        //         console.log(response);
-        //         if (response.status === "warning") {
-        //             Swal.fire('Warning!', response.message, 'warning');
-        //         } else {
-        //             Swal.fire('Saved!', 'Daily report has been saved.', 'success');
-        //         }
-        //     },
-        //     error: function () {
-        //         Swal.fire('Error', 'Something went wrong.', 'error');
-        //     }
-        // });
-        // Change your AJAX call
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_daily_report'); ?>',
             type: 'POST',
@@ -2108,6 +2067,7 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
+                Swal.close();
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -2129,6 +2089,7 @@
                 Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
             },
             error: function () {
+                Swal.close();
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
@@ -2142,25 +2103,14 @@
             return;
         }
 
-        console.log(selectedDate);
-
-        // $.ajax({
-        //     url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     data: { date: selectedDate },
-        //     success: function (response) {
-        //         console.log(response);
-        //         if (response.status === "warning") {
-        //             Swal.fire('Warning!', response.message, 'warning');
-        //         } else {
-        //             Swal.fire('Saved!', 'Weekly report has been saved.', 'success');
-        //         }
-        //     },
-        //     error: function () {
-        //         Swal.fire('Error', 'Something went wrong.', 'error');
-        //     }
-        // });
+        Swal.fire({
+            title: 'Generating weekly report...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_weekly_report'); ?>',
@@ -2170,6 +2120,7 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
+                Swal.close();
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -2191,6 +2142,7 @@
                 Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
             },
             error: function () {
+                Swal.close();
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
@@ -2204,25 +2156,14 @@
             return;
         }
 
-        console.log(selectedDate);
-
-        // $.ajax({
-        //     url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
-        //     type: 'POST',
-        //     dataType: 'json',
-        //     data: { date: selectedDate },
-        //     success: function (response) {
-        //         console.log(response);
-        //         if (response.status === "warning") {
-        //             Swal.fire('Warning!', response.message, 'warning');
-        //         } else {
-        //             Swal.fire('Saved!', 'Monthly report has been saved.', 'success');
-        //         }
-        //     },
-        //     error: function () {
-        //         Swal.fire('Error', 'Something went wrong.', 'error');
-        //     }
-        // });
+        Swal.fire({
+            title: 'Generating report...',
+            html: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         $.ajax({
             url: '<?php echo site_url('Monitoring_cont/get_monthly_report'); ?>',
@@ -2232,6 +2173,7 @@
                 responseType: 'blob' // Handle binary response
             },
             success: function (blob, status, xhr) {
+                Swal.close();
                 // Get filename from headers
                 var filename = 'Daily_Report_' + selectedDate + '.xlsx';
                 var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -2253,6 +2195,7 @@
                 Swal.fire('Success!', 'Report downloaded to your computer.', 'success');
             },
             error: function () {
+                Swal.close();
                 Swal.fire('Error', 'Failed to generate report.', 'error');
             }
         });
