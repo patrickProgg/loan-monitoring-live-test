@@ -595,7 +595,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <input type="hidden" id="header_id">
                     <input type="hidden" id="header_loan_id">
                 </div>
@@ -1005,12 +1005,23 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Adding client...',
+                    html: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     type: "POST",
                     url: "<?= site_url('Monitoring_cont/add_client'); ?>",
                     data: $('#client_form').serialize(),
                     dataType: 'json',
                     success: function (response) {
+                        Swal.close();
                         if (response.status === "success") {
                             Swal.fire({
                                 title: 'Success!',
@@ -1107,17 +1118,26 @@
                 allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Updating client...',
+                        html: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
                     $.ajax({
                         type: "POST",
                         url: "<?= site_url('Monitoring_cont/update_client'); ?>",
                         data: $('#edit_client_form').serialize() + '&id=' + id,
                         dataType: 'json',
                         success: function (response) {
+                            Swal.close();
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.message,
                                 icon: 'success',
-                                timer: 500,
+                                timer: 800,
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
@@ -1144,17 +1164,26 @@
                 allowEnterKey: false
             }).then((result) => {
                 if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: 'Deleting client...',
+                        html: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
                     $.ajax({
                         type: "POST",
                         url: "<?= site_url('Monitoring_cont/delete_id'); ?>",
                         data: { id: id },
                         dataType: 'json',
                         success: function (response) {
+                            Swal.close();
                             Swal.fire({
                                 title: 'Success!',
                                 text: response.message,
                                 icon: 'success',
-                                timer: 500,
+                                timer: 800,
                                 showConfirmButton: false,
                                 timerProgressBar: true
                             });
@@ -1241,6 +1270,14 @@
                     $('#header_loan_id').val(firstItemId);
 
                     triggerLoanDetails(firstItemId, firstStatus);
+                    Swal.fire({
+                        title: 'Loading Data...',
+                        html: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
                 }
             },
             error: function () {
@@ -1301,6 +1338,7 @@
 
                     // // now use like before
                     // const loan = decryptedData[0];
+                    Swal.close();
 
                     const loan = response[0];
 
@@ -2734,6 +2772,20 @@
         const date = $('#selected_date').val();
         bulkPaymentData.selected_date = date;
 
+        if (!date) {
+            Swal.fire('Error', 'Please select a valid date.', 'error');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Loading...',
+            html: 'Please wait while we fetch bulk payments.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         console.log(date);
         $('#bulk_date').text(formatDate(date));
 
@@ -2743,6 +2795,7 @@
             dataType: 'json',
             data: { date: date },
             success: function (response) {
+                Swal.close();
                 console.log(response);
 
                 let entryCount = response.data.length;
@@ -2759,6 +2812,7 @@
                 $('#bulk_payment_modal').modal('show');
             },
             error: function () {
+                Swal.close();
                 Swal.fire('Error', 'Something went wrong.', 'error');
             }
         });

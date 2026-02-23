@@ -549,8 +549,9 @@
                             title: 'Recovered!',
                             text: res.message,
                             icon: 'success',
-                            timer: 500,
-                            showConfirmButton: false
+                            timer: 800,
+                            showConfirmButton: false,
+                            timerProgressBar: true
                         }).then(() => {
                             if (type === "client") {
                                 client_table.ajax.reload();

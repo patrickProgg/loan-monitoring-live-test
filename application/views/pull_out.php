@@ -640,12 +640,21 @@
             allowEnterKey: false
         }).then((result) => {
             if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Deleting pullout...',
+                    html: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
                 $.ajax({
                     url: "<?php echo base_url('PullOut_cont/delete_id'); ?>",
                     type: 'POST',
                     data: { id: id },
                     dataType: 'json',
                     success: function (res) {
+                        Swal.close();
                         Swal.fire({
                             title: 'Deleted!',
                             text: res.message,
@@ -658,6 +667,7 @@
                         });
                     },
                     error: function (err) {
+                        Swal.close();
                         console.log(err);
                         Swal.fire('Error', 'Server error. Check console.', 'error');
                     }
@@ -762,12 +772,23 @@
             allowEnterKey: false
         }).then((result) => {
             if (result.isConfirmed) {
+
+                Swal.fire({
+                    title: 'Processing...',
+                    html: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     url: url,
                     type: method,
                     data: formData,
                     dataType: 'json',
                     success: function (res) {
+                        Swal.close();
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
@@ -782,6 +803,7 @@
                         });
                     },
                     error: function (err) {
+                        Swal.close();
                         console.log(err);
                         Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                     }
@@ -796,11 +818,21 @@
 
     $('#withdrawBtn').on('click', function () {
 
+        Swal.fire({
+            title: 'Loading...',
+            html: 'Please wait while we fetch data.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
         $.ajax({
             url: '<?php echo base_url("PullOut_cont/get_total_pullout"); ?>',
             type: 'POST',
             dataType: 'json',
             success: function (res) {
+                Swal.close();
 
                 $('#total_pullout').val(parseFloat(res.total_pullout).toLocaleString('en-US', {
                     minimumFractionDigits: 2,
@@ -900,6 +932,14 @@
                         cancelButtonText: 'Cancel'
                     }).then((result) => {
                         if (result.isConfirmed) {
+
+                            Swal.fire({
+                                title: 'Processing...',
+                                html: 'Please wait',
+                                allowOutsideClick: false,
+                                didOpen: () => Swal.showLoading()
+                            });
+
                             console.log({
                                 amount: amount,
                                 date: date,
@@ -918,6 +958,7 @@
                                 },
                                 dataType: 'json',
                                 success: function (res) {
+                                    Swal.close();
                                     Swal.fire({
                                         title: 'Success',
                                         text: res.message,
@@ -931,6 +972,7 @@
                                     });
                                 },
                                 error: function (err) {
+                                    Swal.close();
                                     console.log(err);
                                     Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
                                 }
@@ -951,6 +993,7 @@
                 $('#withdrawPullout').modal('show');
             },
             error: function (err) {
+                Swal.close();
                 console.log(err);
                 Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details' });
             }
@@ -961,6 +1004,14 @@
 
     // View withdrawal history
     $(document).on('click', '#withdrawHistoryBtn', function () {
+        Swal.fire({
+            title: 'Loading...',
+            html: 'Please wait while we fetch data.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         $.ajax({
             url: '<?= base_url() ?>PullOut_cont/get_withdrawal_history',
             method: 'GET',
