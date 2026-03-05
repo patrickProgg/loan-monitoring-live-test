@@ -451,7 +451,7 @@
                                         <div
                                             class="d-flex justify-content-between align-items-center mb-2 mt-2 pt-2 border-top">
                                             <h5 class="text-dark fw-bold mb-0"><i
-                                                    class="fas fa-history me-2 text-secondary"></i>Loan History</h5>
+                                                    class="fas fa-history me-2 text-primary"></i>Loan History</h5>
                                             <div class="d-flex align-items-center gap-2">
                                                 <!-- Date Filter Dropdown -->
                                                 <div class="dropdown" style="width: 167px;">
