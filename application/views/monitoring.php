@@ -598,6 +598,10 @@
                                 </div>
 
                                 <div>
+                                    <button type="button" id="addNewLoan" class="btn btn-primary me-2"
+                                        onclick="openAddNewLoanModal()">
+                                        <i class="fas fa-plus me-1"></i> New Loan
+                                    </button>
                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">
                                         <i class="fas fa-times me-1"></i> Close
                                     </button>
