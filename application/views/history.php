@@ -166,138 +166,162 @@
                                             class="d-flex justify-content-between align-items-center mb-2 mt-2 pt-2 border-top">
                                             <h5 class="text-dark fw-bold mb-0"><i
                                                     class="fas fa-history me-2 text-secondary"></i>Loan History</h5>
-
-                                        </div>
-                                    </div>
-                                    <hr class="my-0">
-
-                                    <!-- First Row - Dates and Amounts -->
-                                    <div class="row mt-3 mb-2">
-                                        <div class="col-3">
-                                            <div class="mb-1">
-                                                <div class="text-muted small"><i class="far fa-calendar-alt me-1"></i>
-                                                    Start Date</div>
-                                                <span class="fw-bold" id="header_loan_date"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="mb-1">
-                                                <div class="text-muted small"><i class="far fa-calendar-check me-1"></i>
-                                                    Due Date</div>
-                                                <span class="fw-bold" id="header_due_date"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="mb-1">
-                                                <div class="text-muted small"><i class="fas fa-coins me-1"></i>
-                                                    Amount</div>
-                                                <span class="fw-bold text-primary">₱ <span
-                                                        id="header_capital_amt"></span></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="mb-1">
-                                                <div class="text-muted small"><i class="fas fa-plus-circle me-1"></i>
-                                                    Added Amount</div>
-                                                <span class="fw-bold text-info">₱ <span
-                                                        id="header_added_amt"></span></span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Second Row - Financial Details -->
-                                    <div class="row mb-2">
-                                        <div class="col-3">
-                                            <div class="mb-2">
-                                                <div class="text-muted small"><i class="fas fa-percent me-1"></i>
-                                                    Interest Rate</div>
-                                                <span class="fw-bold"><span id="header_interest">15</span>%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="mb-2">
-                                                <div class="text-muted small"><i class="fas fa-file-invoice me-1"></i>
-                                                    Total Amount</div>
-                                                <span class="fw-bold text-success">₱ <span
-                                                        id="header_total_amt"></span></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="mb-2">
-                                                <div class="text-muted small"><i class="fas fa-chart-line me-1"></i>
-                                                    Running Balance</div>
-                                                <span class="fw-bold text-danger">₱ <span
-                                                        id="header_running_balance"></span></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-3">
-                                            <div class="mb-2">
-                                                <div class="text-muted small"><i class="fas fa-check-circle me-1"></i>
-                                                    Status / <i class="far fa-calendar-check me-1"></i> Date Completed
+                                            <div class="d-flex align-items-center gap-2">
+                                                <!-- Date Filter Dropdown -->
+                                                <div class="dropdown" style="width: 167px;">
+                                                    <button
+                                                        class="btn btn-sm btn-outline-secondary dropdown-toggle w-100 text-start"
+                                                        type="button" id="dateDropdownBtn" data-bs-toggle="dropdown"
+                                                        aria-expanded="false" style="height: 30px;">
+                                                        <i class="fas fa-filter me-1"></i> Select Date Range
+                                                    </button>
+                                                    <ul class="dropdown-menu" id="header_date_arr"
+                                                        style="max-height: 200px; overflow-y: auto; z-index: 9999;">
+                                                        <!-- Options will be appended here -->
+                                                    </ul>
                                                 </div>
-                                                <span class="fw-bold text-success">
-                                                    <span id="header_status">ONGOING</span>
-                                                    <span id="header_date_completed"></span>
-                                                </span>
+
+                                                <!-- Edit Button -->
+                                                <!-- <button class="btn btn-sm btn-success" id="editLoanDetails">
+                                                    <i class="fas fa-edit me-1"></i> Edit
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" id="cancelEdit"
+                                                    style="display: none;">
+                                                    <i class="fas fa-times me-1"></i> Cancel
+                                                </button> -->
+                                            </div>
+                                        </div>
+                                        <hr class="my-0">
+
+                                        <!-- First Row - Dates and Amounts -->
+                                        <div class="row mt-3 mb-2">
+                                            <div class="col-3">
+                                                <div class="mb-1">
+                                                    <div class="text-muted small"><i
+                                                            class="far fa-calendar-alt me-1"></i> Start Date</div>
+                                                    <span class="fw-bold" id="header_loan_date"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="mb-1">
+                                                    <div class="text-muted small"><i
+                                                            class="far fa-calendar-check me-1"></i> Due Date</div>
+                                                    <span class="fw-bold" id="header_due_date"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="mb-1">
+                                                    <div class="text-muted small"><i class="fas fa-coins me-1"></i>
+                                                        Amount</div>
+                                                    <span class="fw-bold text-primary">₱ <span
+                                                            id="header_capital_amt"></span></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="mb-1">
+                                                    <div class="text-muted small"><i
+                                                            class="fas fa-plus-circle me-1"></i> Added Amount</div>
+                                                    <span class="fw-bold text-info">₱ <span
+                                                            id="header_added_amt"></span></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Second Row - Financial Details -->
+                                        <div class="row mb-2">
+                                            <div class="col-3">
+                                                <div class="mb-2">
+                                                    <div class="text-muted small"><i class="fas fa-percent me-1"></i>
+                                                        Interest Rate</div>
+                                                    <span class="fw-bold"><span id="header_interest">15</span>%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="mb-2">
+                                                    <div class="text-muted small"><i
+                                                            class="fas fa-file-invoice me-1"></i> Total Amount</div>
+                                                    <span class="fw-bold text-success">₱ <span
+                                                            id="header_total_amt"></span></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="mb-2">
+                                                    <div class="text-muted small"><i class="fas fa-chart-line me-1"></i>
+                                                        Running Balance</div>
+                                                    <span class="fw-bold text-danger">₱ <span
+                                                            id="header_running_balance"></span></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="mb-2">
+                                                    <div class="text-muted small"><i
+                                                            class="fas fa-check-circle me-1"></i> Status / <i
+                                                            class="far fa-calendar-check me-1"></i> Date Completed</div>
+                                                    <span class="fw-bold text-success">
+                                                        <span id="header_status">ONGOING</span>
+                                                        <span id="header_date_completed"></span>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="px-3 pb-3">
-                        <div class="table-responsive"
-                            style="max-height: 365px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px;">
-                            <table id="payment_table" class="table table-sm table-hover mb-0">
-                                <thead class="table-light sticky-top"
-                                    style="background-color:var(--light-grey); font-size:13px; color:var(--dark); height:40px; vertical-align: middle;">
-                                    <tr>
-                                        <th class="text-center"
-                                            style="width:10%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
-                                            #
-                                        </th>
-                                        <th class="text-center"
-                                            style="width:30%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
-                                            DATE</th>
-                                        <th class="text-center"
-                                            style="width:30%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
-                                            PAYMENT</th>
-                                        <th class="text-center"
-                                            style="width:30%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
-                                            ACTION</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="paymentTableBody">
-                                    <tr>
-                                        <td colspan="4" class="text-center py-4 text-muted">
-                                            <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                                            No payment records found
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center w-100 pt-3">
-                            <div style="width: 50px;"></div>
-
-                            <div class="text-center">
-                                <span class="text-muted me-2">Total Payments:</span>
-                                <span class="fw-bold text-primary fs-5">₱ <span id="total_payment">0.00</span></span>
+                        <div class="px-3 pb-3">
+                            <div class="table-responsive"
+                                style="max-height: 365px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px;">
+                                <table id="payment_table" class="table table-sm table-hover mb-0">
+                                    <thead class="table-light sticky-top"
+                                        style="background-color: #f8f9fa; height:40px; vertical-align: middle;">
+                                        <tr>
+                                            <th class="text-center"
+                                                style="width:10%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
+                                                #
+                                            </th>
+                                            <th class="text-center"
+                                                style="width:30%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
+                                                DATE</th>
+                                            <th class="text-center"
+                                                style="width:30%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
+                                                PAYMENT</th>
+                                            <th class="text-center"
+                                                style="width:30%; background-color:var(--light-grey); color:var(--dark); font-weight: bold;">
+                                                ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paymentTableBody">
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4 text-muted">
+                                                <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                                No payment records found
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
 
-                            <div>
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-                                    <i class="fas fa-times me-1"></i> Close
-                                </button>
+                            <div class="d-flex justify-content-between align-items-center w-100 pt-3">
+                                <div style="width: 50px;"></div>
+
+                                <div class="text-center">
+                                    <span class="text-muted me-2">Total Payments:</span>
+                                    <span class="fw-bold text-primary fs-5">₱ <span
+                                            id="total_payment">0.00</span></span>
+                                </div>
+
+                                <div>
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-1"></i> Close
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <input type="hidden" id="header_id">
-                    <input type="hidden" id="header_loan_id">
+                        <input type="hidden" id="header_id">
+                        <input type="hidden" id="header_loan_id">
+                    </div>
                 </div>
             </div>
         </div>
@@ -740,19 +764,9 @@
                     $('#header_added_amt').text(Number(loan.added_amt).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
                     $('#header_total_amt').text(Number(loan.total_amt).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
                     $('#header_interest').text(loan.interest);
-                   let dateDisplay = loan.complete_date ? format(loan.complete_date) : '';
-
-                    if (dateDisplay) {
-                        // If date exists, show dash, date, and checkmark
-                        $('#header_date_completed').html(`
-                            <span class="mx-1">—</span>
-                            ${dateDisplay}
-                            <i class="fas fa-check-circle ms-1" style="color: #28a745; font-size: 0.9rem;"></i>
-                        `);
-                    } else {
-                        // If no date, show nothing (empty)
-                        $('#header_date_completed').html('');
-                    }
+                    $('#header_date_completed').text(
+                        loan.complete_date ? format(loan.complete_date) : ''
+                    );
 
                     let paymentMap = {};
 
