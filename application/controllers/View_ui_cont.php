@@ -95,6 +95,7 @@ class View_ui_cont extends CI_Controller
 
         $this->db->select("
             c.full_name,
+            c.id,
             COUNT(DISTINCT l.id) AS total_loans,
             SUM(CASE WHEN l.status = 'completed' THEN 1 ELSE 0 END) AS completed_loans,
             SUM(CASE WHEN l.status = 'overdue' THEN 1 ELSE 0 END) AS overdue_loans,
@@ -107,25 +108,33 @@ class View_ui_cont extends CI_Controller
             ->where('c.status !=', '1')
             ->group_by('c.id')
             ->having('total_loans > 0')
-            ->having('completed_loans > 0')
-            ->limit(10); // Get more than needed
+            ->having('completed_loans > 0');
 
         $query = $this->db->get();
         $payors = $query->result_array();
 
         // Calculate performance score for each payor and sort
         foreach ($payors as &$payor) {
-            $score = $payor['completed_loans'] * 10;
-            $score -= $payor['overdue_loans'] * 20;
-            if ($payor['total_loans'] > 0) {
-                $score += ($payor['completed_loans'] / $payor['total_loans']) * 100;
-            }
+            // Give more weight to total loans
+            $score = $payor['total_loans'] * 100; // Simple multiplication first
+
+            // Add bonuses
+            $score += $payor['completed_loans'] * 20;
+            $score += $payor['ongoing_loans'] * 30;
+            $score -= $payor['overdue_loans'] * 50;
+
             $payor['performance_score'] = round($score, 2);
         }
 
         // Sort by performance score (descending)
         usort($payors, function ($a, $b) {
-            return $b['performance_score'] <=> $a['performance_score'];
+            // First compare by performance score
+            if ($b['performance_score'] != $a['performance_score']) {
+                return $b['performance_score'] <=> $a['performance_score'];
+            }
+
+            // If scores are equal, compare by total_paid (higher paid first)
+            return $b['total_paid'] <=> $a['total_paid'];
         });
 
         // Take top 5

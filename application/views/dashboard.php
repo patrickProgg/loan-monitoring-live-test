@@ -531,7 +531,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">🏆 Top Good Payors</h3>
+                    <h3 class="card-title mb-0">🏆 Top Good Clients</h3>
                     <!-- <span class="badge badge-danger" style="color: #444242;">Least Overduess</span> -->
                 </div>
             </div>
