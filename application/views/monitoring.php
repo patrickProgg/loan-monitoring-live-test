@@ -619,42 +619,102 @@
             <!-- OVERDUE -->
             <div class="modal fade" id="overdueModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
                 data-bs-keyboard="false">
-                <div class="modal-dialog" style="margin-top:10px">
+                <div class="modal-dialog" style="max-width:600px; margin-top:10px">
                     <div class="modal-content">
                         <div class="modal-header bg-light border-bottom">
-                            <h5 class="modal-title">Overdue</h5>
+                            <h5 class="modal-title fw-bold">
+                                <i class="fas fa-exclamation-triangle me-2 text-danger"></i>
+                                Overdue Loan Processing
+                            </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
-                        <div class="modal-body">
-                            <div class="row g-2">
-                                <div class="col-4">
-                                    <label>Capital Amt</label>
-                                    <input id="new_capital_amt" type="number" class="form-control" />
-                                    <input id="new_type" type="hidden" />
-                                </div>
-                                <div class="col-4">
-                                    <label>Interest (%)</label>
-                                    <input id="new_interest" type="number" class="form-control" value="15" />
-                                </div>
-                                <div class="col-4">
-                                    <label>Added Amt</label>
-                                    <input id="new_added_amt" type="number" class="form-control" />
-                                </div>
-                                <div class="col-6">
-                                    <label>Total Amt</label>
-                                    <input id="new_total_amt" type="number" class="form-control" />
-                                </div>
-                                <div class="col-6">
-                                    <label>New Start Date</label>
-                                    <input id="new_start_date" type="date" class="form-control" />
+                        <div class="modal-body pb-0">
+                            <div class="container p-0">
+                                <!-- Overdue Details Card -->
+                                <div class="card border-0 shadow-sm rounded-4">
+                                    <div class="card-header bg-white border-0">
+                                        <h6 class="fw-bold mb-0">
+                                            <i class="fas fa-calculator me-2 text-danger"></i>
+                                            Overdue Loan Details
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <!-- Capital Amount -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-coins me-1"></i> CAPITAL AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                    <input id="new_capital_amt" type="number"
+                                                        class="form-control form-control-lg" placeholder="0.00" min="0"
+                                                        step="0.01" />
+                                                </div>
+                                            </div>
+
+                                            <!-- Interest Rate -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-percent me-1"></i> INTEREST RATE
+                                                </label>
+                                                <div class="input-group">
+                                                    <input id="new_interest" type="number"
+                                                        class="form-control form-control-lg" value="15" min="0"
+                                                        step="0.1" />
+                                                    <span class="input-group-text bg-light border-0">%</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Added Amount -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-plus-circle me-1"></i> ADDED AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                    <input id="new_added_amt" type="number"
+                                                        class="form-control form-control-lg" placeholder="0.00" min="0"
+                                                        step="0.01" />
+                                                </div>
+                                            </div>
+
+                                            <!-- Total Amount -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-calculator me-1"></i> TOTAL AMOUNT
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light border-0 fw-bold">₱</span>
+                                                    <input id="new_total_amt" type="text"
+                                                        class="form-control form-control-lg fw-bold text-success"
+                                                        readonly style="background-color: #f8f9fa;" />
+                                                </div>
+                                                <small class="text-muted">Capital + Interest + Added Amount</small>
+                                            </div>
+
+                                            <!-- New Start Date -->
+                                            <div class="col-md-12">
+                                                <label class="form-label fw-bold text-muted small mb-2">
+                                                    <i class="fas fa-calendar-alt me-1"></i> NEW START DATE
+                                                </label>
+                                                <input id="new_start_date" type="date"
+                                                    class="form-control form-control-lg" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="modalContinueBtn">Continue</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-danger" id="modalContinueBtn">
+                                <i class="fas fa-check-circle me-1"></i> Continue
+                            </button>
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
