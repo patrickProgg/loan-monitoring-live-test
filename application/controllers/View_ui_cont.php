@@ -121,7 +121,7 @@ class View_ui_cont extends CI_Controller
             // Add bonuses
             $score += $payor['completed_loans'] * 20;
             $score += $payor['ongoing_loans'] * 30;
-            $score -= $payor['overdue_loans'] * 50;
+            $score -= $payor['overdue_loans'] * 40;
 
             $payor['performance_score'] = round($score, 2);
         }
