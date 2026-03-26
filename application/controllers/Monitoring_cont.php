@@ -1873,4 +1873,41 @@ class Monitoring_cont extends CI_Controller
             "total_short" => $totalShort
         ]);
     }
+
+    public function update_variance()
+    {
+        $id = $this->input->post('id');
+        $date = $this->input->post('date');
+        $over = $this->input->post('over');
+        $short = $this->input->post('short');
+
+        $data = [
+            'date_added' => $date,
+            'over' => $over,
+            'short' => $short
+        ];
+
+        $this->db->where('id', $id);
+        $result = $this->db->update('tbl_variance', $data);
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Variance record updated successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to update variance record']);
+        }
+    }
+
+    public function delete_variance()
+    {
+        $id = $this->input->post('id');
+
+        $this->db->where('id', $id);
+        $result = $this->db->delete('tbl_variance');
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Variance record deleted successfully']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to delete variance record']);
+        }
+    }
 }

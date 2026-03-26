@@ -3215,74 +3215,378 @@
         serverSide: true,
         searching: true,
         ordering: true,
+        autoWidth: false,
         ajax: {
             url: '<?php echo site_url('Monitoring_cont/get_variance_data'); ?>',
-        type: 'POST',
-        data: function (d) {
-            d.start = d.start || 0;
-            d.length = d.length || 10;
-        },
-        dataType: 'json',
-        error: function (xhr, status, error) {
-            console.error("AJAX request failed: " + error);
-        },
-        dataSrc: function (response) {
+            type: 'POST',
+            data: function (d) {
+                d.start = d.start || 0;
+                d.length = d.length || 10;
+            },
+            dataType: 'json',
+            error: function (xhr, status, error) {
+                console.error("AJAX request failed: " + error);
+            },
+            dataSrc: function (response) {
+                function formatPeso(num) {
+                    if (!num && num !== 0) return '—';
+                    return '₱ ' + parseFloat(num).toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
 
-            $('#total_over').text(response.total_over || '—');
-            $('#total_short').text(response.total_short || '—');
+                $('#total_over').text(formatPeso(response.total_over));
+                $('#total_short').text(formatPeso(response.total_short));
 
-            return response.data;
+                return response.data;
+            },
         },
-    },
         columns: [
-        { data: 'date_added', class: 'text-center' },
-        {
-            data: 'over',
-            class: 'text-center'
-        },
-        {
-            data: 'short',
-            class: 'text-center'
-        }
-    ]
+            { data: 'date_added', class: 'text-center' },
+            {
+                data: 'over',
+                class: 'text-center',
+                render: function (data, type, row) {
+                    if (type === 'display') {
+                        if (!data && data !== 0) return '—';
+                        return '₱ ' + parseFloat(data).toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    }
+                    return data;
+                }
+            },
+            {
+                data: 'short',
+                class: 'text-center',
+                render: function (data, type, row) {
+                    if (type === 'display') {
+                        if (!data && data !== 0) return '—';
+                        return '₱ ' + parseFloat(data).toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    }
+                    return data;
+                }
+            },
+            {
+                data: 'id',
+                orderable: false,
+                className: 'text-center',
+                render: function (data, type, row) {
+                    return `
+                        <button class="btn btn-sm btn-success edit-btn" data-id="${data}" data-date="${row.date_added}" data-over="${row.over}" data-short="${row.short}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                `;
+                }
+            }
+        ]
     });
 
     function openAddVariance() {
         $('#addVarianceModal').modal('show');
 
-        $('#addVariance').on('click', function () {
+        // Remove previous event handler to avoid duplicate submissions
+        $('#addVariance').off('click').on('click', function () {
             const over = $('#variance_over').val();
             const short = $('#variance_short').val();
             const date = $('#variance_date').val();
 
-            $.ajax({
-                url: "<?php echo base_url('Monitoring_cont/add_variance'); ?>",
-                type: "POST",
-                dataType: "json",
-                data: {
-                    over: over,
-                    short: short,
-                    date: date,
-                },
-                success: function (res) {
-                    if (res.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: res.message,
-                            showConfirmButton: false,
-                            timer: 500,
-                            timerProgressBar: true,
+            // Validation
+            if (!over && !short) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: 'Please enter either Over or Short amount',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
+            }
 
-                        });
-                        variance_table.ajax.reload();
-                        $('#addVarianceModal').modal('hide');
-                    }
+            if (!date) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validation Error',
+                    text: 'Please select a date',
+                    confirmButtonColor: '#3085d6'
+                });
+                return;
+            }
+
+            // Confirmation dialog
+            Swal.fire({
+                title: 'Confirm Addition',
+                text: `Are you sure you want to add this variance record?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, add it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: "<?php echo base_url('Monitoring_cont/add_variance'); ?>",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            over: over,
+                            short: short,
+                            date: date,
+                        },
+                        success: function (res) {
+                            if (res.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: res.message,
+                                    showConfirmButton: false,
+                                    timer: 500,
+                                    timerProgressBar: true,
+                                });
+                                variance_table.ajax.reload();
+                                $('#addVarianceModal').modal('hide');
+                                resetVarianceForm();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: res.message || 'Failed to add variance record',
+                                    confirmButtonColor: '#3085d6'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An error occurred while processing your request',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        }
+                    });
                 }
             });
-
         });
     }
+
+    $('#variance_table').on('click', '.edit-btn', function () {
+        const $btn = $(this);
+        const $row = $btn.closest('tr');
+        const id = $btn.data('id');
+        const originalDate = $btn.data('date');
+        const originalOver = $btn.data('over');
+        const originalShort = $btn.data('short');
+
+        // Get the cells to edit (date, over, short columns)
+        const $dateCell = $row.find('td:eq(0)');
+        const $overCell = $row.find('td:eq(1)');
+        const $shortCell = $row.find('td:eq(2)');
+        const $actionCell = $row.find('td:eq(3)');
+
+        // Store original values
+        $row.data('original-date', originalDate);
+        $row.data('original-over', originalOver);
+        $row.data('original-short', originalShort);
+        $row.data('id', id);
+
+        // Replace text with input fields
+        $dateCell.html(`<input type="date" class="form-control form-control-sm edit-date" value="${originalDate}">`);
+        $overCell.html(`<input type="number" class="form-control form-control-sm edit-over" value="${originalOver}" step="0.01" min="0">`);
+        $shortCell.html(`<input type="number" class="form-control form-control-sm edit-short" value="${originalShort}" step="0.01" min="0">`);
+
+        // Replace buttons with Save and Cancel
+        $actionCell.html(`
+            <div>
+                <button class="btn btn-sm btn-primary save-btn" data-id="${id}">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="btn btn-sm btn-secondary cancel-btn">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        `);
+
+        $('.edit-over').on('input', function () {
+            if ($(this).val() > 0 && $(this).val() !== '') {
+                $('.edit-short').val(0);
+            }
+        });
+
+        $('.edit-short').on('input', function () {
+            if ($(this).val() > 0 && $(this).val() !== '') {
+                $('.edit-over').val(0);
+            }
+        });
+    });
+
+    $('#variance_table').on('click', '.save-btn', function () {
+        const $btn = $(this);
+        const $row = $btn.closest('tr');
+        const id = $btn.data('id');
+        const date = $row.find('.edit-date').val();
+        const over = $row.find('.edit-over').val() || 0;
+        const short = $row.find('.edit-short').val() || 0;
+
+        if (!date) {
+            Swal.fire('Error', 'Please select a date', 'error');
+            return;
+        }
+
+        if (over == 0 && short == 0) {
+            Swal.fire('Error', 'Please enter either Over or Short amount', 'error');
+            return;
+        }
+
+        if (over > 0 && short > 0) {
+            Swal.fire('Error', 'Please enter only one value (either Over OR Short, not both)', 'error');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Updating...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: '<?php echo base_url('Monitoring_cont/update_variance'); ?>',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                id: id,
+                date: date,
+                over: over,
+                short: short
+            },
+            success: function (res) {
+                if (res.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.message,
+                        showConfirmButton: false,
+                        timer: 500
+                    });
+                    variance_table.ajax.reload();
+                } else {
+                    Swal.fire('Error!', res.message, 'error');
+                }
+            },
+            error: function () {
+                Swal.fire('Error!', 'Failed to update variance record', 'error');
+            }
+        });
+    });
+
+    // Cancel button click - restore original values
+    $('#variance_table').on('click', '.cancel-btn', function () {
+        const $btn = $(this);
+        const $row = $btn.closest('tr');
+        const id = $row.data('id');
+        const originalDate = $row.data('original-date');
+        const originalOver = $row.data('original-over');
+        const originalShort = $row.data('original-short');
+
+        // Restore original values
+        $row.find('td:eq(0)').html(originalDate);
+        $row.find('td:eq(1)').html(originalOver ? '₱ ' + parseFloat(originalOver).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—');
+        $row.find('td:eq(2)').html(originalShort ? '₱ ' + parseFloat(originalShort).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '—');
+
+        // Restore original buttons
+        $row.find('td:eq(3)').html(`
+            <div>
+                <button class="btn btn-sm btn-success edit-btn" data-id="${id}" data-date="${originalDate}" data-over="${originalOver}" data-short="${originalShort}">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-danger delete-btn" data-id="${id}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        `);
+    });
+
+    // Delete button click with confirmation
+    $('#variance_table').on('click', '.delete-btn', function () {
+        const $btn = $(this);
+        const id = $btn.data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Deleting...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: '<?php echo base_url('Monitoring_cont/delete_variance'); ?>',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: id },
+                    success: function (res) {
+                        if (res.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: res.message,
+                                showConfirmButton: false,
+                                timer: 500
+                            });
+                            variance_table.ajax.reload();
+                        } else {
+                            Swal.fire('Error!', res.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Failed to delete variance record', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    function resetVarianceForm() {
+        $('#variance_over').val("");
+        $('#variance_short').val("");
+        $('#variance_date').val('<?= date('Y-m-d') ?>');
+    }
+
+    $('#addVarianceModal').on('hidden.bs.modal', function () {
+        resetVarianceForm();
+    });
 
     const viewLoanerEl = document.getElementById('viewLoaner');
     const overdueModalEl = document.getElementById('overdueModal');
