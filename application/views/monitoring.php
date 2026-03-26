@@ -989,6 +989,7 @@
                                                 <th>DATE</th>
                                                 <th>OVER</th>
                                                 <th>SHORT</th>
+                                                <th style="width:150px">ACTION</th>
                                             </tr>
                                         </thead>
                                         <tbody>
