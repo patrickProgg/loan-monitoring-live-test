@@ -1839,6 +1839,7 @@ class Monitoring_cont extends CI_Controller
 
         // Main query for paginated data - escape 'over' in select and like
         $this->db->select('
+            id,
             date_added,
             `over`,
             short
