@@ -943,7 +943,7 @@
             <!-- BULK PAYMENT -->
 
             <!-- VARIANCE MODAL -->
-            <div class="modal fade" id="variance_modal" data-bs-backdrop="static" data-bs-keyboard="false">
+              <div class="modal fade" id="variance_modal" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-lg" style="max-width: 600px; margin-top: 10px;">
                     <div class="modal-content">
                         <div class="modal-header bg-light border-bottom">
@@ -955,34 +955,15 @@
                         </div>
 
                         <div class="modal-body p-3">
-                            <!-- Add New Button - Moved here -->
+                            <!-- Add New Button -->
                             <div class="mb-3 text-start">
                                 <button class="btn btn-primary" onclick="openAddVariance()">
                                     <i class="fas fa-plus-circle me-1"></i> Add New
                                 </button>
                             </div>
 
-                            <div class="card border-0 shadow-sm rounded-3 mb-3">
-                                <div class="card-body p-3 pt-0">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="text-center p-2 bg-light rounded-3">
-                                                <small class="text-muted d-block">Total Over</small>
-                                                <span class="fw-bold fs-5 text-danger" id="total_over">₱0.00</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="text-center p-2 bg-light rounded-3">
-                                                <small class="text-muted d-block">Total Short</small>
-                                                <span class="fw-bold fs-5 text-danger" id="total_short">₱0.00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="card-body p-0">
-                                <div class="table-responsive" style="max-height: 444px; overflow-y: auto;">
+                                <div class="table-responsive">
                                     <table id="variance_table" class="table table-hover mb-0 pb-0" style="width:100%">
                                         <thead class="table-secondary">
                                             <tr>
@@ -994,10 +975,23 @@
                                         </thead>
                                         <tbody>
                                         </tbody>
+                                        <tfoot class="table-light">
+                                            <tr style="font-weight: bold;">
+                                                <td class="text-end"><strong>TOTAL:</strong></td>
+                                                <td id="total_over" class="text-danger">
+                                                    <strong>₱0.00</strong>
+                                                </td>
+                                                <td id="total_short" class="text-danger">
+                                                    <strong>₱0.00</strong>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
 
+                            <!-- Close Button -->
                             <div class="row mt-3">
                                 <div class="d-flex justify-content-end">
                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">
