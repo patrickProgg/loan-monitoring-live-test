@@ -178,22 +178,22 @@
         <!-- background: linear-gradient(135deg, var(--light-blue), #ffffff); -->
 
         <!-- <a href="<?= base_url(); ?>masterfile" style="text-decoration: none; color: inherit;"> -->
-        <!-- <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
+        <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
             <i class='bx bx-dollar-circle'
                 style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
             <span class="text">
                 <h3>₱<?= number_format($total_loan_amt, 2) ?></h3>
                 <p style="color:rgba(255, 159, 64, 1)">Total Collectibles</p>
             </span>
-        </li> -->
-        <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
+        </li>
+        <!-- <li style="border-bottom: 2px solid rgba(255, 159, 64, 1);">
             <i class='bx bx-dollar-circle'
                 style="background: rgba(255, 159, 64, 0.2); color: rgba(255, 159, 64, 1);"></i>
             <span class="text">
                 <h3>₱<?= number_format($total_loan_amt - $total_capital_loan_amt, 2) ?></h3>
                 <p style="color:rgba(255, 159, 64, 1)">Total Profit</p>
             </span>
-        </li>
+        </li> -->
         <!-- </a> -->
 
         <!-- <a href="<?= base_url(); ?>location" style="text-decoration: none; color: inherit;"> -->
