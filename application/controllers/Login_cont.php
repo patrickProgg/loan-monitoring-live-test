@@ -28,7 +28,7 @@ class Login_cont extends CI_Controller
         if ($username === "Admin") {
             echo json_encode([
                 'success' => false,
-                'message' => 'Access denied',
+                // 'message' => 'Access denied',
                 'redirect' => base_url('maintenance')
             ]);
             return;
