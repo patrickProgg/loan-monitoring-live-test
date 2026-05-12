@@ -63,6 +63,7 @@ $route['default_controller'] = 'View_ui_cont';
 $route['login'] = 'Login_cont/login';
 $route['logout'] = 'Login_cont/logout';
 $route['dashboard'] = 'View_ui_cont/dashboard';
+$route['maintenance'] = 'View_ui_cont/maintenance';
 $route['client'] = 'View_ui_cont/monitoring';
 $route['pull_out'] = 'View_ui_cont/pull_out';
 $route['expenses'] = 'View_ui_cont/expenses';

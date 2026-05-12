@@ -894,4 +894,11 @@ class View_ui_cont extends CI_Controller
         $this->load->view('layouts/footer');
     }
 
+    public function maintenance()
+    {
+        $this->load->view('layouts/header');
+        $this->load->view('maintenance');
+        $this->load->view('layouts/footer');
+    }
+
 }

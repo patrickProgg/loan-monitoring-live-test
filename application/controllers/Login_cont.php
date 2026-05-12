@@ -24,6 +24,16 @@ class Login_cont extends CI_Controller
         $username = $this->input->post('username');
         $password = $this->input->post('password');
 
+        // Check if username is Admin
+        if ($username === "Admin") {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Access denied',
+                'redirect' => base_url('maintenance')
+            ]);
+            return;
+        }
+
         $user = $this->authenticateUser($username, $password);
 
         if ($user) {
@@ -45,7 +55,6 @@ class Login_cont extends CI_Controller
                 'message' => 'Invalid username/email or password.'
             ]);
         }
-
     }
 
     public function logout()
