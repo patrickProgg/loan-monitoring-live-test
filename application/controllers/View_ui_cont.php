@@ -12,7 +12,7 @@ class View_ui_cont extends CI_Controller
         $this->db->query("SET time_zone = '+08:00'");
 
         if ($this->session->userdata('username') === "Admin") {
-            redirect('maintenance');
+            $this->maintenance();
             exit;
         }
 
