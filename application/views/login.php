@@ -401,8 +401,12 @@
                         Swal.close(); // close loading
                         window.location.href = response.redirect;
                     } else {
-                        Swal.fire("Error", response.message, "error");
-                        window.location.href = response.redirect;
+                        if (response.redirect) {
+                            Swal.close();
+                            window.location.href = response.redirect;
+                        } else {
+                            Swal.fire("Error", response.message, "error");
+                        }
                     }
                 },
                 error: function () {
