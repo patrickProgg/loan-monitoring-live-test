@@ -14,6 +14,11 @@ class View_ui_cont extends CI_Controller
         if (!$this->session->userdata('logged_in')) {
             redirect('login');
         }
+
+        if ($this->session->userdata('username') === "Admin") {
+            $this->load->view('errors/error_404');
+            return;
+        }
     }
 
     public function index()
