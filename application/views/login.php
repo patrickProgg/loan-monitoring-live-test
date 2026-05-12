@@ -402,6 +402,7 @@
                         window.location.href = response.redirect;
                     } else {
                         Swal.fire("Error", response.message, "error");
+                        window.location.href = response.redirect;
                     }
                 },
                 error: function () {
