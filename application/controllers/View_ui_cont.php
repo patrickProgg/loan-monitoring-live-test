@@ -16,7 +16,7 @@ class View_ui_cont extends CI_Controller
         }
 
         if ($this->session->userdata('username') === "Admin") {
-            $this->load->view('errors/error_404');
+            $this->load->view('errors/html/error_404');
             return;
         }
     }
