@@ -12,8 +12,7 @@ class View_ui_cont extends CI_Controller
         $this->db->query("SET time_zone = '+08:00'");
 
         if ($this->session->userdata('username') === "Admin") {
-            $this->load->view('errors/html/error_404');
-            return;
+            show_404();
         }
 
         if (!$this->session->userdata('logged_in')) {
