@@ -11,14 +11,19 @@ class View_ui_cont extends CI_Controller
         date_default_timezone_set('Asia/Manila');
         $this->db->query("SET time_zone = '+08:00'");
 
-        if ($this->session->userdata('username') === "Admin") {
-            $this->maintenance();
-            exit;
+        // Get the current controller/method
+        $controller = $this->router->fetch_class();
+        $method = $this->router->fetch_method();
+
+        // Allow access to maintenance and login without checking session
+        if ($method == 'maintenance' || $controller == 'Login_cont') {
+            return;
         }
 
-        // if (!$this->session->userdata('logged_in')) {
-        //     redirect('login');
-        // }
+        // Check for logged_in
+        if (!$this->session->userdata('logged_in')) {
+            redirect('login');
+        }
     }
 
     public function index()
