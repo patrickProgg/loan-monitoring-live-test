@@ -17,6 +17,21 @@
             border-radius: 20px;
             backdrop-filter: blur(10px);
         }
+
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            transition: transform 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46a0 100%);
+            color: white;
+        }
     </style>
 </head>
 
@@ -37,9 +52,14 @@
             <div class="progress mb-3">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
             </div>
-            <small class="text-muted">
-                Last checked:
-                <?= date('Y-m-d H:i:s') ?>
+
+            <!-- Back to Login Button -->
+            <a href="<?= base_url('login'); ?>" class="btn btn-login mt-3">
+                ← Back to Login
+            </a>
+
+            <small class="text-muted d-block mt-3">
+                Last checked: <?= date('Y-m-d H:i:s') ?>
             </small>
         </div>
     </div>
