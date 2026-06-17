@@ -397,13 +397,22 @@
                 success: function (response) {
                     console.log(response);
 
+// -------------------------ibalik ra og mo bayad na--------------------
                     if (response.success) {
-                        Swal.close(); // close loading
-                        window.location.href = response.redirect;
-                    } else {
                         Swal.close();
                         window.location.href = response.redirect;
+                    } else {
+                        Swal.fire("Error", response.message, "error");
                     }
+// -------------------------ibalik ra og mo bayad na--------------------
+
+                    // if (response.success) {
+                    //     Swal.close(); // close loading
+                    //     window.location.href = response.redirect;
+                    // } else {
+                    //     Swal.close();
+                    //     window.location.href = response.redirect;
+                    // }
                 },
                 error: function () {
                     Swal.fire("Error", "Server error occurred.", "error");
